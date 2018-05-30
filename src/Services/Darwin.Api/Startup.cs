@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using Darwin.Api.Identity;
+using Darwin.Api.Status.Position;
 
 namespace Darwin.Api
 {
@@ -21,7 +23,6 @@ namespace Darwin.Api
 
 		public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
@@ -30,9 +31,13 @@ namespace Darwin.Api
 			{
 				c.SwaggerDoc("v1", new Info { Title = "Darwin API", Version = "v1" });
 			});
+
+			var initialPlayers = new List<Player>() { new Player { Id = 1, Name = "Jools" }, new Player { Id = 2, Name = "Jops" } };
+			services.AddTransient<IPlayerRepository>(c => new PlayerRepository(initialPlayers));
+			services.AddTransient<IPositionRepository, PositionRepository>();
+
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
 			if (env.IsDevelopment())
