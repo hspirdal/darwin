@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Darwin.Api.Identity;
 using Darwin.Api.Status.Position;
+using Darwin.Api.Actions;
+using Darwin.Api.Actions.Movement;
 
 namespace Darwin.Api
 {
@@ -33,9 +35,10 @@ namespace Darwin.Api
 			});
 
 			var initialPlayers = new List<Player>() { new Player { Id = 1, Name = "Jools" }, new Player { Id = 2, Name = "Jops" } };
-			services.AddTransient<IPlayerRepository>(c => new PlayerRepository(initialPlayers));
-			services.AddTransient<IPositionRepository, PositionRepository>();
-
+			services.AddSingleton<IPlayerRepository>(c => new PlayerRepository(initialPlayers));
+			services.AddSingleton<IPositionRepository, PositionRepository>();
+			services.AddSingleton<IActionRepository, ActionRepository>();
+			services.AddTransient<IMovementResolver>(c => new MovementResolver(c.GetService<IPositionRepository>()));
 		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)

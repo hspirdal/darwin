@@ -6,6 +6,7 @@ namespace Darwin.Api.Status.Position
 	{
 		Position GetById(int id);
 		IDictionary<int, Position> GetAll();
+		void SetPosition(int playerId, int x, int y);
 	}
 
 	public class PositionRepository : IPositionRepository
@@ -29,6 +30,12 @@ namespace Darwin.Api.Status.Position
 		public IDictionary<int, Position> GetAll()
 		{
 			return _positionMap;
+		}
+
+		public void SetPosition(int playerId, int x, int y)
+		{
+			_positionMap[playerId].X = x;
+			_positionMap[playerId].Y = y;
 		}
 	}
 }
