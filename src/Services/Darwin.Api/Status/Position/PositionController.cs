@@ -9,36 +9,42 @@ namespace Darwin.Api.Status.Position
 	[Route("api/status/[controller]")]
 	public class PositionController : Controller
 	{
+		private readonly IPositionRepository _positionRepository;
+
+		public PositionController(IPositionRepository positionRepository)
+		{
+			_positionRepository = positionRepository;
+		}
+
 		// GET api/status/position
 		[HttpGet]
 		public IEnumerable<PositionResponse> Get()
 		{
-			return new PositionResponse[]
+			var positionMap = _positionRepository.GetAll();
+			var positions = new List<PositionResponse>();
+			foreach (var kvp in positionMap)
 			{
-				new PositionResponse
+				positions.Add(new PositionResponse
 				{
-					PlayerId = 3,
-					X = 5,
-					Y = 7
-				},
-				new PositionResponse
-				{
-					PlayerId = 5,
-					X = 2,
-					Y = 2
-				},
-			};
+					PlayerId = kvp.Key,
+					X = kvp.Value.X,
+					Y = kvp.Value.Y
+				});
+			}
+
+			return positions;
 		}
 
 		// GET api/status/position/5
 		[HttpGet("{id}")]
 		public PositionResponse Get(int id)
 		{
+			var position = _positionRepository.GetById(id);
 			return new PositionResponse
 			{
-				PlayerId = 5,
-				X = 2,
-				Y = 2
+				PlayerId = id,
+				X = position.X,
+				Y = position.Y
 			};
 		}
 	}
