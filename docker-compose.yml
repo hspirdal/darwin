@@ -1,0 +1,10 @@
+version: '2'
+ 
+services:
+  api:
+    image: hspirdal/darwin.api
+    build:
+      context:  ./src
+      dockerfile: ./Services/Darwin.Api/Dockerfile
+    ports:
+      - 5000:80
