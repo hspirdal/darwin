@@ -13,6 +13,7 @@ using Darwin.Api.Identity;
 using Darwin.Api.Status.Position;
 using Darwin.Api.Actions;
 using Darwin.Api.Actions.Movement;
+using StackExchange.Redis;
 
 namespace Darwin.Api
 {
@@ -33,6 +34,8 @@ namespace Darwin.Api
 			{
 				c.SwaggerDoc("v1", new Info { Title = "Darwin API", Version = "v1" });
 			});
+
+			RegisterRedis(services);
 
 			var initialPlayers = new List<Player>() { new Player { Id = 1, Name = "Jools" }, new Player { Id = 2, Name = "Jops" } };
 			services.AddSingleton<IPlayerRepository>(c => new PlayerRepository(initialPlayers));
@@ -56,6 +59,22 @@ namespace Darwin.Api
 			});
 
 			app.UseMvc();
+		}
+
+		private void RegisterRedis(IServiceCollection services)
+		{
+			//By connecting here we are making sure that our service
+			//cannot start until redis is ready. This might slow down startup,
+			//but given that there is a delay on resolving the ip address
+			//and then creating the connection it seems reasonable to move
+			//that cost to startup instead of having the first request pay the
+			//penalty.
+			services.AddSingleton(sp =>
+			{
+				var configuration = new ConfigurationOptions { ResolveDns = true };
+				configuration.EndPoints.Add(Configuration["RedisHost"]);
+				return ConnectionMultiplexer.Connect(configuration);
+			});
 		}
 	}
 }

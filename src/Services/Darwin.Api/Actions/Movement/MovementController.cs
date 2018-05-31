@@ -22,13 +22,14 @@ namespace Darwin.Api.Action.Movement
 
 		// POST api/action/movement
 		[HttpPost]
-		public ActionResponse Post([FromBody]MovementRequest request)
+		public async Task<ActionResponse> Post([FromBody]MovementRequest request)
 		{
 			var successfullyAddded = false;
-			if (_actionRepository.AbleToAdd(request.playerId))
+			var ableToAdd = await _actionRepository.AbleToAddAsync(request.playerId).ConfigureAwait(false);
+			if (ableToAdd)
 			{
 				var movementAction = new MovementAction(_movementResolver, request.playerId, request.Direction);
-				_actionRepository.Add(movementAction);
+				await _actionRepository.AddAsync(movementAction).ConfigureAwait(false);
 				successfullyAddded = true;
 			}
 

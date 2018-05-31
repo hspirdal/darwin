@@ -1,49 +1,60 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace Darwin.Api.Actions
 {
 	public interface IActionRepository
 	{
-		void Add(IAction action);
-		bool AbleToAdd(int ownerIId);
+		Task AddAsync(IAction action);
+		Task<bool> AbleToAddAsync(int ownerIId);
 		DateTime NextActionAvailable { get; }
-		void ClearAll();
 	}
 
 	public class ActionRepository : IActionRepository
 	{
-		private readonly Dictionary<int, IAction> _actionMap;
+		private readonly IDatabase _database;
 		private DateTime _lastCleared;
+		private readonly string _partitionKey = "action";
 
-		public ActionRepository()
+		public ActionRepository(ConnectionMultiplexer redis)
 		{
-			_actionMap = new Dictionary<int, IAction>();
+			_database = redis.GetDatabase();
 			_lastCleared = DateTime.UtcNow;
+
+			TempClearRedisPartition();
 		}
 
 		public DateTime NextActionAvailable => _lastCleared.AddSeconds(1);
 
-		public void Add(IAction action)
+		public async Task AddAsync(IAction action)
 		{
-			if (_actionMap.ContainsKey(action.OwnerId) == false)
+			var actionAlreadyStored = await _database.HashExistsAsync(_partitionKey, action.OwnerId.ToString());
+			if (!actionAlreadyStored)
 			{
-				_actionMap.Add(action.OwnerId, action);
+
+				await _database.HashSetAsync(_partitionKey, action.OwnerId.ToString(), JsonConvert.SerializeObject(action));
+
+				//_database.StringSet(action.OwnerId.ToString(), );
 				return;
 			}
 
 			throw new ArgumentException($"Action already queued for this timeslot. [ownerId: {action.OwnerId}, action: {action.Name}");
 		}
 
-		public bool AbleToAdd(int ownerIId)
+		public async Task<bool> AbleToAddAsync(int ownerIId)
 		{
-			return !_actionMap.ContainsKey(ownerIId);
+			var actionExists = await _database.HashExistsAsync(_partitionKey, ownerIId.ToString());
+			return actionExists == false;
 		}
 
-		public void ClearAll()
+		// Docker typically caches redis image for each startup, so make sure state is clear for now.
+		private void TempClearRedisPartition()
 		{
-			_actionMap.Clear();
-			_lastCleared = DateTime.UtcNow;
+			var keys = _database.HashKeys(_partitionKey);
+			_database.HashDelete(_partitionKey, keys);
 		}
 	}
 }
