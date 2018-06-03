@@ -1,4 +1,4 @@
-namespace GameServer
+namespace GameServer.Actions.Movement
 {
 	public enum MovementDirection { West, East, North, South }
 

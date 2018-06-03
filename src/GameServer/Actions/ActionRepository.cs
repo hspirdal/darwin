@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using GameServer.Actions.Movement;
 
-namespace GameServer
+namespace GameServer.Actions
 {
 	public interface IActionRepository
 	{

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using GameServer.Actions;
+using GameServer.Actions.Movement;
 using StackExchange.Redis;
 
 namespace GameServer
@@ -15,6 +17,8 @@ namespace GameServer
 
 
 			var actionRepository = new ActionRepository(connectionMultiplexer);
+			var positionRepository = new PositionRepository(connectionMultiplexer);
+			var movementResolver = new MovementResolver(positionRepository);
 
 			// who needs precision or quickness >_>
 			var nextGameTick = DateTime.UtcNow;
@@ -27,12 +31,10 @@ namespace GameServer
 					nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
 
 					var actions = await actionRepository.GetQueuedActionsAsync();
-					foreach (var action in actions)
-					{
-						action.Resolve();
-					}
+					var movementActions = actions.ConvertAll(list => (MovementAction)list);
 
-					await actionRepository.ClearActionsAsync();
+					await movementResolver.ResolveAsync(movementActions).ConfigureAwait(false);
+					await actionRepository.ClearActionsAsync().ConfigureAwait(false);
 				}
 			}
 		}
