@@ -4,6 +4,5 @@ namespace Darwin.Api.Actions
 	{
 		int OwnerId { get; }
 		string Name { get; }
-		void Resolve();
 	}
 }

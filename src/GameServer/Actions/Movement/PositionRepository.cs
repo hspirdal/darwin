@@ -10,29 +10,29 @@ namespace GameServer.Actions.Movement
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
+
+		public override string ToString()
+		{
+			return $"[X: {X}, {Y}]";
+		}
 	}
 
 	public interface IPositionRepository
 	{
 		Task<Position> GetByIdAsync(int id);
 		Task SetPositionAsync(int playerId, int x, int y);
+		Task StorePositionAsync(int playerId, int x, int y);
 	}
 
 	public class PositionRepository : IPositionRepository
 	{
 		private readonly IDatabase _database;
 		private readonly string _partitionKey = "position";
-		private readonly Dictionary<int, Position> _positionMap;
 
 		public PositionRepository(ConnectionMultiplexer connectionMultiplexer)
 		{
 			_database = connectionMultiplexer.GetDatabase();
-
-			_positionMap = new Dictionary<int, Position>()
-			{
-				{1, new Position { X = 5, Y = 7 }},
-				{2, new Position { X = 2, Y = 2 }},
-			};
+			TempClearRedisPartition();
 		}
 
 		public async Task<Position> GetByIdAsync(int id)
@@ -49,14 +49,31 @@ namespace GameServer.Actions.Movement
 		public async Task SetPositionAsync(int playerId, int x, int y)
 		{
 			var position = await GetByIdAsync(playerId).ConfigureAwait(false);
+			var logStatement = $"Old pos: {position}";
 			position.X = x;
 			position.Y = y;
+			logStatement += $" - New pos: {position}";
+			Console.WriteLine(logStatement);
 
-			var success = await _database.HashSetAsync(_partitionKey, playerId.ToString(), JsonConvert.SerializeObject(position)).ConfigureAwait(false);
-			if (!success)
-			{
-				throw new InvalidOperationException($"Failed to store position in redis for id {playerId}");
-			}
+			await AddAsync(playerId, position).ConfigureAwait(false);
+		}
+
+		public Task StorePositionAsync(int playerId, int x, int y)
+		{
+			var position = new Position { X = x, Y = y };
+			return AddAsync(playerId, position);
+		}
+
+		private Task AddAsync(int playerId, Position position)
+		{
+			return _database.HashSetAsync(_partitionKey, playerId.ToString(), JsonConvert.SerializeObject(position));
+		}
+
+		// Docker typically caches redis image for each startup, so make sure state is clear for now.
+		private void TempClearRedisPartition()
+		{
+			var keys = _database.HashKeys(_partitionKey);
+			_database.HashDelete(_partitionKey, keys);
 		}
 	}
 }

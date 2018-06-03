@@ -41,7 +41,6 @@ namespace Darwin.Api
 			services.AddSingleton<IPlayerRepository>(c => new PlayerRepository(initialPlayers));
 			services.AddSingleton<IPositionRepository, PositionRepository>();
 			services.AddSingleton<IActionRepository, ActionRepository>();
-			services.AddTransient<IMovementResolver>(c => new MovementResolver(c.GetService<IPositionRepository>()));
 		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)

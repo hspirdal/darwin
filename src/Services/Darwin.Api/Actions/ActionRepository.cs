@@ -34,10 +34,7 @@ namespace Darwin.Api.Actions
 			var actionAlreadyStored = await _database.HashExistsAsync(_partitionKey, action.OwnerId.ToString());
 			if (!actionAlreadyStored)
 			{
-
-				await _database.HashSetAsync(_partitionKey, action.OwnerId.ToString(), JsonConvert.SerializeObject(action));
-
-				//_database.StringSet(action.OwnerId.ToString(), );
+				await _database.HashSetAsync(_partitionKey, action.OwnerId.ToString(), JsonConvert.SerializeObject(action)).ConfigureAwait(false);
 				return;
 			}
 
@@ -46,7 +43,7 @@ namespace Darwin.Api.Actions
 
 		public async Task<bool> AbleToAddAsync(int ownerIId)
 		{
-			var actionExists = await _database.HashExistsAsync(_partitionKey, ownerIId.ToString());
+			var actionExists = await _database.HashExistsAsync(_partitionKey, ownerIId.ToString()).ConfigureAwait(false);
 			return actionExists == false;
 		}
 

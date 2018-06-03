@@ -1,41 +1,52 @@
+using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace Darwin.Api.Status.Position
 {
 	public interface IPositionRepository
 	{
-		Position GetById(int id);
-		IDictionary<int, Position> GetAll();
-		void SetPosition(int playerId, int x, int y);
+		Task<Position> GetByIdAsync(int id);
+		Task<List<PositionTuple>> GetAllAsync();
 	}
 
 	public class PositionRepository : IPositionRepository
 	{
-		private readonly Dictionary<int, Position> _positionMap;
+		private readonly IDatabase _database;
+		private readonly string _partitionKey = "position";
 
-		public PositionRepository()
+		public PositionRepository(ConnectionMultiplexer connectionMultiplexer)
 		{
-			_positionMap = new Dictionary<int, Position>()
+			_database = connectionMultiplexer.GetDatabase();
+		}
+
+		public async Task<Position> GetByIdAsync(int id)
+		{
+			var result = await _database.HashGetAsync(_partitionKey, id.ToString());
+			if (result.HasValue)
 			{
-				{1, new Position { X = 5, Y = 7 }},
-				{2, new Position { X = 2, Y = 2 }},
-			};
+				return JsonConvert.DeserializeObject<Position>(result);
+			}
+
+			throw new ArgumentException($"No position stored with id {id}");
 		}
 
-		public Position GetById(int id)
+		public async Task<List<PositionTuple>> GetAllAsync()
 		{
-			return _positionMap[id];
-		}
+			var allResults = await _database.HashGetAllAsync(_partitionKey);
 
-		public IDictionary<int, Position> GetAll()
-		{
-			return _positionMap;
-		}
+			var positions = new List<PositionTuple>();
+			foreach (var result in allResults)
+			{
+				Console.WriteLine(result);
+				var position = JsonConvert.DeserializeObject<Position>(result.Value);
+				var ownerId = int.Parse(result.Name);
+				positions.Add(new PositionTuple { OwnerId = ownerId, Position = position });
+			}
 
-		public void SetPosition(int playerId, int x, int y)
-		{
-			_positionMap[playerId].X = x;
-			_positionMap[playerId].Y = y;
+			return positions;
 		}
 	}
 }

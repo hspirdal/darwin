@@ -20,6 +20,11 @@ namespace GameServer.Actions.Movement
 
 		public async Task ResolveAsync(List<MovementAction> actions)
 		{
+			if (actions.Count > 0)
+			{
+				Console.WriteLine($"Resolving {actions.Count} items");
+			}
+
 			foreach (var action in actions)
 			{
 				// TODO: Task.WhenAll

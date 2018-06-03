@@ -12,12 +12,10 @@ namespace Darwin.Api.Action.Movement
 	public class MovementController : Controller
 	{
 		private readonly IActionRepository _actionRepository;
-		private readonly IMovementResolver _movementResolver;
 
-		public MovementController(IActionRepository actionRepository, IMovementResolver movementResolver)
+		public MovementController(IActionRepository actionRepository)
 		{
 			_actionRepository = actionRepository;
-			_movementResolver = movementResolver;
 		}
 
 		// POST api/action/movement
@@ -28,7 +26,7 @@ namespace Darwin.Api.Action.Movement
 			var ableToAdd = await _actionRepository.AbleToAddAsync(request.playerId).ConfigureAwait(false);
 			if (ableToAdd)
 			{
-				var movementAction = new MovementAction(_movementResolver, request.playerId, request.Direction);
+				var movementAction = new MovementAction(request.playerId, request.Direction);
 				await _actionRepository.AddAsync(movementAction).ConfigureAwait(false);
 				successfullyAddded = true;
 			}

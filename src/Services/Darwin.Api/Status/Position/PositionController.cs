@@ -18,28 +18,29 @@ namespace Darwin.Api.Status.Position
 
 		// GET api/status/position
 		[HttpGet]
-		public IEnumerable<PositionResponse> Get()
+		public async Task<IEnumerable<PositionResponse>> GetAsync()
 		{
-			var positionMap = _positionRepository.GetAll();
-			var positions = new List<PositionResponse>();
-			foreach (var kvp in positionMap)
+			var positions = await _positionRepository.GetAllAsync().ConfigureAwait(false);
+
+			var response = new List<PositionResponse>();
+			foreach (var p in positions)
 			{
-				positions.Add(new PositionResponse
-				{
-					PlayerId = kvp.Key,
-					X = kvp.Value.X,
-					Y = kvp.Value.Y
-				});
+				response.Add(CreateResponse(p.OwnerId, p.Position));
 			}
 
-			return positions;
+			return response;
 		}
 
 		// GET api/status/position/5
 		[HttpGet("{id}")]
-		public PositionResponse Get(int id)
+		public async Task<PositionResponse> GetAsync(int id)
 		{
-			var position = _positionRepository.GetById(id);
+			var position = await _positionRepository.GetByIdAsync(id).ConfigureAwait(false);
+			return CreateResponse(id, position);
+		}
+
+		private static PositionResponse CreateResponse(int id, Position position)
+		{
 			return new PositionResponse
 			{
 				PlayerId = id,
