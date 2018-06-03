@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace Darwin.Api.Identity
+namespace GameServer.identity
 {
 	public interface IPlayerRepository
 	{
 		Task<Player> GetByIdAsync(int id);
+		Task AddPlayerAsync(Player player);
 	}
 
 	public class PlayerRepository : IPlayerRepository
@@ -31,6 +32,11 @@ namespace Darwin.Api.Identity
 			}
 
 			throw new ArgumentException($"No player stored with id {id}");
+		}
+
+		public Task AddPlayerAsync(Player player)
+		{
+			return _database.HashSetAsync(_partionKey, player.Id.ToString(), JsonConvert.SerializeObject(player));
 		}
 	}
 }

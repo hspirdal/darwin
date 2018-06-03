@@ -18,9 +18,9 @@ namespace Darwin.Api.Identity
 
 		// GET api/player/5
 		[HttpGet("{id}")]
-		public PlayerResponse Get(int id)
+		public async Task<PlayerResponse> GetAsync(int id)
 		{
-			var player = _playerRepository.GetById(id);
+			var player = await _playerRepository.GetByIdAsync(id);
 
 			return new PlayerResponse
 			{

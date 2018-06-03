@@ -37,8 +37,7 @@ namespace Darwin.Api
 
 			RegisterRedis(services);
 
-			var initialPlayers = new List<Player>() { new Player { Id = 1, Name = "Jools" }, new Player { Id = 2, Name = "Jops" } };
-			services.AddSingleton<IPlayerRepository>(c => new PlayerRepository(initialPlayers));
+			services.AddSingleton<IPlayerRepository, PlayerRepository>();
 			services.AddSingleton<IPositionRepository, PositionRepository>();
 			services.AddSingleton<IActionRepository, ActionRepository>();
 		}
