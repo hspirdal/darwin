@@ -10,6 +10,7 @@ namespace GameServer.Actions
 	public interface IActionRepository
 	{
 		Task<List<IAction>> GetQueuedActionsAsync();
+		Task SetNextResolveTimeAsync(DateTime dateTime);
 		Task ClearActionsAsync();
 	}
 
@@ -42,6 +43,11 @@ namespace GameServer.Actions
 		{
 			var keys = await _database.HashKeysAsync(_partitionKey);
 			await _database.HashDeleteAsync(_partitionKey, keys);
+		}
+
+		public Task SetNextResolveTimeAsync(DateTime dateTime)
+		{
+			return _database.HashSetAsync($"{_partitionKey}.meta", "nextResolveTime", JsonConvert.SerializeObject(dateTime));
 		}
 	}
 }

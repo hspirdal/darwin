@@ -34,6 +34,8 @@ namespace GameServer
 					var diff = currentTime - nextGameTick;
 					nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
 
+					await actionRepository.SetNextResolveTimeAsync(nextGameTick).ConfigureAwait(false);
+
 					var actions = await actionRepository.GetQueuedActionsAsync();
 					var movementActions = actions.ConvertAll(list => (MovementAction)list);
 

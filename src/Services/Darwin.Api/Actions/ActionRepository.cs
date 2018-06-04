@@ -11,6 +11,7 @@ namespace Darwin.Api.Actions
 		Task AddAsync(IAction action);
 		Task<bool> AbleToAddAsync(int ownerIId);
 		DateTime NextActionAvailable { get; }
+		Task<DateTime> GetNextResolveTimeAsync();
 	}
 
 	public class ActionRepository : IActionRepository
@@ -28,6 +29,17 @@ namespace Darwin.Api.Actions
 		}
 
 		public DateTime NextActionAvailable => _lastCleared.AddSeconds(1);
+
+		public async Task<DateTime> GetNextResolveTimeAsync()
+		{
+			var result = await _database.HashGetAsync($"{_partitionKey}.meta", "nextResolveTime").ConfigureAwait(false);
+			if (result.HasValue)
+			{
+				// TODO: Maybe local cache if current time is not 'resolve time' yet.
+				return JsonConvert.DeserializeObject<DateTime>(result);
+			}
+			return DateTime.UtcNow;
+		}
 
 		public async Task AddAsync(IAction action)
 		{

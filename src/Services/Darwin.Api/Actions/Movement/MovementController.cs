@@ -31,12 +31,13 @@ namespace Darwin.Api.Action.Movement
 				successfullyAddded = true;
 			}
 
-
+			var nextResolveTime = await _actionRepository.GetNextResolveTimeAsync().ConfigureAwait(false);
 			return new ActionResponse
 			{
 				ActionQueued = successfullyAddded,
 				CurrentActionQueued = $"Movement.{request.Direction}",
-				NextActionAvailable = _actionRepository.NextActionAvailable
+				NextResolveTime = nextResolveTime,
+				CurrentTime = DateTime.UtcNow
 			};
 		}
 	}
