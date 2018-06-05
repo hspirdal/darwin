@@ -8,7 +8,7 @@ namespace TcpGameServer
 		public GameServer()
 		{
 			Configuration.Backlog = 100;
-			Configuration.Port = 4444;
+			Configuration.Port = 4445;
 			Configuration.MaximumNumberOfConnections = 100;
 			Configuration.Host = "127.0.0.1";
 			Configuration.BufferSize = 8;

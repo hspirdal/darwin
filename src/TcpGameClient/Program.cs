@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Ether.Network.Packets;
 using System.Linq;
 using System.Threading;
@@ -9,6 +10,10 @@ namespace TcpGameClient
     {
         static void Main()
         {
+            //var host = Environment.GetEnvironmentVariable("TcpGameServerHost");
+
+            Console.WriteLine($"Trying to connect to host {host}...");
+
             var client = new GameClient("127.0.0.1", 4444, 512, 5000);
             client.Connect();
 
