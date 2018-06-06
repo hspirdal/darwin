@@ -5,12 +5,12 @@ namespace TcpGameServer
 {
 	public class GameServer : NetServer<Client>
 	{
-		public GameServer()
+		public GameServer(string host)
 		{
 			Configuration.Backlog = 100;
 			Configuration.Port = 4445;
 			Configuration.MaximumNumberOfConnections = 100;
-			Configuration.Host = "127.0.0.1";
+			Configuration.Host = host;
 			Configuration.BufferSize = 8;
 			Configuration.Blocking = true;
 		}

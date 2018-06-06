@@ -31,19 +31,10 @@ services:
     ports:
       - 4444:4445
     environment:
-        - RedisHost=redis.cache:6379
+      - TcpGameServerHost=tcpgameserver
+      - RedisHost=redis.cache:6379
     depends_on:
       - redis.cache
-
-  # tcpgameclient:
-  #   image: hspirdal/darwin.tcpgameclient
-  #   build:
-  #     context: ./src
-  #     dockerfile: ./TcpGameClient/Dockerfile
-  #   environment:
-  #     - TcpGameServerHost=tcpgameserver
-  #   depends_on:
-  #     - tcpgameserver
 
   redis.cache:
     image: redis
