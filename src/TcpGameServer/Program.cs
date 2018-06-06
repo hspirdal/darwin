@@ -40,22 +40,8 @@ namespace TcpGameServer
 				server.Start();
 			}).Start();
 
-
-			// who needs precision or quickness >_>
-			var nextGameTick = DateTime.UtcNow;
-			while (true)
-			{
-				var currentTime = DateTime.UtcNow;
-				if (currentTime > nextGameTick)
-				{
-					var diff = currentTime - nextGameTick;
-					nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
-
-					await actionRepository.SetNextResolveTimeAsync(nextGameTick).ConfigureAwait(false);
-					await actionResolver.ResolveAsync().ConfigureAwait(false);
-					await server.BroadcastAsync("Actions resolved. New round starting NOW...").ConfigureAwait(false);
-				}
-			}
+			var gameServer = new GameServer(server, actionRepository, actionResolver);
+			await gameServer.StartAsync().ConfigureAwait(false);
 		}
 
 		private static async Task CreateInitialPlayers(IPlayerRepository playerRepository)

@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace TcpGameServer
 {
-	public class TcpServer : NetServer<Client>
+	public interface ITcpServer
+	{
+		Task BroadcastAsync(string message);
+	}
+
+	public class TcpServer : NetServer<Client>, ITcpServer
 	{
 		private readonly Dictionary<Guid, Client> _clientMap;
 
