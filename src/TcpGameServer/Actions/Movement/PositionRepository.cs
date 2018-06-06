@@ -29,7 +29,7 @@ namespace TcpGameServer.Actions.Movement
 		private readonly IDatabase _database;
 		private readonly string _partitionKey = "position";
 
-		public PositionRepository(ConnectionMultiplexer connectionMultiplexer)
+		public PositionRepository(IConnectionMultiplexer connectionMultiplexer)
 		{
 			_database = connectionMultiplexer.GetDatabase();
 			TempClearRedisPartition();

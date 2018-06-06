@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Services/Darwin.Api/Darwin.Api.csproj"
+                "${workspaceFolder}/src/TcpGameServer/TcpGameServer.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

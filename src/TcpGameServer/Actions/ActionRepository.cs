@@ -19,7 +19,7 @@ namespace TcpGameServer.Actions
 		private readonly IDatabase _database;
 		private readonly string _partitionKey = "action";
 
-		public ActionRepository(ConnectionMultiplexer redis)
+		public ActionRepository(IConnectionMultiplexer redis)
 		{
 			_database = redis.GetDatabase();
 		}

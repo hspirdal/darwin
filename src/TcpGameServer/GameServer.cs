@@ -4,7 +4,12 @@ using TcpGameServer.Actions;
 
 namespace TcpGameServer
 {
-	public class GameServer
+	public interface IGameServer
+	{
+		Task StartAsync();
+	}
+
+	public class GameServer : IGameServer
 	{
 		private readonly ITcpServer _tcpServer;
 		private readonly IActionRepository _actionRepository;
