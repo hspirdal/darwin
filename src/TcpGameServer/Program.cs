@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Threading;
+using Ether.Network.Packets;
 
 namespace TcpGameServer
 {
 	internal class Program
 	{
-		private static void Main()
+		private static async Task Main()
 		{
 			var host = Environment.GetEnvironmentVariable("TcpGameServerHost");
 			if (string.IsNullOrEmpty(host))
@@ -13,9 +16,16 @@ namespace TcpGameServer
 				return;
 			}
 
-			using (var server = new GameServer(host))
+			var server = new TcpServer(host);
+			new Thread(() =>
 			{
 				server.Start();
+			}).Start();
+
+			while (true)
+			{
+				await Task.Delay(1000);
+				await server.BroadcastAsync("Resolving all actions...");
 			}
 		}
 	}
