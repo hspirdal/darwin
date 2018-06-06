@@ -13,15 +13,15 @@ services:
     depends_on:
       - redis.cache
 
-  gameserver:
-    image: hspirdal/darwin.gameserver
-    build:
-      context: ./src
-      dockerfile: ./GameServer/Dockerfile
-    environment:
-      - RedisHost=redis.cache:6379
-    depends_on:
-      - redis.cache
+  # gameserver:
+  #   image: hspirdal/darwin.gameserver
+  #   build:
+  #     context: ./src
+  #     dockerfile: ./GameServer/Dockerfile
+  #   environment:
+  #     - RedisHost=redis.cache:6379
+  #   depends_on:
+  #     - redis.cache
 
   tcpgameserver:
     image: hspirdal/darwin.tcpgameserver
