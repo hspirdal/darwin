@@ -21,6 +21,7 @@ namespace TcpGameServer
 			var playerRepository = new PlayerRepository(connectionMultiplexer);
 			var positionRepository = new PositionRepository(connectionMultiplexer);
 			var movementResolver = new MovementResolver(positionRepository);
+			var actionResolver = new ActionResolver(actionRepository, movementResolver);
 
 			await CreateInitialPlayers(playerRepository).ConfigureAwait(false);
 			await CreateInitialPositions(positionRepository).ConfigureAwait(false);
@@ -51,13 +52,8 @@ namespace TcpGameServer
 					nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
 
 					await actionRepository.SetNextResolveTimeAsync(nextGameTick).ConfigureAwait(false);
-
-					var actions = await actionRepository.GetQueuedActionsAsync();
-					var movementActions = actions.ConvertAll(list => (MovementAction)list);
-
-					await movementResolver.ResolveAsync(movementActions).ConfigureAwait(false);
-					await actionRepository.ClearActionsAsync().ConfigureAwait(false);
-					await server.BroadcastAsync("Actions resolved. New round starting NOW...");
+					await actionResolver.ResolveAsync().ConfigureAwait(false);
+					await server.BroadcastAsync("Actions resolved. New round starting NOW...").ConfigureAwait(false);
 				}
 			}
 		}
