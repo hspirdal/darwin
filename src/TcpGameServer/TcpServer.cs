@@ -3,6 +3,7 @@ using Ether.Network.Server;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TcpGameServer.Actions;
 
 namespace TcpGameServer
 {
@@ -14,9 +15,12 @@ namespace TcpGameServer
 	public class TcpServer : NetServer<Client>, ITcpServer
 	{
 		private readonly Dictionary<Guid, Client> _clientMap;
+		private readonly IActionRepository _actionRepository;
 
-		public TcpServer(string host)
+		public TcpServer(IActionRepository actionRepository, string host)
 		{
+			_actionRepository = actionRepository;
+
 			Configuration.Backlog = 100;
 			Configuration.Port = 4445;
 			Configuration.MaximumNumberOfConnections = 100;
@@ -59,6 +63,11 @@ namespace TcpGameServer
 				p.Write(message);
 				SendToAll(p);
 			});
+		}
+
+		public Task TempResolveAction(Actions.Action action)
+		{
+			return _actionRepository.AddAsync(action);
 		}
 	}
 }

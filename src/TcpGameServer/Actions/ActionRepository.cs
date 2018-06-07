@@ -9,7 +9,8 @@ namespace TcpGameServer.Actions
 {
 	public interface IActionRepository
 	{
-		Task<List<IAction>> GetQueuedActionsAsync();
+		Task<List<Action>> GetQueuedActionsAsync();
+		Task AddAsync(Action action);
 		Task SetNextResolveTimeAsync(DateTime dateTime);
 		Task ClearActionsAsync();
 	}
@@ -24,11 +25,11 @@ namespace TcpGameServer.Actions
 			_database = redis.GetDatabase();
 		}
 
-		public async Task<List<IAction>> GetQueuedActionsAsync()
+		public async Task<List<Action>> GetQueuedActionsAsync()
 		{
 			var allValues = await _database.HashGetAllAsync(_partitionKey);
 
-			var actions = new List<IAction>();
+			var actions = new List<Action>();
 			foreach (var item in allValues)
 			{
 				Console.WriteLine(item);
@@ -37,6 +38,18 @@ namespace TcpGameServer.Actions
 			}
 
 			return actions;
+		}
+
+		public async Task AddAsync(Action action)
+		{
+			var actionAlreadyStored = await _database.HashExistsAsync(_partitionKey, action.OwnerId.ToString());
+			if (!actionAlreadyStored)
+			{
+				await _database.HashSetAsync(_partitionKey, action.OwnerId.ToString(), JsonConvert.SerializeObject(action)).ConfigureAwait(false);
+				return;
+			}
+
+			//throw new ArgumentException($"Action already queued for this timeslot. [ownerId: {action.OwnerId}, action: {action.Name}");
 		}
 
 		public async Task ClearActionsAsync()

@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="ether.network" Version="3.0.0" />
     <PackageReference Include="microsoft.extensions.configuration" Version="2.1.0" />
+    <PackageReference Include="newtonsoft.json" Version="11.0.2" />
   </ItemGroup>
 
 </Project>

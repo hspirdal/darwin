@@ -2,6 +2,8 @@ using Ether.Network.Common;
 using Ether.Network.Packets;
 using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using TcpGameServer.Actions.Movement;
 
 namespace TcpGameServer
 {
@@ -20,13 +22,20 @@ namespace TcpGameServer
 		{
 			var value = packet.Read<string>();
 
-			Console.WriteLine($"Received '{value}' from {Id}");
+			var movementAction = JsonConvert.DeserializeObject<MovementAction>(value);
 
-			using (var p = new NetPacket())
-			{
-				p.Write(string.Format($"OK: '{value}'"));
-				Server.SendToAll(p);
-			}
+			((TcpServer)Server).TempResolveAction(movementAction);
+
+			Console.WriteLine($"Client wants to move: {movementAction.MovementDirection.ToString()}");
+
+
+			// Console.WriteLine($"Received '{value}' from {Id}");
+
+			// using (var p = new NetPacket())
+			// {
+			// 	p.Write(string.Format($"OK: '{value}'"));
+			// 	Server.SendToAll(p);
+			// }
 		}
 	}
 }

@@ -16,9 +16,9 @@ namespace TcpGameServer
 			RegisterRedis(builder);
 			RegisterTcpServer(builder);
 
-			builder.RegisterType<ActionRepository>().As<IActionRepository>();
-			builder.RegisterType<PlayerRepository>().As<IPlayerRepository>();
-			builder.RegisterType<PositionRepository>().As<IPositionRepository>();
+			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
+			builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
+			builder.RegisterType<PositionRepository>().As<IPositionRepository>().SingleInstance();
 			builder.RegisterType<MovementResolver>().As<IMovementResolver>();
 			builder.RegisterType<ActionResolver>().As<IActionResolver>();
 			builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
@@ -37,7 +37,7 @@ namespace TcpGameServer
 					throw new ArgumentException("Host was not defined as environment variable.");
 				}
 
-				var server = new TcpServer(host);
+				var server = new TcpServer(c.Resolve<IActionRepository>(), host);
 				return server;
 			}).As<TcpServer>().As<ITcpServer>().SingleInstance();
 		}

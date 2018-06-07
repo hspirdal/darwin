@@ -1,9 +1,11 @@
-namespace TcpGameServer.Actions.Movement
+namespace TcpGameClient
 {
 	public enum MovementDirection { West, East, North, South }
 
-	public class MovementAction : Action
+	public class MovementAction
 	{
+		public int OwnerId { get; set; }
+		public string Name { get; set; }
 		public MovementDirection MovementDirection { get; set; }
 	}
 }
