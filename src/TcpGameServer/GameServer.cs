@@ -34,9 +34,8 @@ namespace TcpGameServer
 					var diff = currentTime - nextGameTick;
 					nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
 
-					await _actionRepository.SetNextResolveTimeAsync(nextGameTick).ConfigureAwait(false);
 					await _actionResolver.ResolveAsync().ConfigureAwait(false);
-					await _tcpServer.BroadcastAsync("Actions resolved. New round starting NOW...").ConfigureAwait(false);
+					_tcpServer.Broadcast("Actions resolved. New round starting NOW...");
 				}
 			}
 		}

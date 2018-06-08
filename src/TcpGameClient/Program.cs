@@ -34,7 +34,7 @@ namespace TcpGameClient
 						break;
 					}
 
-					if (input == "west")
+					if (input == "w")
 					{
 						using (var packet = new NetPacket())
 						{

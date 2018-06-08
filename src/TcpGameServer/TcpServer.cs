@@ -9,7 +9,7 @@ namespace TcpGameServer
 {
 	public interface ITcpServer
 	{
-		Task BroadcastAsync(string message);
+		void Broadcast(string message);
 	}
 
 	public class TcpServer : NetServer<Client>, ITcpServer
@@ -55,19 +55,16 @@ namespace TcpGameServer
 			// TBA
 		}
 
-		public Task BroadcastAsync(string message)
+		public void Broadcast(string message)
 		{
-			return Task.Run(() =>
-			{
-				var p = new NetPacket();
-				p.Write(message);
-				SendToAll(p);
-			});
+			var p = new NetPacket();
+			p.Write(message);
+			SendToAll(p);
 		}
 
-		public Task TempResolveAction(Actions.Action action)
+		public void TempResolveAction(Actions.Action action)
 		{
-			return _actionRepository.AddAsync(action);
+			_actionRepository.EnqueueAction(action);
 		}
 	}
 }
