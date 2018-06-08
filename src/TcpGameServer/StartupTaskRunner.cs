@@ -12,13 +12,11 @@ namespace TcpGameServer
 
 	public class StartupTaskRunner : IStartupTaskRunner
 	{
-		private readonly IActionRepository _actionRepository;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IPositionRepository _positionRepository;
 
-		public StartupTaskRunner(IActionRepository actionRepository, IPlayerRepository playerRepository, IPositionRepository positionRepository)
+		public StartupTaskRunner(IPlayerRepository playerRepository, IPositionRepository positionRepository)
 		{
-			_actionRepository = actionRepository;
 			_playerRepository = playerRepository;
 			_positionRepository = positionRepository;
 		}
@@ -27,7 +25,6 @@ namespace TcpGameServer
 		{
 			await CreateInitialPlayers().ConfigureAwait(false);
 			await CreateInitialPositions().ConfigureAwait(false);
-			await _actionRepository.ClearActionsAsync().ConfigureAwait(false);
 		}
 
 		private async Task CreateInitialPlayers()

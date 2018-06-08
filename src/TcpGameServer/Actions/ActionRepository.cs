@@ -1,66 +1,51 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using StackExchange.Redis;
 using TcpGameServer.Actions.Movement;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Diagnostics;
 
 namespace TcpGameServer.Actions
 {
 	public interface IActionRepository
 	{
-		Task<List<Action>> GetQueuedActionsAsync();
-		Task AddAsync(Action action);
-		Task SetNextResolveTimeAsync(DateTime dateTime);
-		Task ClearActionsAsync();
+		List<Action> DequeueActions();
+		void EnqueueAction(Action action);
 	}
 
 	public class ActionRepository : IActionRepository
 	{
-		private readonly IDatabase _database;
-		private readonly string _partitionKey = "action";
+		private readonly ConcurrentDictionary<string, Action> _actionMap;
 
-		public ActionRepository(IConnectionMultiplexer redis)
+		public ActionRepository()
 		{
-			_database = redis.GetDatabase();
+			_actionMap = new ConcurrentDictionary<string, Action>();
 		}
 
-		public async Task<List<Action>> GetQueuedActionsAsync()
+		public List<Action> DequeueActions()
 		{
-			var allValues = await _database.HashGetAllAsync(_partitionKey);
-
-			var actions = new List<Action>();
-			foreach (var item in allValues)
+			var actions = _actionMap.Values.ToList();
+			foreach (var action in actions)
 			{
-				Console.WriteLine(item);
-				var action = JsonConvert.DeserializeObject<MovementAction>(item.Value);
-				actions.Add(action);
+				_actionMap.Remove(action.OwnerId.ToString(), out Action a);
 			}
 
 			return actions;
 		}
 
-		public async Task AddAsync(Action action)
+		public void EnqueueAction(Action action)
 		{
-			var actionAlreadyStored = await _database.HashExistsAsync(_partitionKey, action.OwnerId.ToString());
-			if (!actionAlreadyStored)
+			var ownerId = action.OwnerId.ToString();
+			var actionAlreadyStored = _actionMap.ContainsKey(ownerId);
+			if (actionAlreadyStored == false)
 			{
-				await _database.HashSetAsync(_partitionKey, action.OwnerId.ToString(), JsonConvert.SerializeObject(action)).ConfigureAwait(false);
-				return;
+				var ableToAdd = _actionMap.TryAdd(ownerId, action);
+				if (ableToAdd == false)
+				{
+					throw new InvalidOperationException($"Was not able to add action with id {ownerId}");
+				}
 			}
-
-			//throw new ArgumentException($"Action already queued for this timeslot. [ownerId: {action.OwnerId}, action: {action.Name}");
-		}
-
-		public async Task ClearActionsAsync()
-		{
-			var keys = await _database.HashKeysAsync(_partitionKey);
-			await _database.HashDeleteAsync(_partitionKey, keys);
-		}
-
-		public Task SetNextResolveTimeAsync(DateTime dateTime)
-		{
-			return _database.HashSetAsync($"{_partitionKey}.meta", "nextResolveTime", JsonConvert.SerializeObject(dateTime));
 		}
 	}
 }

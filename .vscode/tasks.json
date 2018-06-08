@@ -10,6 +10,20 @@
                 "${workspaceFolder}/src/TcpGameServer/TcpGameServer.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "shell",
+            "group": "test",
+            "args": [
+                "test",
+                "${workspaceFolder}/tests/TcpGameServer.Tests/TcpGameServer.Tests.csproj"
+            ],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }

@@ -21,11 +21,10 @@ namespace TcpGameServer.Actions
 
 		public async Task ResolveAsync()
 		{
-			var actions = await _actionRepository.GetQueuedActionsAsync();
+			var actions = _actionRepository.DequeueActions();
 			var movementActions = actions.ConvertAll(list => (MovementAction)list);
 
 			await _movementResolver.ResolveAsync(movementActions).ConfigureAwait(false);
-			await _actionRepository.ClearActionsAsync().ConfigureAwait(false);
 		}
 	}
 }
