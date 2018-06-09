@@ -3,7 +3,9 @@ using Autofac;
 using StackExchange.Redis;
 using TcpGameServer.Actions;
 using TcpGameServer.Actions.Movement;
-using TcpGameServer.identity;
+using TcpGameServer.Players;
+using TcpGameServer.Logging;
+using TcpGameServer.Identities;
 
 namespace TcpGameServer
 {
@@ -16,11 +18,14 @@ namespace TcpGameServer
 			RegisterRedis(builder);
 			RegisterTcpServer(builder);
 
+			builder.RegisterType<Logger>().As<ILogger>();
+			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
 			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
 			builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
 			builder.RegisterType<PositionRepository>().As<IPositionRepository>().SingleInstance();
 			builder.RegisterType<MovementResolver>().As<IMovementResolver>();
 			builder.RegisterType<ActionResolver>().As<IActionResolver>();
+			builder.RegisterType<Authenticator>().As<IAuthenticator>();
 			builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
 			builder.RegisterType<GameServer>().As<IGameServer>();
 
@@ -37,7 +42,7 @@ namespace TcpGameServer
 					throw new ArgumentException("Host was not defined as environment variable.");
 				}
 
-				var server = new TcpServer(c.Resolve<IActionRepository>(), host);
+				var server = new TcpServer(c.Resolve<ILogger>(), c.Resolve<IActionRepository>(), c.Resolve<IAuthenticator>(), host);
 				return server;
 			}).As<TcpServer>().As<ITcpServer>().SingleInstance();
 		}
@@ -46,7 +51,7 @@ namespace TcpGameServer
 		{
 			builder.Register<ConnectionMultiplexer>(c =>
 			{
-				var configuration = new ConfigurationOptions { ResolveDns = true };
+				var configuration = new ConfigurationOptions { ResolveDns = true, SyncTimeout = 5000 };
 				configuration.EndPoints.Add(Environment.GetEnvironmentVariable("RedisHost"));
 				var connectionMultiplexer = ConnectionMultiplexer.Connect(configuration);
 				return connectionMultiplexer;

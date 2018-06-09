@@ -13,4 +13,8 @@
     <PackageReference Include="stackexchange.redis" Version="1.2.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TcpGameServer.Contracts\TcpGameServer.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

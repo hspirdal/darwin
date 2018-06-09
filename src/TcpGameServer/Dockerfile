@@ -1,9 +1,10 @@
 FROM microsoft/dotnet:2.0.0-sdk AS build-env
 
 WORKDIR /src
-COPY TcpGameServer tcpserver
+COPY TcpGameServer.Contracts TcpGameServer.Contracts
+COPY TcpGameServer TcpGameServer
 
-WORKDIR /src/tcpserver
+WORKDIR /src/TcpGameServer
 RUN dotnet publish -c Release -o /app/out
 
 # Build runtime image

@@ -1,9 +1,11 @@
 using Ether.Network.Packets;
 using Ether.Network.Server;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using TcpGameServer.Actions;
+using TcpGameServer.Identities;
+using TcpGameServer.Logging;
 
 namespace TcpGameServer
 {
@@ -12,13 +14,23 @@ namespace TcpGameServer
 		void Broadcast(string message);
 	}
 
+	public class Connection
+	{
+		public string Id { get; set; }
+		public Client Client { get; set; }
+	}
+
 	public class TcpServer : NetServer<Client>, ITcpServer
 	{
-		private readonly Dictionary<Guid, Client> _clientMap;
+		private readonly ConcurrentDictionary<Guid, Connection> _connectionMap;
 		private readonly IActionRepository _actionRepository;
+		private readonly IAuthenticator _authenticator;
+		private readonly ILogger _logger;
 
-		public TcpServer(IActionRepository actionRepository, string host)
+		public TcpServer(ILogger logger, IActionRepository actionRepository, IAuthenticator authenticator, string host)
 		{
+			_logger = logger;
+			_authenticator = authenticator;
 			_actionRepository = actionRepository;
 
 			Configuration.Backlog = 100;
@@ -28,7 +40,7 @@ namespace TcpGameServer
 			Configuration.BufferSize = 8;
 			Configuration.Blocking = true;
 
-			_clientMap = new Dictionary<Guid, Client>();
+			_connectionMap = new ConcurrentDictionary<Guid, Connection>();
 		}
 
 		protected override void Initialize()
@@ -39,15 +51,17 @@ namespace TcpGameServer
 		protected override void OnClientConnected(Client connection)
 		{
 			Console.WriteLine("New client connected!");
-			_clientMap.Add(connection.Id, connection);
-
 			connection.SendWelcomeMessage();
 		}
 
 		protected override void OnClientDisconnected(Client connection)
 		{
 			Console.WriteLine("Client disconnected!");
-			_clientMap.Remove(connection.Id);
+			var successs = _connectionMap.TryRemove(connection.Id, out Connection c);
+			if (!successs)
+			{
+				_logger.Warning($"Not able to remove connection with id {connection.Id}");
+			}
 		}
 
 		protected override void OnError(Exception exception)
@@ -65,6 +79,35 @@ namespace TcpGameServer
 		public void TempResolveAction(Actions.Action action)
 		{
 			_actionRepository.PushInto(action);
+		}
+
+		public bool IsAuthenticated(Guid connectionId)
+		{
+			Console.WriteLine($"IsAuth: {connectionId}, isnull: {_connectionMap == null}");
+
+			return _connectionMap.ContainsKey(connectionId);
+		}
+
+		public bool Authenticate(AuthentificationRequest request, Client client)
+		{
+			var identity = _authenticator.Authenticate(request);
+			if (identity != null)
+			{
+				var success = _connectionMap.TryAdd(request.ConnectionId, new Connection
+				{
+					Id = identity.Id,
+					Client = client
+				});
+
+				if (!success)
+				{
+					_logger.Error(new InvalidOperationException($"Was not able to add connection with id {identity.Id} to connection map."));
+					return false;
+				}
+				_logger.Info($"Successfully logged on client with id {identity.Id}");
+				return true;
+			}
+			return false;
 		}
 	}
 }

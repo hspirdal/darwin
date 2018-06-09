@@ -14,7 +14,8 @@ namespace TcpGameServer.Logging
 	{
 		public void Debug(string message)
 		{
-			System.Diagnostics.Debug.WriteLine(message);
+			//System.Diagnostics.Debug.WriteLine(message);
+			Console.WriteLine(message);
 		}
 
 		public void Info(string message)
