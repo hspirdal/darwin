@@ -8,7 +8,7 @@ namespace TcpGameServer.Identities
 	public interface IIdentityRepository
 	{
 		Task AddAsync(Identity identity);
-		Task<List<Identity>> GetAllAsync();
+		List<Identity> GetAll();
 	}
 
 	public class IdentityRepository : IIdentityRepository
@@ -26,9 +26,9 @@ namespace TcpGameServer.Identities
 			return _database.HashSetAsync(_partionKey, identity.Id.ToString(), JsonConvert.SerializeObject(identity));
 		}
 
-		public async Task<List<Identity>> GetAllAsync()
+		public List<Identity> GetAll()
 		{
-			var results = await _database.HashGetAllAsync(_partionKey).ConfigureAwait(false);
+			var results = _database.HashGetAll(_partionKey);
 			var identities = new List<Identity>();
 			foreach (var result in results)
 			{

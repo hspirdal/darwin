@@ -18,7 +18,7 @@ namespace TcpGameServer.Tests.Identities
 			var container = AutoMock.GetLoose();
 
 			var identityRepository = container.Mock<IIdentityRepository>();
-			identityRepository.Setup(i => i.GetAllAsync()).Returns(Task.FromResult(new List<Identity>()
+			identityRepository.Setup(i => i.GetAll()).Returns(new List<Identity>()
 			{
 				new Identity
 				{
@@ -26,13 +26,13 @@ namespace TcpGameServer.Tests.Identities
 					UserName = "jools",
 					Password = "1234"
 				}
-			}));
+			});
 
 			_authenticator = container.Create<Authenticator>();
 		}
 
 		[TestMethod]
-		public async Task WhenAuthenticatingWithParametersThatMatch_ThenAuthentificationReturnsValidIdentity()
+		public void WhenAuthenticatingWithParametersThatMatch_ThenAuthentificationReturnsValidIdentity()
 		{
 			var request = new AuthentificationRequest
 			{
@@ -41,16 +41,16 @@ namespace TcpGameServer.Tests.Identities
 				ConnectionId = Guid.NewGuid()
 			};
 
-			var identity = await _authenticator.AuthenticateAsync(request);
+			var identity = _authenticator.Authenticate(request);
 
 			Assert.IsNotNull(identity);
 		}
 
 		[TestMethod]
-		public async Task WhenAuthenticatingWithParametersThatDoesNotMatch_ThenAuthentificationReturnsNull()
+		public void WhenAuthenticatingWithParametersThatDoesNotMatch_ThenAuthentificationReturnsNull()
 		{
 			var request = new AuthentificationRequest();
-			var identity = await _authenticator.AuthenticateAsync(request);
+			var identity = _authenticator.Authenticate(request);
 
 			Assert.IsNull(identity);
 		}

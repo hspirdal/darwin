@@ -6,7 +6,7 @@ namespace TcpGameServer.Identities
 {
 	public interface IAuthenticator
 	{
-		Task<Identity> AuthenticateAsync(AuthentificationRequest AuthentificationRequest);
+		Identity Authenticate(AuthentificationRequest AuthentificationRequest);
 
 	}
 
@@ -21,9 +21,9 @@ namespace TcpGameServer.Identities
 
 		}
 
-		public async Task<Identity> AuthenticateAsync(AuthentificationRequest request)
+		public Identity Authenticate(AuthentificationRequest request)
 		{
-			var identities = await _identityRepository.GetAllAsync().ConfigureAwait(false);
+			var identities = _identityRepository.GetAll();
 			var identity = identities.SingleOrDefault(i => i.UserName == request.UserName && i.Password == request.Password);
 
 			if (identity == null)
