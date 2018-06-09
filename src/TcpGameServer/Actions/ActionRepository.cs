@@ -10,8 +10,9 @@ namespace TcpGameServer.Actions
 {
 	public interface IActionRepository
 	{
-		List<Action> DequeueActions();
-		void EnqueueAction(Action action);
+		List<Action> PullOut();
+		void PushInto(Action action);
+		int Count();
 	}
 
 	public class ActionRepository : IActionRepository
@@ -23,7 +24,7 @@ namespace TcpGameServer.Actions
 			_actionMap = new ConcurrentDictionary<string, Action>();
 		}
 
-		public List<Action> DequeueActions()
+		public List<Action> PullOut()
 		{
 			var actions = _actionMap.Values.ToList();
 			foreach (var action in actions)
@@ -34,7 +35,7 @@ namespace TcpGameServer.Actions
 			return actions;
 		}
 
-		public void EnqueueAction(Action action)
+		public void PushInto(Action action)
 		{
 			var ownerId = action.OwnerId.ToString();
 			var actionAlreadyStored = _actionMap.ContainsKey(ownerId);
@@ -46,6 +47,11 @@ namespace TcpGameServer.Actions
 					throw new InvalidOperationException($"Was not able to add action with id {ownerId}");
 				}
 			}
+		}
+
+		public int Count()
+		{
+			return _actionMap.Count();
 		}
 	}
 }

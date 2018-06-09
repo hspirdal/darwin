@@ -21,7 +21,7 @@ namespace TcpGameServer.Actions
 
 		public async Task ResolveAsync()
 		{
-			var actions = _actionRepository.DequeueActions();
+			var actions = _actionRepository.PullOut();
 			var movementActions = actions.ConvertAll(list => (MovementAction)list);
 
 			await _movementResolver.ResolveAsync(movementActions).ConfigureAwait(false);

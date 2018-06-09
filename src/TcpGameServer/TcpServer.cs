@@ -64,7 +64,7 @@ namespace TcpGameServer
 
 		public void TempResolveAction(Actions.Action action)
 		{
-			_actionRepository.EnqueueAction(action);
+			_actionRepository.PushInto(action);
 		}
 	}
 }
