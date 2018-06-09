@@ -14,7 +14,7 @@ namespace Darwin.Api.Identity
 	public class PlayerRepository : IPlayerRepository
 	{
 		private readonly IDatabase _database;
-		private readonly string _partionKey = "identity";
+		private readonly string _partionKey = "player";
 		public readonly Dictionary<int, Player> _playerMap;
 
 		public PlayerRepository(IConnectionMultiplexer connectionMultiplexer)

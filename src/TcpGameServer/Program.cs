@@ -6,7 +6,7 @@ using StackExchange.Redis;
 using Autofac;
 using TcpGameServer.Actions;
 using TcpGameServer.Actions.Movement;
-using TcpGameServer.identity;
+using TcpGameServer.Players;
 
 namespace TcpGameServer
 {

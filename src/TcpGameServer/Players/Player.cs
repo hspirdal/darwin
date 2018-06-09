@@ -1,4 +1,4 @@
-namespace TcpGameServer.identity
+namespace TcpGameServer.Players
 {
 	public class Player
 	{

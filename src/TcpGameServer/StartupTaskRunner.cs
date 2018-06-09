@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using TcpGameServer.Actions;
 using TcpGameServer.Actions.Movement;
-using TcpGameServer.identity;
+using TcpGameServer.Players;
 
 namespace TcpGameServer
 {

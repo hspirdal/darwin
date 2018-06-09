@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace TcpGameServer.identity
+namespace TcpGameServer.Players
 {
 	public interface IPlayerRepository
 	{
@@ -15,7 +15,7 @@ namespace TcpGameServer.identity
 	public class PlayerRepository : IPlayerRepository
 	{
 		private readonly IDatabase _database;
-		private readonly string _partionKey = "identity";
+		private readonly string _partionKey = "player";
 		public readonly Dictionary<int, Player> _playerMap;
 
 		public PlayerRepository(IConnectionMultiplexer connectionMultiplexer)
