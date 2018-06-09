@@ -4,6 +4,7 @@ using Ether.Network.Packets;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
+using TcpGameServer.Contracts;
 
 namespace TcpGameClient
 {
@@ -25,6 +26,16 @@ namespace TcpGameClient
 
 			try
 			{
+				var authRequest = new ClientRequest
+				{
+					RequestName = "Authenticate",
+					Payload = "arch;1234"
+				};
+
+				SendRequest<ClientRequest>(client, authRequest);
+
+
+
 				while (true)
 				{
 					var input = Console.ReadLine();
@@ -36,23 +47,14 @@ namespace TcpGameClient
 
 					if (input == "w")
 					{
-						using (var packet = new NetPacket())
+						var action = new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West };
+						var request = new ClientRequest
 						{
-							var action = new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West };
-							var json = JsonConvert.SerializeObject(action);
-							packet.Write(json);
-							client.Send(packet);
-						}
+							RequestName = "Action.Movement",
+							Payload = JsonConvert.SerializeObject(action)
+						};
+						SendRequest(client, request);
 					}
-
-					// if (input != null)
-					// {
-					// 	using (var packet = new NetPacket())
-					// 	{
-					// 		packet.Write(input);
-					// 		client.Send(packet);
-					// 	}
-					// }
 				}
 			}
 			catch (Exception e)
@@ -65,6 +67,16 @@ namespace TcpGameClient
 
 			Console.WriteLine("Disconnected. Press any key to close the application...");
 			Console.ReadLine();
+		}
+
+		private static void SendRequest<T>(GameClient client, T request)
+		{
+			using (var packet = new NetPacket())
+			{
+				var json = JsonConvert.SerializeObject(request);
+				packet.Write(json);
+				client.Send(packet);
+			}
 		}
 	}
 }

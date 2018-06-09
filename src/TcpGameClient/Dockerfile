@@ -1,7 +1,8 @@
 FROM microsoft/dotnet:2.0.0-sdk AS build-env
 
 WORKDIR /src
-COPY TcpGameClient tcpclient
+COPY TcpGameServer.Contracts TcpGameServer.Contracts
+COPY TcpGameClient TcpGameClient
 
 WORKDIR /src/tcpclient
 RUN dotnet publish -c Release -o /app/out
