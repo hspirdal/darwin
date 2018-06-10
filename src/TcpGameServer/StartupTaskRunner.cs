@@ -39,8 +39,8 @@ namespace TcpGameServer
 
 		private async Task CreateInitialPositions()
 		{
-			await _positionRepository.StorePositionAsync(1, 3, 7).ConfigureAwait(false);
-			await _positionRepository.StorePositionAsync(2, 8, 4).ConfigureAwait(false);
+			await _positionRepository.StorePositionAsync("1", 3, 7).ConfigureAwait(false);
+			await _positionRepository.StorePositionAsync("2", 8, 4).ConfigureAwait(false);
 		}
 
 		private async Task CreateInitialIndentities()

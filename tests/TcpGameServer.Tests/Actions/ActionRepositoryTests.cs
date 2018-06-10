@@ -19,7 +19,7 @@ namespace TcpGameServer.Tests.Actions
 		[TestMethod]
 		public void WhenPushingOneActionIntoEmptyRepository_ThenRepositoryCountIsOne()
 		{
-			var action = new Action();
+			var action = new Action { OwnerId = "arbitrary" };
 
 			_actionRepository.PushInto(action);
 			var currentCount = _actionRepository.Count();
@@ -32,7 +32,7 @@ namespace TcpGameServer.Tests.Actions
 		{
 			var expectedCount = _actionRepository.Count();
 
-			_actionRepository.PushInto(new Action());
+			_actionRepository.PushInto(new Action { OwnerId = "arbitrary" });
 			_actionRepository.PullOut();
 			var currentCount = _actionRepository.Count();
 
@@ -94,7 +94,7 @@ namespace TcpGameServer.Tests.Actions
 
 		private void InsertOneArbitraryAction(int id)
 		{
-			var action = new Action { OwnerId = id };
+			var action = new Action { OwnerId = id.ToString() };
 			_actionRepository.PushInto(action);
 		}
 	}

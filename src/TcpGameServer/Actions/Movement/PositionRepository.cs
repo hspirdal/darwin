@@ -19,9 +19,9 @@ namespace TcpGameServer.Actions.Movement
 
 	public interface IPositionRepository
 	{
-		Task<Position> GetByIdAsync(int id);
-		Task SetPositionAsync(int playerId, int x, int y);
-		Task StorePositionAsync(int playerId, int x, int y);
+		Task<Position> GetByIdAsync(string id);
+		Task SetPositionAsync(string playerId, int x, int y);
+		Task StorePositionAsync(string playerId, int x, int y);
 	}
 
 	public class PositionRepository : IPositionRepository
@@ -35,7 +35,7 @@ namespace TcpGameServer.Actions.Movement
 			TempClearRedisPartition();
 		}
 
-		public async Task<Position> GetByIdAsync(int id)
+		public async Task<Position> GetByIdAsync(string id)
 		{
 			var result = await _database.HashGetAsync(_partitionKey, id.ToString());
 			if (result.HasValue)
@@ -46,7 +46,7 @@ namespace TcpGameServer.Actions.Movement
 			throw new ArgumentException($"No position stored with id {id}");
 		}
 
-		public async Task SetPositionAsync(int playerId, int x, int y)
+		public async Task SetPositionAsync(string playerId, int x, int y)
 		{
 			var position = await GetByIdAsync(playerId).ConfigureAwait(false);
 			var logStatement = $"Old pos: {position}";
@@ -58,13 +58,13 @@ namespace TcpGameServer.Actions.Movement
 			await AddAsync(playerId, position).ConfigureAwait(false);
 		}
 
-		public Task StorePositionAsync(int playerId, int x, int y)
+		public Task StorePositionAsync(string playerId, int x, int y)
 		{
 			var position = new Position { X = x, Y = y };
 			return AddAsync(playerId, position);
 		}
 
-		private Task AddAsync(int playerId, Position position)
+		private Task AddAsync(string playerId, Position position)
 		{
 			return _database.HashSetAsync(_partitionKey, playerId.ToString(), JsonConvert.SerializeObject(position));
 		}

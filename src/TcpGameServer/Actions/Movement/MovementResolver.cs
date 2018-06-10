@@ -32,7 +32,7 @@ namespace TcpGameServer.Actions.Movement
 			}
 		}
 
-		private async Task ResolveAsync(int playerId, MovementDirection direction)
+		private async Task ResolveAsync(string playerId, MovementDirection direction)
 		{
 			var currentPosition = await _positionRepository.GetByIdAsync(playerId).ConfigureAwait(false);
 			var futureX = 0;

@@ -29,7 +29,7 @@ namespace TcpGameServer.Actions
 			var actions = _actionMap.Values.ToList();
 			foreach (var action in actions)
 			{
-				_actionMap.Remove(action.OwnerId.ToString(), out Action a);
+				_actionMap.Remove(action.OwnerId, out Action a);
 			}
 
 			return actions;
@@ -37,14 +37,13 @@ namespace TcpGameServer.Actions
 
 		public void PushInto(Action action)
 		{
-			var ownerId = action.OwnerId.ToString();
-			var actionAlreadyStored = _actionMap.ContainsKey(ownerId);
+			var actionAlreadyStored = _actionMap.ContainsKey(action.OwnerId);
 			if (actionAlreadyStored == false)
 			{
-				var ableToAdd = _actionMap.TryAdd(ownerId, action);
+				var ableToAdd = _actionMap.TryAdd(action.OwnerId, action);
 				if (ableToAdd == false)
 				{
-					throw new InvalidOperationException($"Was not able to add action with id {ownerId}");
+					throw new InvalidOperationException($"Was not able to add action with id {action.OwnerId}");
 				}
 			}
 		}
