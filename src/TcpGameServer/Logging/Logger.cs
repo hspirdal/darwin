@@ -31,8 +31,8 @@ namespace TcpGameServer.Logging
 		public void Error(Exception exception)
 		{
 			var innermostException = TraverseInnermostException(exception);
-			Debug(innermostException.Message);
-			Debug(innermostException.StackTrace);
+			Console.WriteLine($"Exception - {innermostException.Message}");
+			Console.WriteLine(innermostException.StackTrace);
 		}
 
 		private static Exception TraverseInnermostException(Exception exception)

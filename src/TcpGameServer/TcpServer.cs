@@ -45,18 +45,18 @@ namespace TcpGameServer
 
 		protected override void Initialize()
 		{
-			Console.WriteLine("Server is ready.");
+			_logger.Info("Server is ready.");
 		}
 
 		protected override void OnClientConnected(Client connection)
 		{
-			Console.WriteLine("New client connected!");
+			_logger.Info("New client connected!");
 			connection.SendWelcomeMessage();
 		}
 
 		protected override void OnClientDisconnected(Client connection)
 		{
-			Console.WriteLine("Client disconnected!");
+			_logger.Info("Client disconnected!");
 			var successs = _connectionMap.TryRemove(connection.Id, out Connection c);
 			if (!successs)
 			{
@@ -66,7 +66,7 @@ namespace TcpGameServer
 
 		protected override void OnError(Exception exception)
 		{
-			// TBA
+			_logger.Error(exception);
 		}
 
 		public void Broadcast(string message)
@@ -83,8 +83,6 @@ namespace TcpGameServer
 
 		public bool IsAuthenticated(Guid connectionId)
 		{
-			Console.WriteLine($"IsAuth: {connectionId}, isnull: {_connectionMap == null}");
-
 			return _connectionMap.ContainsKey(connectionId);
 		}
 
