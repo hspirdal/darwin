@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using TcpGameServer.Actions;
+using TcpGameServer.Contracts;
 using TcpGameServer.Identities;
 using TcpGameServer.Logging;
 
@@ -23,15 +24,15 @@ namespace TcpGameServer
 	public class TcpServer : NetServer<Client>, ITcpServer
 	{
 		private readonly ConcurrentDictionary<Guid, Connection> _connectionMap;
-		private readonly IActionRepository _actionRepository;
 		private readonly IAuthenticator _authenticator;
 		private readonly ILogger _logger;
+		private readonly IRequestRouter _requestRouter;
 
-		public TcpServer(ILogger logger, IActionRepository actionRepository, IAuthenticator authenticator, string host)
+		public TcpServer(ILogger logger, IAuthenticator authenticator, IRequestRouter requestRouter, string host)
 		{
 			_logger = logger;
 			_authenticator = authenticator;
-			_actionRepository = actionRepository;
+			_requestRouter = requestRouter;
 
 			Configuration.Backlog = 100;
 			Configuration.Port = 4445;
@@ -76,9 +77,14 @@ namespace TcpGameServer
 			SendToAll(p);
 		}
 
-		public void TempResolveAction(Actions.Action action)
+		public string GetClientId(Guid connectionId)
 		{
-			_actionRepository.PushInto(action);
+			return _connectionMap[connectionId].Id;
+		}
+
+		public void RouteRequest(string clientId, ClientRequest clientRequest)
+		{
+			_requestRouter.Route(clientId, clientRequest);
 		}
 
 		public bool IsAuthenticated(Guid connectionId)

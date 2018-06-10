@@ -29,11 +29,12 @@ namespace TcpGameServer
 			{
 				if (Server.IsAuthenticated(Id))
 				{
-					Console.WriteLine("authed");
+					var clientId = _server.GetClientId(Id);
 					var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(json);
-					var movementAction = JsonConvert.DeserializeObject<MovementAction>(clientRequest.Payload);
-					Server.TempResolveAction(movementAction);
-					Console.WriteLine($"Client wants to move: {movementAction.MovementDirection.ToString()}");
+					if(clientRequest != null)
+					{
+						Server.RouteRequest(clientId, clientRequest);
+					}
 				}
 				else
 				{

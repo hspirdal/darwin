@@ -6,6 +6,7 @@ using TcpGameServer.Actions.Movement;
 using TcpGameServer.Players;
 using TcpGameServer.Logging;
 using TcpGameServer.Identities;
+using System.Collections.Generic;
 
 namespace TcpGameServer
 {
@@ -17,6 +18,7 @@ namespace TcpGameServer
 
 			RegisterRedis(builder);
 			RegisterTcpServer(builder);
+			RegisterRequestRouter(builder);
 
 			builder.RegisterType<Logger>().As<ILogger>();
 			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
@@ -42,7 +44,7 @@ namespace TcpGameServer
 					throw new ArgumentException("Host was not defined as environment variable.");
 				}
 
-				var server = new TcpServer(c.Resolve<ILogger>(), c.Resolve<IActionRepository>(), c.Resolve<IAuthenticator>(), host);
+				var server = new TcpServer(c.Resolve<ILogger>(), c.Resolve<IAuthenticator>(), c.Resolve<IRequestRouter>(), host);
 				return server;
 			}).As<TcpServer>().As<ITcpServer>().SingleInstance();
 		}
@@ -56,6 +58,20 @@ namespace TcpGameServer
 				var connectionMultiplexer = ConnectionMultiplexer.Connect(configuration);
 				return connectionMultiplexer;
 			}).As<IConnectionMultiplexer>().SingleInstance();
+		}
+
+		private static void RegisterRequestRouter(ContainerBuilder builder)
+		{
+			builder.Register<RequestRouter>(c =>
+			{
+				var movementInserter = new MovementInserter(c.Resolve<IActionRepository>());
+				var inserterMap = new Dictionary<string, IRequestInserter>
+				{
+					{ movementInserter.ActionName, movementInserter }
+				};
+
+				return new RequestRouter(c.Resolve<ILogger>(), inserterMap);
+			}).As<IRequestRouter>();
 		}
 	}
 }
