@@ -28,7 +28,7 @@ namespace TcpGameServer.Identities
 
 			if (identity == null)
 			{
-				_logger.Warning($"Failed to authenticate user (connectionId: {request.ConnectionId}, username: {request.UserName}, " +
+				_logger.Warn($"Failed to authenticate user (connectionId: {request.ConnectionId}, username: {request.UserName}, " +
 					$"password:{request.Password})");
 			}
 

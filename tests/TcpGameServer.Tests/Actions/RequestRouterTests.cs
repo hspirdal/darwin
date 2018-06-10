@@ -58,10 +58,10 @@ namespace TcpGameServer.Tests.Actions
 			};
 
 			_requestRouter.Route(clientId, request);
-			_logger.Verify(i => i.Warning(It.IsAny<string>()));
+			_logger.Verify(i => i.Warn(It.IsAny<string>()));
 		}
 
-        [TestMethod]
+		[TestMethod]
 		public void WhenClientRequestHasEmptyRoute_ThenLoggerInsertsAWarning()
 		{
 			var clientId = "arbitrary client id";
@@ -72,7 +72,7 @@ namespace TcpGameServer.Tests.Actions
 			};
 
 			_requestRouter.Route(clientId, request);
-			_logger.Verify(i => i.Warning(It.IsAny<string>()));
+			_logger.Verify(i => i.Warn(It.IsAny<string>()));
 		}
 	}
 }

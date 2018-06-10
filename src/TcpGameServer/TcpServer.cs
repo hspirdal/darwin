@@ -61,7 +61,7 @@ namespace TcpGameServer
 			var successs = _connectionMap.TryRemove(connection.Id, out Connection c);
 			if (!successs)
 			{
-				_logger.Warning($"Not able to remove connection with id {connection.Id}");
+				_logger.Warn($"Not able to remove connection with id {connection.Id}");
 			}
 		}
 

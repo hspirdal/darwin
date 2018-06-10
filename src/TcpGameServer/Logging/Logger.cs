@@ -6,7 +6,7 @@ namespace TcpGameServer.Logging
 	{
 		void Debug(string message);
 		void Info(string message);
-		void Warning(string message);
+		void Warn(string message);
 		void Error(Exception exception);
 	}
 
@@ -23,7 +23,7 @@ namespace TcpGameServer.Logging
 			Console.WriteLine(message);
 		}
 
-		public void Warning(string message)
+		public void Warn(string message)
 		{
 			Console.WriteLine($"WARNING - {message}");
 		}

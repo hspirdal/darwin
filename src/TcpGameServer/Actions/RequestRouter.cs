@@ -24,7 +24,7 @@ namespace TcpGameServer.Actions
 		{
 			if (string.IsNullOrEmpty(clientRequest?.RequestName))
 			{
-				_logger.Warning($"Route was empty. ClientId {clientId}");
+				_logger.Warn($"Route was empty. ClientId {clientId}");
 				return;
 			}
 
@@ -35,7 +35,7 @@ namespace TcpGameServer.Actions
 				return;
 			}
 
-			_logger.Warning($"Route not found. ClientId {clientId}, Request: {clientRequest.RequestName}");
+			_logger.Warn($"Route not found. ClientId {clientId}, Request: {clientRequest.RequestName}");
 		}
 	}
 }
