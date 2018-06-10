@@ -22,9 +22,16 @@ namespace TcpGameServer.Actions
 
 		public void Route(string clientId, ClientRequest clientRequest)
 		{
-			if (_inserterMap.ContainsKey(clientRequest.RequestName))
+			if (string.IsNullOrEmpty(clientRequest?.RequestName))
 			{
-				_inserterMap[clientRequest.RequestName].Resolve(clientId, clientRequest);
+				_logger.Warning($"Route was empty. ClientId {clientId}");
+				return;
+			}
+
+			var key = clientRequest.RequestName.ToLower();
+			if (_inserterMap.ContainsKey(key))
+			{
+				_inserterMap[key].Resolve(clientId, clientRequest);
 				return;
 			}
 

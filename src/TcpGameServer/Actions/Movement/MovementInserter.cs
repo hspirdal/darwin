@@ -7,6 +7,8 @@ namespace TcpGameServer.Actions.Movement
 	{
 		private readonly IActionRepository _actionRepository;
 
+		public string ActionName => "action.movement";
+
 		public MovementInserter(IActionRepository actionRepository)
 		{
 			_actionRepository = actionRepository;

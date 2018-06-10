@@ -15,7 +15,7 @@ namespace TcpGameServer.Tests.Actions
 		private RequestRouter _requestRouter;
 		private Mock<IRequestInserter> _inserter;
 		private Mock<ILogger> _logger;
-		private const string RequestKey = "action.arbitraryActionCode";
+		private const string RequestKey = "action.arbitrary.action.code";
 
 		[TestInitialize]
 		public void GivenRouterWithMovementRequestInserter()
@@ -49,6 +49,20 @@ namespace TcpGameServer.Tests.Actions
 
 		[TestMethod]
 		public void WhenClientRequestHasInvalidRoute_ThenLoggerInsertsAWarning()
+		{
+			var clientId = "arbitrary client id";
+			var request = new ClientRequest
+			{
+				RequestName = "some.invalid.route",
+				Payload = "arbitrary payload"
+			};
+
+			_requestRouter.Route(clientId, request);
+			_logger.Verify(i => i.Warning(It.IsAny<string>()));
+		}
+
+        [TestMethod]
+		public void WhenClientRequestHasEmptyRoute_ThenLoggerInsertsAWarning()
 		{
 			var clientId = "arbitrary client id";
 			var request = new ClientRequest
