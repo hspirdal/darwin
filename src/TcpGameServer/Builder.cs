@@ -7,6 +7,7 @@ using TcpGameServer.Players;
 using TcpGameServer.Logging;
 using TcpGameServer.Identities;
 using System.Collections.Generic;
+using TcpGameServer.Area;
 
 namespace TcpGameServer
 {
@@ -28,6 +29,7 @@ namespace TcpGameServer
 			builder.RegisterType<MovementResolver>().As<IMovementResolver>();
 			builder.RegisterType<ActionResolver>().As<IActionResolver>();
 			builder.RegisterType<Authenticator>().As<IAuthenticator>();
+			builder.RegisterType<MapGenerator>().As<IMapGenerator>();
 			builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
 			builder.RegisterType<GameServer>().As<IGameServer>();
 

@@ -10,6 +10,7 @@
     <PackageReference Include="autofac" Version="4.8.1" />
     <PackageReference Include="ether.network" Version="3.0.0" />
     <PackageReference Include="newtonsoft.json" Version="11.0.2" />
+    <PackageReference Include="roguesharp" Version="3.0.0" />
     <PackageReference Include="stackexchange.redis" Version="1.2.6" />
   </ItemGroup>
 
