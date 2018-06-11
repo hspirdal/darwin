@@ -2,6 +2,8 @@ using Ether.Network.Packets;
 using Ether.Network.Server;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TcpGameServer.Actions;
 using TcpGameServer.Contracts;
@@ -13,6 +15,8 @@ namespace TcpGameServer
 	public interface ITcpServer
 	{
 		void Broadcast(string message);
+		void TempSend(Guid connectionId, string message);
+		List<Connection> GetConnections();
 	}
 
 	public class Connection
@@ -77,6 +81,13 @@ namespace TcpGameServer
 			SendToAll(p);
 		}
 
+		public void TempSend(Guid connectionId, string message)
+		{
+			var p = new NetPacket();
+			p.Write(message);
+			SendTo(new List<Client>() { _connectionMap[connectionId].Client }, p);
+		}
+
 		public string GetClientId(Guid connectionId)
 		{
 			return _connectionMap[connectionId].Id;
@@ -112,6 +123,11 @@ namespace TcpGameServer
 				return true;
 			}
 			return false;
+		}
+
+		public List<Connection> GetConnections()
+		{
+			return _connectionMap.Values.ToList();
 		}
 	}
 }
