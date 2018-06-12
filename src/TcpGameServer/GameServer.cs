@@ -32,7 +32,7 @@ namespace TcpGameServer
 			_actionResolver = actionResolver;
 			_mapGenerator = mapGenerator;
 
-			_dungeonMap = _mapGenerator.Generate(50, 30);
+			_dungeonMap = _mapGenerator.Generate(30, 15);
 		}
 
 		public async Task StartAsync()

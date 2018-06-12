@@ -5,11 +5,14 @@ using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using TcpGameServer.Contracts;
+using System.Collections.Generic;
 
 namespace TcpGameClient
 {
 	internal class Program
 	{
+		private static Dictionary<string, MovementAction> _actionKeyMap;
+
 		static void Main()
 		{
 			var client = new GameClient("127.0.0.1", 4444, 512, 5000);
@@ -34,7 +37,7 @@ namespace TcpGameClient
 
 				SendRequest<ClientRequest>(client, authRequest);
 
-
+				InitializeActionKeyMap();
 
 				while (true)
 				{
@@ -45,9 +48,9 @@ namespace TcpGameClient
 						break;
 					}
 
-					if (input == "w")
+					if (_actionKeyMap.ContainsKey(input))
 					{
-						var action = new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West };
+						var action = _actionKeyMap[input];
 						var request = new ClientRequest
 						{
 							RequestName = "Action.Movement",
@@ -67,6 +70,17 @@ namespace TcpGameClient
 
 			Console.WriteLine("Disconnected. Press any key to close the application...");
 			Console.ReadLine();
+		}
+
+		private static void InitializeActionKeyMap()
+		{
+			_actionKeyMap = new Dictionary<string, MovementAction>
+				{
+					{ "w", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.North } },
+					{ "s", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.South } },
+					{ "a", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West } },
+					{ "d", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.East } },
+				};
 		}
 
 		private static void SendRequest<T>(GameClient client, T request)
