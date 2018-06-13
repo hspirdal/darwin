@@ -19,20 +19,16 @@ namespace TcpGameServer
 		private readonly IActionRepository _actionRepository;
 		private readonly IPositionRepository _positionRepository;
 		private readonly IActionResolver _actionResolver;
-		private readonly IMapGenerator _mapGenerator;
-
-		private readonly Map _dungeonMap;
+		private readonly PlayArea _playArea;
 
 		public GameServer(ITcpServer tcpServer, IActionRepository actionRepository, IPositionRepository positionRepository, IActionResolver actionResolver,
-			IMapGenerator mapGenerator)
+			PlayArea playArea)
 		{
 			_tcpServer = tcpServer;
 			_actionRepository = actionRepository;
 			_positionRepository = positionRepository;
 			_actionResolver = actionResolver;
-			_mapGenerator = mapGenerator;
-
-			_dungeonMap = _mapGenerator.Generate(30, 15);
+			_playArea = playArea;
 		}
 
 		public async Task StartAsync()
@@ -65,7 +61,7 @@ namespace TcpGameServer
 			{
 				X = pos.X,
 				Y = pos.Y,
-				Map = _dungeonMap
+				Map = _playArea.Map
 			};
 			var json = JsonConvert.SerializeObject(statusResponse);
 			return json;

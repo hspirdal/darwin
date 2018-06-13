@@ -20,6 +20,7 @@ namespace TcpGameServer
 			RegisterRedis(builder);
 			RegisterTcpServer(builder);
 			RegisterRequestRouter(builder);
+			RegisterPlayArea(builder);
 
 			builder.RegisterType<Logger>().As<ILogger>();
 			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
@@ -74,6 +75,15 @@ namespace TcpGameServer
 
 				return new RequestRouter(c.Resolve<ILogger>(), inserterMap);
 			}).As<IRequestRouter>();
+		}
+
+		private static void RegisterPlayArea(ContainerBuilder builder)
+		{
+			builder.Register<PlayArea>(c =>
+			{
+				var mapGenerator = c.Resolve<IMapGenerator>();
+				return new PlayArea() { Map = mapGenerator.Generate(30, 15) };
+			}).SingleInstance();
 		}
 	}
 }
