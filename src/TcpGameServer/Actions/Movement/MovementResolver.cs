@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using TcpGameServer.Area;
 
 namespace TcpGameServer.Actions.Movement
 {
@@ -12,10 +13,12 @@ namespace TcpGameServer.Actions.Movement
 	public class MovementResolver : IMovementResolver
 	{
 		private readonly IPositionRepository _positionRepository;
+		private readonly PlayArea _playArea;
 
-		public MovementResolver(IPositionRepository positionRepository)
+		public MovementResolver(IPositionRepository positionRepository, PlayArea playArea)
 		{
 			_positionRepository = positionRepository;
+			_playArea = playArea;
 		}
 
 		public async Task ResolveAsync(List<MovementAction> actions)
@@ -54,6 +57,7 @@ namespace TcpGameServer.Actions.Movement
 					break;
 			}
 
+			Console.WriteLine("Validationg..");
 			if (IsValidPosition(currentPosition, futureX, futureY))
 			{
 				await _positionRepository.SetPositionAsync(playerId, currentPosition.X + futureX, currentPosition.Y + futureY).ConfigureAwait(false);
@@ -62,7 +66,8 @@ namespace TcpGameServer.Actions.Movement
 
 		private bool IsValidPosition(Position currentPosition, int futureX, int futureY)
 		{
-			return true;
+			var cell = _playArea.Map.GetCell(currentPosition.X + futureX, currentPosition.Y + futureY);
+			return cell != null && cell.IsWalkable;
 		}
 	}
 }
