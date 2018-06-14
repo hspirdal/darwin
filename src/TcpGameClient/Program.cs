@@ -11,7 +11,7 @@ namespace TcpGameClient
 {
 	internal class Program
 	{
-		private static Dictionary<string, MovementAction> _actionKeyMap;
+		private static Dictionary<char, MovementAction> _actionKeyMap;
 
 		static void Main()
 		{
@@ -36,21 +36,22 @@ namespace TcpGameClient
 				};
 
 				SendRequest<ClientRequest>(client, authRequest);
-
+				
 				InitializeActionKeyMap();
+				Console.Clear();				
 
 				while (true)
 				{
-					var input = Console.ReadLine();
+					var input = Console.ReadKey();
 
-					if (input == "quit")
+					if (input.Key == ConsoleKey.Q)
 					{
 						break;
 					}
 
-					if (_actionKeyMap.ContainsKey(input))
+					if (_actionKeyMap.ContainsKey(input.KeyChar))
 					{
-						var action = _actionKeyMap[input];
+						var action = _actionKeyMap[input.KeyChar];
 						var request = new ClientRequest
 						{
 							RequestName = "Action.Movement",
@@ -74,12 +75,12 @@ namespace TcpGameClient
 
 		private static void InitializeActionKeyMap()
 		{
-			_actionKeyMap = new Dictionary<string, MovementAction>
+			_actionKeyMap = new Dictionary<char, MovementAction>
 				{
-					{ "w", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.North } },
-					{ "s", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.South } },
-					{ "a", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West } },
-					{ "d", new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.East } },
+					{ 'w', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.North } },
+					{ 's', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.South } },
+					{ 'a', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West } },
+					{ 'd', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.East } },
 				};
 		}
 
