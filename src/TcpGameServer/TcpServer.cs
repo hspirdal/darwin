@@ -83,9 +83,13 @@ namespace TcpGameServer
 
 		public void TempSend(Guid connectionId, string message)
 		{
-			var p = new NetPacket();
-			p.Write(message);
-			SendTo(new List<Client>() { _connectionMap[connectionId].Client }, p);
+			// TODO: Must improve this as it is still a race condition that will crash the server eventually.
+			if(_connectionMap.ContainsKey(connectionId))
+			{
+				var p = new NetPacket();
+				p.Write(message);
+				SendTo(new List<Client>() { _connectionMap[connectionId].Client }, p);
+			}
 		}
 
 		public string GetClientId(Guid connectionId)
