@@ -20,6 +20,7 @@ namespace TcpGameServer
 			RegisterRedis(builder);
 			RegisterTcpServer(builder);
 			RegisterRequestRouter(builder);
+			RegisterActionResolver(builder);
 			RegisterPlayArea(builder);
 
 			builder.RegisterType<Logger>().As<ILogger>();
@@ -27,8 +28,6 @@ namespace TcpGameServer
 			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
 			builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
 			builder.RegisterType<PositionRepository>().As<IPositionRepository>().SingleInstance();
-			builder.RegisterType<MovementResolver>().As<IMovementResolver>();
-			builder.RegisterType<ActionResolver>().As<IActionResolver>();
 			builder.RegisterType<Authenticator>().As<IAuthenticator>();
 			builder.RegisterType<MapGenerator>().As<IMapGenerator>();
 			builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
@@ -75,6 +74,20 @@ namespace TcpGameServer
 
 				return new RequestRouter(c.Resolve<ILogger>(), inserterMap);
 			}).As<IRequestRouter>();
+		}
+
+		private static void RegisterActionResolver(ContainerBuilder builder)
+		{
+			builder.Register<ActionResolver>(c =>
+			{
+				var movementResolver = new MovementResolver(c.Resolve<IPositionRepository>(), c.Resolve<PlayArea>());
+				var resolverMap = new Dictionary<string, IResolver>
+				{
+					{ movementResolver.ActionName, movementResolver }
+				};
+
+				return new ActionResolver(c.Resolve<IActionRepository>(), resolverMap);
+			}).As<IActionResolver>();
 		}
 
 		private static void RegisterPlayArea(ContainerBuilder builder)

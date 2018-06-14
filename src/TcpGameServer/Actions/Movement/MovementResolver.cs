@@ -1,19 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using TcpGameServer.Actions;
 using TcpGameServer.Area;
 
 namespace TcpGameServer.Actions.Movement
 {
-	public interface IMovementResolver
-	{
-		Task ResolveAsync(List<MovementAction> actions);
-	}
-
-	public class MovementResolver : IMovementResolver
+	public class MovementResolver : IResolver
 	{
 		private readonly IPositionRepository _positionRepository;
 		private readonly PlayArea _playArea;
+		public string ActionName => "action.movement";
 
 		public MovementResolver(IPositionRepository positionRepository, PlayArea playArea)
 		{
@@ -21,18 +18,11 @@ namespace TcpGameServer.Actions.Movement
 			_playArea = playArea;
 		}
 
-		public async Task ResolveAsync(List<MovementAction> actions)
+		public Task ResolveAsync(Action action)
 		{
-			if (actions.Count > 0)
-			{
-				Console.WriteLine($"Resolving {actions.Count} items");
-			}
-
-			foreach (var action in actions)
-			{
-				// TODO: Task.WhenAll
-				await ResolveAsync(action.OwnerId, action.MovementDirection).ConfigureAwait(false);
-			}
+			// TODO: Improve design to avoid casting.
+			var movementAction = (MovementAction)action;
+			return ResolveAsync(movementAction.OwnerId, movementAction.MovementDirection);
 		}
 
 		private async Task ResolveAsync(string playerId, MovementDirection direction)
@@ -57,7 +47,6 @@ namespace TcpGameServer.Actions.Movement
 					break;
 			}
 
-			Console.WriteLine("Validationg..");
 			if (IsValidPosition(currentPosition, futureX, futureY))
 			{
 				await _positionRepository.SetPositionAsync(playerId, currentPosition.X + futureX, currentPosition.Y + futureY).ConfigureAwait(false);

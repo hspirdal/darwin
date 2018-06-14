@@ -18,6 +18,7 @@ namespace TcpGameServer.Actions.Movement
 		public void Resolve(string clientId, ClientRequest clientRequest)
 		{
 			var movementAction = JsonConvert.DeserializeObject<MovementAction>(clientRequest.Payload);
+			movementAction.Name = ActionName;
 			movementAction.OwnerId = clientId; // tmp
 			_actionRepository.PushInto(movementAction);
 		}
