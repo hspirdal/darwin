@@ -33,8 +33,8 @@ namespace TcpGameServer
 
         private async Task CreateInitialPlayers()
         {
-            await _playerRepository.AddPlayerAsync(new Player { Id = 1, Name = "Jools", GameState = GameState.lobby }).ConfigureAwait(false);
-            await _playerRepository.AddPlayerAsync(new Player { Id = 2, Name = "Jops", GameState = GameState.lobby }).ConfigureAwait(false);
+            await _playerRepository.AddPlayerAsync(new Player { Id = "1", Name = "Jools", GameState = GameState.lobby }).ConfigureAwait(false);
+            await _playerRepository.AddPlayerAsync(new Player { Id = "2", Name = "Jops", GameState = GameState.lobby }).ConfigureAwait(false);
         }
 
         private async Task CreateInitialPositions()

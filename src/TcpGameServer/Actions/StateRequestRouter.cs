@@ -18,8 +18,7 @@ namespace TcpGameServer.Actions
 
         public void Route(string clientId, ClientRequest clientRequest)
         {
-            // TODO: change to string for id type
-            var player = _playerRepository.GetById(int.Parse(clientId));
+            var player = _playerRepository.GetById(clientId);
             if (player.GameState == GameState.lobby)
             {
                 _lobbyRouter.Route(clientId, clientRequest);

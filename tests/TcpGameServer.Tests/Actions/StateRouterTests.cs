@@ -29,8 +29,8 @@ namespace TcpGameServer.Tests.Actions
         public void WhenStateIsSetToLobby_ThenRequestsAreRoutedToLobbyRouter()
         {
             var request = new ClientRequest { RequestName = "arbitrary_command" };
-            var clientId = "1";
-            _playerRepository.Setup(i => i.GetById(It.IsAny<int>())).Returns(new Player { GameState = GameState.lobby });
+            var clientId = "arbitrary_id";
+            _playerRepository.Setup(i => i.GetById(It.IsAny<string>())).Returns(new Player { GameState = GameState.lobby });
 
             _stateRouter.Route(clientId, request);
 
@@ -41,8 +41,8 @@ namespace TcpGameServer.Tests.Actions
         public void WhenStateIsSetToGame_ThenRequestsAreRoutedToGameRouter()
         {
             var request = new ClientRequest { RequestName = "arbitrary_command" };
-            var clientId = "1";
-            _playerRepository.Setup(i => i.GetById(It.IsAny<int>())).Returns(new Player { GameState = GameState.InGame });
+            var clientId = "arbitrary_id";
+            _playerRepository.Setup(i => i.GetById(It.IsAny<string>())).Returns(new Player { GameState = GameState.InGame });
 
             _stateRouter.Route(clientId, request);
 

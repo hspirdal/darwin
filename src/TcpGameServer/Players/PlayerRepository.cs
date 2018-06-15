@@ -8,8 +8,8 @@ namespace TcpGameServer.Players
 {
     public interface IPlayerRepository
     {
-        Task<Player> GetByIdAsync(int id);
-        Player GetById(int id);
+        Task<Player> GetByIdAsync(string id);
+        Player GetById(string id);
         Task AddPlayerAsync(Player player);
     }
 
@@ -17,16 +17,15 @@ namespace TcpGameServer.Players
     {
         private readonly IDatabase _database;
         private readonly string _partionKey = "player";
-        public readonly Dictionary<int, Player> _playerMap;
 
         public PlayerRepository(IConnectionMultiplexer connectionMultiplexer)
         {
             _database = connectionMultiplexer.GetDatabase();
         }
 
-        public async Task<Player> GetByIdAsync(int id)
+        public async Task<Player> GetByIdAsync(string id)
         {
-            var result = await _database.HashGetAsync(_partionKey, id.ToString());
+            var result = await _database.HashGetAsync(_partionKey, id);
             if (result.HasValue)
             {
                 return JsonConvert.DeserializeObject<Player>(result);
@@ -35,9 +34,9 @@ namespace TcpGameServer.Players
             throw new ArgumentException($"No player stored with id {id}");
         }
 
-        public Player GetById(int id)
+        public Player GetById(string id)
         {
-            var result = _database.HashGet(_partionKey, id.ToString());
+            var result = _database.HashGet(_partionKey, id);
             if (result.HasValue)
             {
                 return JsonConvert.DeserializeObject<Player>(result);
@@ -48,7 +47,7 @@ namespace TcpGameServer.Players
 
         public Task AddPlayerAsync(Player player)
         {
-            return _database.HashSetAsync(_partionKey, player.Id.ToString(), JsonConvert.SerializeObject(player));
+            return _database.HashSetAsync(_partionKey, player.Id, JsonConvert.SerializeObject(player));
         }
     }
 }
