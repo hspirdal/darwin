@@ -1,4 +1,8 @@
+using System;
+using TcpGameServer.Actions.Movement;
+using TcpGameServer.Area;
 using TcpGameServer.Contracts;
+using TcpGameServer.Contracts.Area;
 using TcpGameServer.Players;
 
 namespace TcpGameServer.Actions
@@ -8,10 +12,14 @@ namespace TcpGameServer.Actions
     public class LobbyRouter : ILobbyRouter
     {
         private readonly IPlayerRepository _playerRepository;
+        private readonly IPositionRepository _positionRepository;
+        private readonly PlayArea _playArea;
 
-        public LobbyRouter(IPlayerRepository playerRepository)
+        public LobbyRouter(IPlayerRepository playerRepository, IPositionRepository positionRepository, PlayArea playArea)
         {
             _playerRepository = playerRepository;
+            _positionRepository = positionRepository;
+            _playArea = playArea;
         }
 
         public void Route(string clientId, ClientRequest clientRequest)
@@ -19,10 +27,30 @@ namespace TcpGameServer.Actions
             // Temp until there are more actions here.
             if (clientRequest.RequestName == "lobby.newgame")
             {
+                var cell = FindFirstOpenCell();
+                _positionRepository.SetPositionAsync(clientId, cell.X, cell.Y).Wait();
+
                 var player = _playerRepository.GetById(clientId);
                 player.GameState = GameState.InGame;
-                _playerRepository.AddPlayerAsync(player);
+                _playerRepository.AddPlayerAsync(player).Wait();
             }
+        }
+
+        private Cell FindFirstOpenCell()
+        {
+            for (var y = 0; y < _playArea.Map.Height; ++y)
+            {
+                for (var x = 0; x < _playArea.Map.Width; ++x)
+                {
+                    var cell = _playArea.Map.GetCell(x, y);
+                    if (cell.IsWalkable)
+                    {
+                        return cell;
+                    }
+                }
+            }
+
+            throw new ArgumentException("No cells are walkable.");
         }
     }
 }
