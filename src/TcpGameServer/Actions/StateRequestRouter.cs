@@ -3,7 +3,9 @@ using TcpGameServer.Players;
 
 namespace TcpGameServer.Actions
 {
-    public class StateRequestRouter : IRouter
+    public interface IStateRequestRouter : IRouter { }
+
+    public class StateRequestRouter : IStateRequestRouter
     {
         private readonly ILobbyRouter _lobbyRouter;
         private readonly IGameRouter _gameRouter;

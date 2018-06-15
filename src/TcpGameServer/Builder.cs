@@ -20,6 +20,7 @@ namespace TcpGameServer
             RegisterRedis(builder);
             RegisterTcpServer(builder);
             RegisterGameRouter(builder);
+            RegisterLobbyRouter(builder);
             RegisterActionResolver(builder);
             RegisterPlayArea(builder);
 
@@ -32,6 +33,7 @@ namespace TcpGameServer
             builder.RegisterType<MapGenerator>().As<IMapGenerator>();
             builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
             builder.RegisterType<GameServer>().As<IGameServer>();
+            builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
 
             return builder.Build();
         }
@@ -46,7 +48,7 @@ namespace TcpGameServer
                     throw new ArgumentException("Host was not defined as environment variable.");
                 }
 
-                var server = new TcpServer(c.Resolve<ILogger>(), c.Resolve<IAuthenticator>(), c.Resolve<IGameRouter>(), host);
+                var server = new TcpServer(c.Resolve<ILogger>(), c.Resolve<IAuthenticator>(), c.Resolve<IStateRequestRouter>(), host);
                 return server;
             }).As<TcpServer>().As<ITcpServer>().SingleInstance();
         }
@@ -74,6 +76,14 @@ namespace TcpGameServer
 
                 return new GameRouter(c.Resolve<ILogger>(), inserterMap);
             }).As<IGameRouter>();
+        }
+
+        private static void RegisterLobbyRouter(ContainerBuilder builder)
+        {
+            builder.Register<LobbyRouter>(c =>
+            {
+                return new LobbyRouter();
+            }).As<ILobbyRouter>();
         }
 
         private static void RegisterActionResolver(ContainerBuilder builder)

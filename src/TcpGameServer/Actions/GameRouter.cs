@@ -4,10 +4,7 @@ using TcpGameServer.Logging;
 
 namespace TcpGameServer.Actions
 {
-    public interface IGameRouter : IRouter
-    {
-
-    }
+    public interface IGameRouter : IRouter { }
 
     public class GameRouter : IGameRouter
     {

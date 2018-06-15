@@ -2,10 +2,7 @@ using TcpGameServer.Contracts;
 
 namespace TcpGameServer.Actions
 {
-    public interface ILobbyRouter : IRouter
-    {
-
-    }
+    public interface ILobbyRouter : IRouter { }
 
     public class LobbyRouter : ILobbyRouter
     {
