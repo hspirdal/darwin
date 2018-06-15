@@ -6,37 +6,49 @@ using StackExchange.Redis;
 
 namespace TcpGameServer.Players
 {
-	public interface IPlayerRepository
-	{
-		Task<Player> GetByIdAsync(int id);
-		Task AddPlayerAsync(Player player);
-	}
+    public interface IPlayerRepository
+    {
+        Task<Player> GetByIdAsync(int id);
+        Player GetById(int id);
+        Task AddPlayerAsync(Player player);
+    }
 
-	public class PlayerRepository : IPlayerRepository
-	{
-		private readonly IDatabase _database;
-		private readonly string _partionKey = "player";
-		public readonly Dictionary<int, Player> _playerMap;
+    public class PlayerRepository : IPlayerRepository
+    {
+        private readonly IDatabase _database;
+        private readonly string _partionKey = "player";
+        public readonly Dictionary<int, Player> _playerMap;
 
-		public PlayerRepository(IConnectionMultiplexer connectionMultiplexer)
-		{
-			_database = connectionMultiplexer.GetDatabase();
-		}
+        public PlayerRepository(IConnectionMultiplexer connectionMultiplexer)
+        {
+            _database = connectionMultiplexer.GetDatabase();
+        }
 
-		public async Task<Player> GetByIdAsync(int id)
-		{
-			var result = await _database.HashGetAsync(_partionKey, id.ToString());
-			if (result.HasValue)
-			{
-				return JsonConvert.DeserializeObject<Player>(result);
-			}
+        public async Task<Player> GetByIdAsync(int id)
+        {
+            var result = await _database.HashGetAsync(_partionKey, id.ToString());
+            if (result.HasValue)
+            {
+                return JsonConvert.DeserializeObject<Player>(result);
+            }
 
-			throw new ArgumentException($"No player stored with id {id}");
-		}
+            throw new ArgumentException($"No player stored with id {id}");
+        }
 
-		public Task AddPlayerAsync(Player player)
-		{
-			return _database.HashSetAsync(_partionKey, player.Id.ToString(), JsonConvert.SerializeObject(player));
-		}
-	}
+        public Player GetById(int id)
+        {
+            var result = _database.HashGet(_partionKey, id.ToString());
+            if (result.HasValue)
+            {
+                return JsonConvert.DeserializeObject<Player>(result);
+            }
+
+            throw new ArgumentException($"No player stored with id {id}");
+        }
+
+        public Task AddPlayerAsync(Player player)
+        {
+            return _database.HashSetAsync(_partionKey, player.Id.ToString(), JsonConvert.SerializeObject(player));
+        }
+    }
 }

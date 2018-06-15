@@ -30,9 +30,9 @@ namespace TcpGameServer
 		private readonly ConcurrentDictionary<Guid, Connection> _connectionMap;
 		private readonly IAuthenticator _authenticator;
 		private readonly ILogger _logger;
-		private readonly IRequestRouter _requestRouter;
+		private readonly IGameRouter _requestRouter;
 
-		public TcpServer(ILogger logger, IAuthenticator authenticator, IRequestRouter requestRouter, string host)
+		public TcpServer(ILogger logger, IAuthenticator authenticator, IGameRouter requestRouter, string host)
 		{
 			_logger = logger;
 			_authenticator = authenticator;
