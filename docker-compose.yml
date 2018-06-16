@@ -1,27 +1,27 @@
 version: '2'
  
 services:
-  api:
-    image: hspirdal/darwin.api
+  # api:
+  #   image: hspirdal/darwin.api
+  #   build:
+  #     context:  ./src
+  #     dockerfile: ./Services/Darwin.Api/Dockerfile
+  #   ports:
+  #     - 5000:80
+  #   environment:
+  #     - RedisHost=redis.cache:6379
+  #   depends_on:
+  #     - redis.cache
+
+  websocketserver:
+    image: hspirdal/darwin.websocketserver
     build:
-      context:  ./src
-      dockerfile: ./Services/Darwin.Api/Dockerfile
+      context: ./src
+      dockerfile: ./WebSocketServer/Dockerfile
     ports:
       - 5000:80
     environment:
-      - RedisHost=redis.cache:6379
-    depends_on:
-      - redis.cache
-
-  tcpgameserver:
-    image: hspirdal/darwin.tcpgameserver
-    build:
-      context: ./src
-      dockerfile: ./TcpGameServer/Dockerfile
-    ports:
-      - 4444:4445
-    environment:
-      - TcpGameServerHost=tcpgameserver
+      - WebSocketServerHost=websocketserver
       - RedisHost=redis.cache:6379
     depends_on:
       - redis.cache

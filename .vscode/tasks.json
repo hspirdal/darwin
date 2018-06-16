@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/TcpGameServer/TcpGameServer.csproj"
+                "${workspaceFolder}/src/WebSocketServer/WebSocketServer.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
