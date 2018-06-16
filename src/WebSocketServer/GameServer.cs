@@ -17,18 +17,17 @@ namespace WebSocketServer
     public class GameServer : IGameServer
     {
         //private readonly ITcpServer _tcpServer;
-        private readonly ISocketServer _messageServer;
+        private readonly ISocketServer _socketServer;
         private readonly IActionRepository _actionRepository;
         private readonly IPositionRepository _positionRepository;
         private readonly IActionResolver _actionResolver;
         private readonly PlayArea _playArea;
         private readonly IPlayerRepository _playerRepository;
 
-        public GameServer(ISocketServer messageServer, IActionRepository actionRepository, IPositionRepository positionRepository, IActionResolver actionResolver,
+        public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IPositionRepository positionRepository, IActionResolver actionResolver,
             PlayArea playArea, IPlayerRepository playerRepository)
         {
-            //_tcpServer = tcpServer;
-            _messageServer = messageServer;
+            _socketServer = socketServer;
             _actionRepository = actionRepository;
             _positionRepository = positionRepository;
             _actionResolver = actionResolver;
@@ -50,32 +49,30 @@ namespace WebSocketServer
 
                     await _actionResolver.ResolveAsync().ConfigureAwait(false);
 
-                    await _messageServer.BroadcastAsync("tick tock");
-
-                    // foreach (var connection in _tcpServer.GetConnections())
-                    // {
-                    //     var player = await _playerRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
-                    //     if (player.GameState == GameState.InGame)
-                    //     {
-                    //         var json = await TempCreateStatusResponseAsync(connection);
-                    //         //_tcpServer.TempSend(connection.Client.Id, json);
-                    //     }
-                    // }
+                    foreach (var connection in _socketServer.GetConnections())
+                    {
+                        var player = await _playerRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
+                        if (player.GameState == GameState.InGame)
+                        {
+                            var json = await TempCreateStatusResponseAsync(connection).ConfigureAwait(false);
+                            await _socketServer.SendAsync(connection.Id, json).ConfigureAwait(false);
+                        }
+                    }
                 }
             }
         }
 
-        // private async Task<string> TempCreateStatusResponseAsync(Connection connection)
-        // {
-        //     var pos = await _positionRepository.GetByIdAsync(connection.Id);
-        //     var statusResponse = new StatusResponse
-        //     {
-        //         X = pos.X,
-        //         Y = pos.Y,
-        //         Map = _playArea.Map
-        //     };
-        //     var json = JsonConvert.SerializeObject(statusResponse);
-        //     return json;
-        // }
+        private async Task<string> TempCreateStatusResponseAsync(Connection connection)
+        {
+            var pos = await _positionRepository.GetByIdAsync(connection.Id);
+            var statusResponse = new StatusResponse
+            {
+                X = pos.X,
+                Y = pos.Y,
+                Map = _playArea.Map
+            };
+            var json = JsonConvert.SerializeObject(statusResponse);
+            return json;
+        }
     }
 }

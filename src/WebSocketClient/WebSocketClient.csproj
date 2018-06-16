@@ -10,4 +10,8 @@
     <PackageReference Include="microsoft.aspnetcore.signalr.client" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TcpGameServer.Contracts\TcpGameServer.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>
