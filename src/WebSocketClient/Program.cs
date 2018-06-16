@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using TcpGameServer.Contracts;
+using TcpGameServer.Contracts.Area;
 
 namespace WebSocketClient
 {
@@ -18,7 +19,7 @@ namespace WebSocketClient
             await StartConnectionAsync();
             _connection.On<string>("direct", (message) =>
             {
-                Console.WriteLine($"Server: {message}");
+                RenderGame(message);
             });
 
             Console.WriteLine("Enter a message and press enter...");
@@ -61,6 +62,32 @@ namespace WebSocketClient
 
             Console.ReadLine();
             await DisposeAsync();
+        }
+
+        private static void RenderGame(string jsonResponse)
+        {
+            var status = JsonConvert.DeserializeObject<StatusResponse>(jsonResponse);
+
+            Console.SetCursorPosition(0, 0);
+
+            if (status != null)
+            {
+                for (var y = 0; y < status.Map.Height; ++y)
+                {
+                    for (var x = 0; x < status.Map.Width; ++x)
+                    {
+                        var cell = status.Map.GetCell(x, y);
+                        var cellSymbol = cell.IsWalkable ? ' ' : '#';
+                        if (status.X == x && status.Y == y)
+                        {
+                            cellSymbol = '@';
+                        }
+
+                        Console.Write(cellSymbol);
+                    }
+                    Console.Write(Environment.NewLine);
+                }
+            }
         }
 
         private static Task RequestNewGameAsync(HubConnection client)
