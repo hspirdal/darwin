@@ -24,8 +24,6 @@ namespace WebSocketServer
             //_clientRegistry.Add(connectionId, clientProxy);
             Console.WriteLine($"{connectionId} connected.");
 
-            clientProxy.SendAsync("direct", "Welcome!");
-
             return base.OnConnectedAsync();
         }
         public void Send(string message)
@@ -39,9 +37,6 @@ namespace WebSocketServer
             {
                 TempAuthenticate(message);
             }
-
-            Console.WriteLine($"{connectionId} said: {message}");
-            _clientRegistry.HandleClientMessage(connectionId, message);
         }
 
         private void TempAuthenticate(string json)

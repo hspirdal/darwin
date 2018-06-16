@@ -24,12 +24,12 @@ namespace WebSocketServer
     public class Connection
     {
         public string Id { get; set; }
+        public string ConnectionId { get; set; }
         public IClientProxy Client { get; set; }
     }
 
     public interface ISocketServer
     {
-        Task BroadcastAsync(string message);
         Task SendAsync(string connectionId, string message);
         List<Connection> GetConnections();
     }
@@ -50,37 +50,14 @@ namespace WebSocketServer
             _connectionMap = new ConcurrentDictionary<string, Connection>();
         }
 
-        public async Task BroadcastAsync(string message)
-        {
-            // TODO: only logged on users
-            var connections = _connectionMap.Values;
-            foreach (var connection in connections)
-            {
-                await connection.Client.SendAsync("direct", message);
-            }
-        }
-
         public Task SendAsync(string connectionId, string message)
         {
-            return _connectionMap[connectionId].Client.SendAsync("direct", message);
-        }
-
-        // public Task Send(string connectionId, string message)
-        // {
-        //     return _connectionMap[connectionId].SendAsync("directMessage", message);
-        // }
-
-        public void Add(string connectionId, IClientProxy clientProxy)
-        {
-            if (_connectionMap.ContainsKey(connectionId) == false)
+            if (_connectionMap.ContainsKey(connectionId))
             {
-                var connection = new Connection
-                {
-                    Id = "",
-                    Client = clientProxy
-                };
-                _connectionMap.TryAdd(connectionId, connection);
+                return _connectionMap[connectionId].Client.SendAsync("direct", message);
             }
+
+            throw new ArgumentException($"Connection-id '{connectionId}' was not found.");
         }
 
         public void Remove(string connectionId)
@@ -141,6 +118,7 @@ namespace WebSocketServer
                 var success = _connectionMap.TryAdd(request.ConnectionId, new Connection
                 {
                     Id = identity.Id,
+                    ConnectionId = request.ConnectionId,
                     Client = clientProxy
                 });
 

@@ -55,7 +55,7 @@ namespace WebSocketServer
                         if (player.GameState == GameState.InGame)
                         {
                             var json = await TempCreateStatusResponseAsync(connection).ConfigureAwait(false);
-                            await _socketServer.SendAsync(connection.Id, json).ConfigureAwait(false);
+                            await _socketServer.SendAsync(connection.ConnectionId, json).ConfigureAwait(false);
                         }
                     }
                 }
