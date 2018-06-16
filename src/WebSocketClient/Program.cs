@@ -9,17 +9,34 @@ using TcpGameServer.Contracts.Area;
 
 namespace WebSocketClient
 {
-    class Program
+    internal class Program
     {
         private static Dictionary<char, MovementAction> _actionKeyMap;
         private static HubConnection _connection;
+        private static ConsoleRenderer _renderer;
+
+        private static async Task StartConnectionAsync()
+        {
+            _connection = new HubConnectionBuilder()
+                 .WithUrl("http://127.0.0.1:5000/ws")
+                 .Build();
+
+            await _connection.StartAsync();
+        }
+
+        private static async Task DisposeAsync()
+        {
+            await _connection.DisposeAsync();
+        }
+
         static async Task Main(string[] args)
         {
+            _renderer = new ConsoleRenderer();
 
             await StartConnectionAsync();
             _connection.On<string>("direct", (message) =>
             {
-                RenderGame(message);
+                ResolveResponse(message);
             });
 
             Console.WriteLine("Enter a message and press enter...");
@@ -50,6 +67,7 @@ namespace WebSocketClient
                             RequestName = "Action.Movement",
                             Payload = JsonConvert.SerializeObject(action)
                         };
+
                         await SendRequestAsync(_connection, request);
                     }
                 }
@@ -60,53 +78,27 @@ namespace WebSocketClient
                 Console.WriteLine(e.StackTrace);
             }
 
-            Console.ReadLine();
             await DisposeAsync();
         }
 
-        private static void RenderGame(string jsonResponse)
+        private static void ResolveResponse(string jsonResponse)
         {
             var status = JsonConvert.DeserializeObject<StatusResponse>(jsonResponse);
-
-            Console.SetCursorPosition(0, 0);
-
             if (status != null)
             {
-                for (var y = 0; y < status.Map.Height; ++y)
-                {
-                    for (var x = 0; x < status.Map.Width; ++x)
-                    {
-                        var cell = status.Map.GetCell(x, y);
-                        var cellSymbol = cell.IsWalkable ? ' ' : '#';
-                        if (status.X == x && status.Y == y)
-                        {
-                            cellSymbol = '@';
-                        }
-
-                        Console.Write(cellSymbol);
-                    }
-                    Console.Write(Environment.NewLine);
-                }
+                _renderer.Render(status.Map, status.X, status.Y);
             }
         }
 
         private static Task RequestNewGameAsync(HubConnection client)
         {
-            var newGameRequest = new ClientRequest
-            {
-                RequestName = "lobby.newgame",
-            };
+            var newGameRequest = new ClientRequest { RequestName = "lobby.newgame" };
             return SendRequestAsync<ClientRequest>(client, newGameRequest);
         }
 
         private static Task RequestServerLogonAsync(HubConnection client)
         {
-            var authRequest = new ClientRequest
-            {
-                RequestName = "Authenticate",
-                Payload = "arch;1234"
-            };
-
+            var authRequest = new ClientRequest { RequestName = "Authenticate", Payload = "arch;1234" };
             return SendRequestAsync<ClientRequest>(client, authRequest);
         }
 
@@ -125,20 +117,6 @@ namespace WebSocketClient
                     { 'a', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West } },
                     { 'd', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.East } },
                 };
-        }
-
-        public static async Task StartConnectionAsync()
-        {
-            _connection = new HubConnectionBuilder()
-                 .WithUrl("http://127.0.0.1:5000/ws")
-                 .Build();
-
-            await _connection.StartAsync();
-        }
-
-        public static async Task DisposeAsync()
-        {
-            await _connection.DisposeAsync();
         }
     }
 }
