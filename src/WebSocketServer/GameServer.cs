@@ -16,7 +16,6 @@ namespace WebSocketServer
 
     public class GameServer : IGameServer
     {
-        //private readonly ITcpServer _tcpServer;
         private readonly ISocketServer _socketServer;
         private readonly IActionRepository _actionRepository;
         private readonly IPositionRepository _positionRepository;

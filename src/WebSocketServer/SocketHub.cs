@@ -21,7 +21,6 @@ namespace WebSocketServer
         {
             var connectionId = Context.ConnectionId;
             var clientProxy = Clients.Client(connectionId);
-            //_clientRegistry.Add(connectionId, clientProxy);
             Console.WriteLine($"{connectionId} connected.");
 
             return base.OnConnectedAsync();

@@ -24,7 +24,6 @@ namespace WebSocketServer
                 var host = CreateWebHostBuilder(args, clientRegistry).Build();
                 host.Start();
 
-
                 var startupTaskRunner = scope.Resolve<IStartupTaskRunner>();
                 await startupTaskRunner.ExecuteAsync().ConfigureAwait(false);
 

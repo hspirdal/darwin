@@ -14,7 +14,6 @@ namespace WebSocketServer
 {
     public interface IClientRegistry
     {
-        //void Add(string connectionId, IClientProxy clientProxy);
         void Remove(string connectionId);
         bool IsAuthenticated(string connectionId);
         bool Authenticate(AuthentificationRequest request, IClientProxy clientProxy);
@@ -50,6 +49,14 @@ namespace WebSocketServer
             _connectionMap = new ConcurrentDictionary<string, Connection>();
         }
 
+        public void Remove(string connectionId)
+        {
+            if (_connectionMap.ContainsKey(connectionId))
+            {
+                _connectionMap.TryRemove(connectionId, out Connection connection);
+            }
+        }
+
         public Task SendAsync(string connectionId, string message)
         {
             if (_connectionMap.ContainsKey(connectionId))
@@ -60,22 +67,9 @@ namespace WebSocketServer
             throw new ArgumentException($"Connection-id '{connectionId}' was not found.");
         }
 
-        public void Remove(string connectionId)
-        {
-            if (_connectionMap.ContainsKey(connectionId))
-            {
-                _connectionMap.TryRemove(connectionId, out Connection connection);
-            }
-        }
-
         public bool IsAuthenticated(string connectionId)
         {
             return _connectionMap.ContainsKey(connectionId);
-        }
-
-        public string GetClientId(string connectionId)
-        {
-            return _connectionMap[connectionId].Id;
         }
 
         public List<Connection> GetConnections()
@@ -131,6 +125,11 @@ namespace WebSocketServer
                 return true;
             }
             return false;
+        }
+
+        private string GetClientId(string connectionId)
+        {
+            return _connectionMap[connectionId].Id;
         }
     }
 }

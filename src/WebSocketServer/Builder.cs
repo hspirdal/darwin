@@ -18,7 +18,6 @@ namespace WebSocketServer
             var builder = new ContainerBuilder();
 
             RegisterRedis(builder);
-            //RegisterTcpServer(builder);
             RegisterGameRouter(builder);
             RegisterActionResolver(builder);
             RegisterPlayArea(builder);
@@ -38,21 +37,6 @@ namespace WebSocketServer
 
             return builder.Build();
         }
-
-        // private static void RegisterTcpServer(ContainerBuilder builder)
-        // {
-        //     builder.Register<TcpServer>(c =>
-        //     {
-        //         var host = Environment.GetEnvironmentVariable("TcpGameServerHost");
-        //         if (string.IsNullOrEmpty(host))
-        //         {
-        //             throw new ArgumentException("Host was not defined as environment variable.");
-        //         }
-
-        //         var server = new TcpServer(c.Resolve<ILogger>(), c.Resolve<IAuthenticator>(), c.Resolve<IStateRequestRouter>(), host);
-        //         return server;
-        //     }).As<TcpServer>().As<ITcpServer>().SingleInstance();
-        // }
 
         private static void RegisterRedis(ContainerBuilder builder)
         {
