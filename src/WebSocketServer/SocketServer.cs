@@ -16,7 +16,7 @@ namespace WebSocketServer
     {
         void Remove(string connectionId);
         bool IsAuthenticated(string connectionId);
-        bool Authenticate(AuthentificationRequest request, IClientProxy clientProxy);
+        Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy);
         void HandleClientMessage(string connectionId, string data);
     }
 
@@ -104,9 +104,9 @@ namespace WebSocketServer
             _stateRequestRouter.Route(clientId, clientRequest);
         }
 
-        public bool Authenticate(AuthentificationRequest request, IClientProxy clientProxy)
+        public async Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy)
         {
-            var identity = _authenticator.Authenticate(request);
+            var identity = await _authenticator.AuthenticateAsync(request).ConfigureAwait(false);
             if (identity != null)
             {
                 var success = _connectionMap.TryAdd(request.ConnectionId, new Connection

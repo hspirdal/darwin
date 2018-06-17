@@ -7,52 +7,52 @@ using GameLib.Identities;
 
 namespace GameLib.Tests.Identities
 {
-	[TestClass]
-	public class AuthenticatorTests
-	{
-		private Authenticator _authenticator;
+    [TestClass]
+    public class AuthenticatorTests
+    {
+        private Authenticator _authenticator;
 
-		[TestInitialize]
-		public void GivenIdentityRepositoryWithOneIdentity()
-		{
-			var container = AutoMock.GetLoose();
+        [TestInitialize]
+        public void GivenIdentityRepositoryWithOneIdentity()
+        {
+            var container = AutoMock.GetLoose();
 
-			var identityRepository = container.Mock<IIdentityRepository>();
-			identityRepository.Setup(i => i.GetAll()).Returns(new List<Identity>()
-			{
-				new Identity
-				{
-					Id = "1",
-					UserName = "jools",
-					Password = "1234"
-				}
-			});
+            var identityRepository = container.Mock<IIdentityRepository>();
+            identityRepository.Setup(i => i.GetAll()).Returns(new List<Identity>()
+            {
+                new Identity
+                {
+                    Id = "1",
+                    UserName = "jools",
+                    Password = "1234"
+                }
+            });
 
-			_authenticator = container.Create<Authenticator>();
-		}
+            _authenticator = container.Create<Authenticator>();
+        }
 
-		[TestMethod]
-		public void WhenAuthenticatingWithParametersThatMatch_ThenAuthentificationReturnsValidIdentity()
-		{
-			var request = new AuthentificationRequest
-			{
-				UserName = "jools",
-				Password = "1234",
-				ConnectionId = Guid.NewGuid()
-			};
+        [TestMethod]
+        public async Task WhenAuthenticatingWithParametersThatMatch_ThenAuthentificationReturnsValidIdentity()
+        {
+            var request = new AuthentificationRequest
+            {
+                UserName = "jools",
+                Password = "1234",
+                ConnectionId = Guid.NewGuid().ToString()
+            };
 
-			var identity = _authenticator.Authenticate(request);
+            var identity = await _authenticator.AuthenticateAsync(request);
 
-			Assert.IsNotNull(identity);
-		}
+            Assert.IsNotNull(identity);
+        }
 
-		[TestMethod]
-		public void WhenAuthenticatingWithParametersThatDoesNotMatch_ThenAuthentificationReturnsNull()
-		{
-			var request = new AuthentificationRequest();
-			var identity = _authenticator.Authenticate(request);
+        [TestMethod]
+        public async Task WhenAuthenticatingWithParametersThatDoesNotMatch_ThenAuthentificationReturnsNull()
+        {
+            var request = new AuthentificationRequest();
+            var identity = await _authenticator.AuthenticateAsync(request);
 
-			Assert.IsNull(identity);
-		}
-	}
+            Assert.IsNull(identity);
+        }
+    }
 }

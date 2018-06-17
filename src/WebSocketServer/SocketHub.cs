@@ -25,7 +25,7 @@ namespace WebSocketServer
 
             return base.OnConnectedAsync();
         }
-        public void Send(string message)
+        public async Task SendAsync(string message)
         {
             var connectionId = Context.ConnectionId;
             if (_clientRegistry.IsAuthenticated(connectionId))
@@ -34,11 +34,11 @@ namespace WebSocketServer
             }
             else
             {
-                TempAuthenticate(message);
+                await TempAuthenticate(message).ConfigureAwait(false);
             }
         }
 
-        private void TempAuthenticate(string json)
+        private async Task TempAuthenticate(string json)
         {
             Console.WriteLine("begin auth");
             var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(json);
@@ -54,10 +54,10 @@ namespace WebSocketServer
             var proxyClient = Clients.Client(Context.ConnectionId);
 
             Console.WriteLine("Trying to auth..");
-            var success = _clientRegistry.Authenticate(request, proxyClient);
-            var msg = success ? "Welcome back" : "Could not authenticate";
+            var success = await _clientRegistry.AuthenticateAsync(request, proxyClient).ConfigureAwait(false);
+            var msg = success ? "Authenticated successfully" : "Could not authenticate";
             Console.WriteLine(msg);
-            proxyClient.SendAsync("direct", msg).Wait();
+            await proxyClient.SendAsync("direct", msg).ConfigureAwait(false);
         }
 
         public override Task OnDisconnectedAsync(System.Exception exception)

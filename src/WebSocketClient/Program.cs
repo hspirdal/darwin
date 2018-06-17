@@ -44,7 +44,7 @@ namespace WebSocketClient
             try
             {
                 await RequestServerLogonAsync(_connection);
-                await Task.Delay(10000); // temp until refactor of this client.
+                await Task.Delay(5000); // temp until refactor of this client.
                 await RequestNewGameAsync(_connection);
 
                 InitializeActionKeyMap();
@@ -83,10 +83,17 @@ namespace WebSocketClient
 
         private static void ResolveResponse(string jsonResponse)
         {
-            var status = JsonConvert.DeserializeObject<StatusResponse>(jsonResponse);
-            if (status != null)
+            try
             {
-                _renderer.Render(status.Map, status.X, status.Y);
+                var status = JsonConvert.DeserializeObject<StatusResponse>(jsonResponse);
+                if (status != null)
+                {
+                    _renderer.Render(status.Map, status.X, status.Y);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -105,18 +112,18 @@ namespace WebSocketClient
         private static Task SendRequestAsync<T>(HubConnection client, T request)
         {
             var json = JsonConvert.SerializeObject(request);
-            return _connection.SendAsync("Send", json);
+            return _connection.SendAsync("SendAsync", json);
         }
 
         private static void InitializeActionKeyMap()
         {
             _actionKeyMap = new Dictionary<char, MovementAction>
-                {
-                    { 'w', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.North } },
-                    { 's', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.South } },
-                    { 'a', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West } },
-                    { 'd', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.East } },
-                };
+            {
+                { 'w', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.North } },
+                { 's', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.South } },
+                { 'a', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.West } },
+                { 'd', new MovementAction { OwnerId = 1, Name = "Action.Movement", MovementDirection = MovementDirection.East } },
+            };
         }
     }
 }
