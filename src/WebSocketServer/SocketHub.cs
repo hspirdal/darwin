@@ -30,7 +30,7 @@ namespace WebSocketServer
             var connectionId = Context.ConnectionId;
             if (_clientRegistry.IsAuthenticated(connectionId))
             {
-                _clientRegistry.HandleClientMessage(connectionId, message);
+                await _clientRegistry.HandleClientMessageAsync(connectionId, message).ConfigureAwait(false);
             }
             else
             {

@@ -6,6 +6,7 @@ using GameLib.Actions;
 using GameLib.Actions.Movement;
 using TcpGameServer.Contracts;
 using GameLib.Logging;
+using System.Threading.Tasks;
 
 namespace GameLib.Tests.Actions
 {
@@ -34,7 +35,7 @@ namespace GameLib.Tests.Actions
         }
 
         [TestMethod]
-        public void WhenClientRequestHasValidRoute_ThenInserterHandlesTheRequest()
+        public async Task WhenClientRequestHasValidRoute_ThenInserterHandlesTheRequest()
         {
             var clientId = "arbitrary client id";
             var request = new ClientRequest
@@ -43,12 +44,12 @@ namespace GameLib.Tests.Actions
                 Payload = "arbitrary payload"
             };
 
-            _gameRouter.Route(clientId, request);
+            await _gameRouter.RouteAsync(clientId, request);
             _inserter.Verify(i => i.Resolve(clientId, request));
         }
 
         [TestMethod]
-        public void WhenClientRequestHasInvalidRoute_ThenLoggerInsertsAWarning()
+        public async Task WhenClientRequestHasInvalidRoute_ThenLoggerInsertsAWarning()
         {
             var clientId = "arbitrary client id";
             var request = new ClientRequest
@@ -57,12 +58,12 @@ namespace GameLib.Tests.Actions
                 Payload = "arbitrary payload"
             };
 
-            _gameRouter.Route(clientId, request);
+            await _gameRouter.RouteAsync(clientId, request);
             _logger.Verify(i => i.Warn(It.IsAny<string>()));
         }
 
         [TestMethod]
-        public void WhenClientRequestHasEmptyRoute_ThenLoggerInsertsAWarning()
+        public async Task WhenClientRequestHasEmptyRoute_ThenLoggerInsertsAWarning()
         {
             var clientId = "arbitrary client id";
             var request = new ClientRequest
@@ -71,7 +72,7 @@ namespace GameLib.Tests.Actions
                 Payload = "arbitrary payload"
             };
 
-            _gameRouter.Route(clientId, request);
+            await _gameRouter.RouteAsync(clientId, request);
             _logger.Verify(i => i.Warn(It.IsAny<string>()));
         }
     }

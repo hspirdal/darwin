@@ -17,7 +17,7 @@ namespace WebSocketServer
         void Remove(string connectionId);
         bool IsAuthenticated(string connectionId);
         Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy);
-        void HandleClientMessage(string connectionId, string data);
+        Task HandleClientMessageAsync(string connectionId, string data);
     }
 
     public class Connection
@@ -77,7 +77,7 @@ namespace WebSocketServer
             return _connectionMap.Values.ToList();
         }
 
-        public void HandleClientMessage(string connectionId, string data)
+        public async Task HandleClientMessageAsync(string connectionId, string data)
         {
             try
             {
@@ -90,18 +90,13 @@ namespace WebSocketServer
                 var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(data);
                 if (clientRequest != null)
                 {
-                    RouteRequest(clientId, clientRequest);
+                    await _stateRequestRouter.RouteAsync(clientId, clientRequest).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-        }
-
-        public void RouteRequest(string clientId, ClientRequest clientRequest)
-        {
-            _stateRequestRouter.Route(clientId, clientRequest);
         }
 
         public async Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy)

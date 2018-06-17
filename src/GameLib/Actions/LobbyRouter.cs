@@ -5,6 +5,7 @@ using GameLib.Actions.Movement;
 using GameLib.Area;
 
 using GameLib.Players;
+using System.Threading.Tasks;
 
 namespace GameLib.Actions
 {
@@ -23,17 +24,17 @@ namespace GameLib.Actions
             _playArea = playArea;
         }
 
-        public void Route(string clientId, ClientRequest clientRequest)
+        public async Task RouteAsync(string clientId, ClientRequest clientRequest)
         {
             // Temp until there are more actions here.
             if (clientRequest.RequestName == "lobby.newgame")
             {
                 var cell = FindFirstOpenCell();
-                _positionRepository.SetPositionAsync(clientId, cell.X, cell.Y).Wait();
+                await _positionRepository.SetPositionAsync(clientId, cell.X, cell.Y).ConfigureAwait(false);
 
                 var player = _playerRepository.GetById(clientId);
                 player.GameState = GameState.InGame;
-                _playerRepository.AddPlayerAsync(player).Wait();
+                await _playerRepository.AddPlayerAsync(player).ConfigureAwait(false);
             }
         }
 

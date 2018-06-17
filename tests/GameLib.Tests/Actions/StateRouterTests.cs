@@ -4,6 +4,7 @@ using Moq;
 using GameLib.Actions;
 using TcpGameServer.Contracts;
 using GameLib.Players;
+using System.Threading.Tasks;
 
 namespace GameLib.Tests.Actions
 {
@@ -26,27 +27,27 @@ namespace GameLib.Tests.Actions
         }
 
         [TestMethod]
-        public void WhenStateIsSetToLobby_ThenRequestsAreRoutedToLobbyRouter()
+        public async Task WhenStateIsSetToLobby_ThenRequestsAreRoutedToLobbyRouter()
         {
             var request = new ClientRequest { RequestName = "arbitrary_command" };
             var clientId = "arbitrary_id";
             _playerRepository.Setup(i => i.GetById(It.IsAny<string>())).Returns(new Player { GameState = GameState.lobby });
 
-            _stateRouter.Route(clientId, request);
+            await _stateRouter.RouteAsync(clientId, request);
 
-            _lobbyRouter.Verify(i => i.Route(It.IsAny<string>(), It.IsAny<ClientRequest>()));
+            _lobbyRouter.Verify(i => i.RouteAsync(It.IsAny<string>(), It.IsAny<ClientRequest>()));
         }
 
         [TestMethod]
-        public void WhenStateIsSetToGame_ThenRequestsAreRoutedToGameRouter()
+        public async Task WhenStateIsSetToGame_ThenRequestsAreRoutedToGameRouter()
         {
             var request = new ClientRequest { RequestName = "arbitrary_command" };
             var clientId = "arbitrary_id";
             _playerRepository.Setup(i => i.GetById(It.IsAny<string>())).Returns(new Player { GameState = GameState.InGame });
 
-            _stateRouter.Route(clientId, request);
+            await _stateRouter.RouteAsync(clientId, request);
 
-            _gameRouter.Verify(i => i.Route(It.IsAny<string>(), It.IsAny<ClientRequest>()));
+            _gameRouter.Verify(i => i.RouteAsync(It.IsAny<string>(), It.IsAny<ClientRequest>()));
         }
     }
 }

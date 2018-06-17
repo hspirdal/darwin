@@ -1,6 +1,7 @@
 using TcpGameServer.Contracts;
 using GameLib.Players;
 using System;
+using System.Threading.Tasks;
 
 namespace GameLib.Actions
 {
@@ -19,16 +20,16 @@ namespace GameLib.Actions
             _playerRepository = playerRepository;
         }
 
-        public void Route(string clientId, ClientRequest clientRequest)
+        public Task RouteAsync(string clientId, ClientRequest clientRequest)
         {
             var player = _playerRepository.GetById(clientId);
             if (player.GameState == GameState.lobby)
             {
-                _lobbyRouter.Route(clientId, clientRequest);
+                return _lobbyRouter.RouteAsync(clientId, clientRequest);
             }
             else
             {
-                _gameRouter.Route(clientId, clientRequest);
+                return _gameRouter.RouteAsync(clientId, clientRequest);
             }
         }
     }
