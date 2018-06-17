@@ -57,7 +57,9 @@ namespace WebSocketServer
             var success = await _clientRegistry.AuthenticateAsync(request, proxyClient).ConfigureAwait(false);
             var msg = success ? "Authenticated successfully" : "Could not authenticate";
             Console.WriteLine(msg);
-            await proxyClient.SendAsync("direct", msg).ConfigureAwait(false);
+            var response = new ServerResponse { ResponseType = "string", Payload = msg };
+            var serializedResponse = JsonConvert.SerializeObject(response);
+            await proxyClient.SendAsync("direct", serializedResponse).ConfigureAwait(false);
         }
 
         public override Task OnDisconnectedAsync(System.Exception exception)

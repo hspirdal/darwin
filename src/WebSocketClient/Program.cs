@@ -83,17 +83,15 @@ namespace WebSocketClient
 
         private static void ResolveResponse(string jsonResponse)
         {
-            try
+            var response = JsonConvert.DeserializeObject<ServerResponse>(jsonResponse);
+            if (response.ResponseType == nameof(GameStatus).ToLower())
             {
-                var status = JsonConvert.DeserializeObject<StatusResponse>(jsonResponse);
-                if (status != null)
-                {
-                    _renderer.Render(status.Map, status.X, status.Y);
-                }
+                var status = JsonConvert.DeserializeObject<GameStatus>(response.Payload);
+                _renderer.Render(status.Map, status.X, status.Y);
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(response.Payload);
             }
         }
 

@@ -6,6 +6,7 @@ using GameLib.Actions.Movement;
 using GameLib.Area;
 using GameLib.Players;
 using TcpGameServer.Contracts.Area;
+using TcpGameServer.Contracts;
 
 namespace WebSocketServer
 {
@@ -53,25 +54,30 @@ namespace WebSocketServer
                         var player = await _playerRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
                         if (player.GameState == GameState.InGame)
                         {
-                            var json = await TempCreateStatusResponseAsync(connection).ConfigureAwait(false);
-                            await _socketServer.SendAsync(connection.ConnectionId, json).ConfigureAwait(false);
+                            var response = await TempCreateStatusResponseAsync(connection).ConfigureAwait(false);
+                            await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
                         }
                     }
                 }
             }
         }
 
-        private async Task<string> TempCreateStatusResponseAsync(Connection connection)
+        private async Task<ServerResponse> TempCreateStatusResponseAsync(Connection connection)
         {
-            var pos = await _positionRepository.GetByIdAsync(connection.Id);
-            var statusResponse = new StatusResponse
+            var pos = await _positionRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
+            var status = new GameStatus
             {
                 X = pos.X,
                 Y = pos.Y,
                 Map = _playArea.Map
             };
-            var json = JsonConvert.SerializeObject(statusResponse);
-            return json;
+            var response = new ServerResponse
+            {
+                ResponseType = nameof(GameStatus).ToLower(),
+                Payload = JsonConvert.SerializeObject(status)
+            };
+
+            return response;
         }
     }
 }

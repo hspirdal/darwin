@@ -29,7 +29,7 @@ namespace WebSocketServer
 
     public interface ISocketServer
     {
-        Task SendAsync(string connectionId, string message);
+        Task SendAsync(string connectionId, ServerResponse response);
         List<Connection> GetConnections();
     }
 
@@ -57,11 +57,12 @@ namespace WebSocketServer
             }
         }
 
-        public Task SendAsync(string connectionId, string message)
+        public Task SendAsync(string connectionId, ServerResponse response)
         {
             if (_connectionMap.ContainsKey(connectionId))
             {
-                return _connectionMap[connectionId].Client.SendAsync("direct", message);
+                var json = JsonConvert.SerializeObject(response);
+                return _connectionMap[connectionId].Client.SendAsync("direct", json);
             }
 
             throw new ArgumentException($"Connection-id '{connectionId}' was not found.");
