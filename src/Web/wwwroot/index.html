@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Websocket JS client</title>
+</head>
+
+<body>
+    <h1>JS Websocket test</h1>
+    <script type="text/javascript" src="signalr.min.js"></script>
+
+    <script type="text/javascript">
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://127.0.0.1:5000/ws")
+            .build();
+
+        connection.on("direct", data => {
+            console.log(data);
+        });
+
+        connection.start()
+            .then(() => connection.invoke("SendAsync", "Hello"));
+    </script>
+</body>
+
+</html>

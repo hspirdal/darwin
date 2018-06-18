@@ -28,6 +28,7 @@ namespace WebSocketServer
         public async Task SendAsync(string message)
         {
             var connectionId = Context.ConnectionId;
+
             if (_clientRegistry.IsAuthenticated(connectionId))
             {
                 await _clientRegistry.HandleClientMessageAsync(connectionId, message).ConfigureAwait(false);
