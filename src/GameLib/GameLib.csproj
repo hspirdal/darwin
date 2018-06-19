@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\TcpGameServer.Contracts\TcpGameServer.Contracts.csproj" />
+    <ProjectReference Include="..\GameServer.Contracts\GameServer.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 FROM microsoft/dotnet:2.1-sdk AS build-env
 
 WORKDIR /src
-COPY TcpGameServer.Contracts TcpGameServer.Contracts
+COPY GameServer.Contracts GameServer.Contracts
 COPY GameLib GameLib
 COPY WebSocketServer WebSocketServer
 
