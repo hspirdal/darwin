@@ -8,6 +8,7 @@
 <body>
     <h1>JS Websocket test</h1>
     <script type="text/javascript" src="signalr.min.js"></script>
+    <script type="text/javascript" src="rot.min.js"></script>
 
     <script type="text/javascript">
 
@@ -15,10 +16,28 @@
             .withUrl('http://127.0.0.1:5000/ws')
             .build();
 
+        var display = new ROT.Display({ width: 15, height: 30 });
+        document.body.appendChild(display.getContainer());
+
         connection.on("direct", data => {
             var response = JSON.parse(data);
             if (response.ResponseType === 'gamestatus') {
-                console.log('game status update tick');
+                var status = JSON.parse(response.Payload);
+                var map = status.Map;
+                var posx = status.X;
+                var posy = status.Y;
+
+                for (var y = 0; y < map.Height; ++y) {
+                    for (var x = 0; x < map.Width; ++x) {
+                        var cell = map.Cells[y][x];
+
+                        var cellSymbol = cell.IsWalkable ? ' ' : '#';
+                        if (posx == x && posy == y) {
+                            cellSymbol = '@';
+                        }
+                        display.draw(x, y, cellSymbol, "rgb(127, 127, 127)");
+                    }
+                }
             }
             else {
                 console.log(response.Payload);
