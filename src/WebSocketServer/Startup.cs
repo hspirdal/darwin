@@ -25,6 +25,14 @@ namespace WebSocketServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+            builder =>
+            {
+                builder.AllowAnyMethod().AllowAnyHeader()
+                       .WithOrigins("http://localhost:5002")
+                       .AllowCredentials();
+            }));
+
             services.AddSignalR();
         }
 
@@ -37,6 +45,7 @@ namespace WebSocketServer
             }
 
             app.UseFileServer();
+            app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {
                 routes.MapHub<SocketHub>("/ws");
