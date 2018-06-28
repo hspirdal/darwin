@@ -11,7 +11,6 @@
     <script type="text/javascript" src="rot.min.js"></script>
 
     <script type="text/javascript">
-
         var connection = new signalR.HubConnectionBuilder()
             .withUrl('http://127.0.0.1:5000/ws')
             .build();
@@ -47,6 +46,34 @@
         connection.start()
             .then(() => connection.invoke("SendAsync", '{ RequestName: "Authenticate", Payload: "arch;1234" }'))
             .then(() => connection.invoke("SendAsync", '{ RequestName: "lobby.newgame" }'));
+
+        window.addEventListener("keypress", function (e) {
+            var code = e.charCode;
+            var ch = String.fromCharCode(code);
+            console.log('pressed: ' + ch);
+            var o = {
+                RequestName: 'Action.Movement',
+                Payload: JSON.stringify({ OwnerId: 1, Name: 'Action.Movement', MovementDirection: 3 })
+            };
+            var movement = { OwnerId: 1, Name: 'Action.Movement', MovementDirection: 0 }
+            if (ch === "w") {
+                movement.MovementDirection = 2;
+            }
+            else if (ch === "s") {
+                movement.MovementDirection = 3;
+            }
+            else if (ch === "a") {
+                movement.MovementDirection = 0;
+            }
+            else if (ch === "d") {
+                movement.MovementDirection = 1;
+            }
+            else {
+                return;
+            }
+            o.Payload = JSON.stringify(movement);
+            connection.invoke("SendAsync", JSON.stringify(o));
+        });
 
     </script>
 </body>
