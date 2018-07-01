@@ -1,28 +1,20 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <GameClient/>
+    <Network/>
+    <Display/>
   </div>
 </template>
-
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
+import GameClient from "./components/GameClient";
+import Network from "./components/Network";
+import Display from "./components/Display";
 export default {
-  name: "app",
+  name: "App",
   components: {
-    HelloWorld
+    GameClient,
+    Network,
+    Display
   }
 };
 </script>
-
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
