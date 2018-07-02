@@ -40,6 +40,19 @@ export default {
       .then(() =>
         this.connection.invoke("SendAsync", '{ RequestName: "lobby.newgame" }')
       );
+  },
+  methods: {
+    move(movementDirection) {
+      var o = {
+        RequestName: "Action.Movement",
+        Payload: JSON.stringify({
+          OwnerId: 1,
+          Name: "Action.Movement",
+          MovementDirection: movementDirection
+        })
+      };
+      this.connection.invoke("SendAsync", JSON.stringify(o));
+    }
   }
 };
 </script>
