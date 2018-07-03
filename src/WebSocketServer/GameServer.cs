@@ -23,9 +23,10 @@ namespace WebSocketServer
         private readonly IActionResolver _actionResolver;
         private readonly PlayArea _playArea;
         private readonly IPlayerRepository _playerRepository;
+        private readonly IGameStateRepository _gameStateRepository;
 
         public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IPositionRepository positionRepository, IActionResolver actionResolver,
-            PlayArea playArea, IPlayerRepository playerRepository)
+            PlayArea playArea, IPlayerRepository playerRepository, IGameStateRepository gameStateRepository)
         {
             _socketServer = socketServer;
             _actionRepository = actionRepository;
@@ -33,6 +34,7 @@ namespace WebSocketServer
             _actionResolver = actionResolver;
             _playArea = playArea;
             _playerRepository = playerRepository;
+            _gameStateRepository = gameStateRepository;
         }
 
         public async Task StartAsync()
@@ -65,11 +67,14 @@ namespace WebSocketServer
         private async Task<ServerResponse> TempCreateStatusResponseAsync(Connection connection)
         {
             var pos = await _positionRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
+            var map = _gameStateRepository.GetMapById(connection.Id);
+            const int LightRadius = 8;
+            map.ComputeFov(pos.X, pos.Y, LightRadius);
             var status = new GameStatus
             {
                 X = pos.X,
                 Y = pos.Y,
-                Map = _playArea.Map
+                Map = new TcpGameServer.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = map.GetVisibleCells() }
             };
             var response = new ServerResponse
             {

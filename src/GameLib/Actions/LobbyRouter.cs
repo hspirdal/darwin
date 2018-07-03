@@ -15,12 +15,15 @@ namespace GameLib.Actions
     {
         private readonly IPlayerRepository _playerRepository;
         private readonly IPositionRepository _positionRepository;
+        private readonly IGameStateRepository _gameStateRepository;
         private readonly PlayArea _playArea;
 
-        public LobbyRouter(IPlayerRepository playerRepository, IPositionRepository positionRepository, PlayArea playArea)
+        public LobbyRouter(IPlayerRepository playerRepository, IPositionRepository positionRepository,
+        IGameStateRepository gameStateRepository, PlayArea playArea)
         {
             _playerRepository = playerRepository;
             _positionRepository = positionRepository;
+            _gameStateRepository = gameStateRepository;
             _playArea = playArea;
         }
 
@@ -31,8 +34,10 @@ namespace GameLib.Actions
             {
                 var cell = FindFirstOpenCell();
                 await _positionRepository.SetPositionAsync(clientId, cell.X, cell.Y).ConfigureAwait(false);
-
                 var player = _playerRepository.GetById(clientId);
+                var playerMap = _playArea.GameMap.Clone();
+                _gameStateRepository.SetMapById(player.Id, playerMap);
+
                 player.GameState = GameState.InGame;
                 await _playerRepository.AddPlayerAsync(player).ConfigureAwait(false);
             }
@@ -40,11 +45,11 @@ namespace GameLib.Actions
 
         private Cell FindFirstOpenCell()
         {
-            for (var y = 0; y < _playArea.Map.Height; ++y)
+            for (var y = 0; y < _playArea.GameMap.Height; ++y)
             {
-                for (var x = 0; x < _playArea.Map.Width; ++x)
+                for (var x = 0; x < _playArea.GameMap.Width; ++x)
                 {
-                    var cell = _playArea.Map.GetCell(x, y);
+                    var cell = _playArea.GameMap.GetCell(x, y);
                     if (cell.IsWalkable)
                     {
                         return cell;

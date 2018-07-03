@@ -28,6 +28,7 @@ namespace WebSocketServer
             builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
             builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
             builder.RegisterType<PositionRepository>().As<IPositionRepository>().SingleInstance();
+            builder.RegisterType<GameStateRepository>().As<IGameStateRepository>().SingleInstance();
             builder.RegisterType<Authenticator>().As<IAuthenticator>();
             builder.RegisterType<MapGenerator>().As<IMapGenerator>();
             builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
@@ -82,7 +83,7 @@ namespace WebSocketServer
             builder.Register<PlayArea>(c =>
             {
                 var mapGenerator = c.Resolve<IMapGenerator>();
-                return new PlayArea() { Map = mapGenerator.Generate(30, 15) };
+                return new PlayArea() { GameMap = mapGenerator.Generate(30, 15) };
             }).SingleInstance();
         }
     }

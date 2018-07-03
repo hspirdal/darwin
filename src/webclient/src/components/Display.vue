@@ -24,17 +24,13 @@ export default {
       var posx = this.$store.getters["gamestatus/x"];
       var posy = this.$store.getters["gamestatus/y"];
       if (map && this.display) {
-        for (var y = 0; y < map.Height; ++y) {
-          for (var x = 0; x < map.Width; ++x) {
-            var cell = map.Cells[y][x];
-
-            var cellSymbol = cell.IsWalkable ? " " : "#";
-            if (posx == x && posy == y) {
-              cellSymbol = "@";
-            }
-            this.display.draw(x, y, cellSymbol, "rgb(127, 127, 127)");
+        map.VisibleCells.forEach(cell => {
+          var cellSymbol = cell.IsWalkable ? " " : "#";
+          if (cell.X == posx && cell.Y == posy) {
+            cellSymbol = "@";
           }
-        }
+          this.display.draw(cell.X, cell.Y, cellSymbol, "rgb(127, 127, 127)");
+        });
       }
       return "";
     }
