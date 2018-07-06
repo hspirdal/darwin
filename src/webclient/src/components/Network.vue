@@ -19,13 +19,13 @@ export default {
   mounted: function() {
     this.connection.on("direct", data => {
       var response = JSON.parse(data);
-      if (response.ResponseType === "gamestatus") {
+      if (response.Type === "gamestatus") {
         var status = JSON.parse(response.Payload);
         if (status) {
           this.$store.commit("gamestatus/setStatus", status);
         }
       } else {
-        console.log(response.Payload);
+        console.log(response.Message + "\nPayload: " + response.Payload);
       }
     });
 

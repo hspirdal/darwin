@@ -14,6 +14,7 @@ namespace WebSocketServer
 {
     public interface IClientRegistry
     {
+        Guid GetSessionId(string connectionId);
         void Remove(string connectionId);
         bool CheckValidConnection(string connectionId, Guid sessionId);
 
@@ -43,6 +44,11 @@ namespace WebSocketServer
 
             _connectionMap = new ConcurrentDictionary<string, Connection>();
             _sessionMap = new ConcurrentDictionary<Guid, Connection>();
+        }
+
+        public Guid GetSessionId(string connectionId)
+        {
+            return _connectionMap[connectionId].SessionId;
         }
 
         public void Remove(string connectionId)

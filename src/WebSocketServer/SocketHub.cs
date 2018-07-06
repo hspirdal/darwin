@@ -74,7 +74,8 @@ namespace WebSocketServer
             var success = await _clientRegistry.AuthenticateAsync(request, proxyClient).ConfigureAwait(false);
             var msg = success ? "Authenticated successfully" : "Could not authenticate";
             Console.WriteLine(msg);
-            var response = new ServerResponse { ResponseType = "string", Payload = msg };
+            var sessionId = _clientRegistry.GetSessionId(Context.ConnectionId);
+            var response = new ServerResponse { Type = "string", Message = msg, Payload = $"SessionId: {sessionId}" };
             var serializedResponse = JsonConvert.SerializeObject(response);
             await proxyClient.SendAsync("direct", serializedResponse).ConfigureAwait(false);
         }

@@ -2,7 +2,8 @@ namespace TcpGameServer.Contracts
 {
     public class ServerResponse
     {
-        public string ResponseType { get; set; }
+        public string Type { get; set; }
+        public string Message { get; set; }
         public string Payload { get; set; }
     }
 }

@@ -78,7 +78,7 @@ namespace WebSocketServer
             };
             var response = new ServerResponse
             {
-                ResponseType = nameof(GameStatus).ToLower(),
+                Type = nameof(GameStatus).ToLower(),
                 Payload = JsonConvert.SerializeObject(status)
             };
 
