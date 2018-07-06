@@ -15,16 +15,10 @@ namespace WebSocketServer
     public interface IClientRegistry
     {
         void Remove(string connectionId);
-        bool IsAuthenticated(string connectionId);
-        Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy);
-        Task HandleClientMessageAsync(string connectionId, string data);
-    }
+        bool CheckValidConnection(string connectionId, Guid sessionId);
 
-    public class Connection
-    {
-        public string Id { get; set; }
-        public string ConnectionId { get; set; }
-        public IClientProxy Client { get; set; }
+        Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy);
+        Task HandleClientMessageAsync(string connectionId, ClientRequest clientRequest);
     }
 
     public interface ISocketServer
@@ -36,6 +30,7 @@ namespace WebSocketServer
     public class SocketServer : ISocketServer, IClientRegistry
     {
         private readonly ConcurrentDictionary<string, Connection> _connectionMap;
+        private readonly ConcurrentDictionary<Guid, Connection> _sessionMap;
         private readonly ILogger _logger;
         private readonly IAuthenticator _authenticator;
         private readonly IStateRequestRouter _stateRequestRouter;
@@ -47,6 +42,7 @@ namespace WebSocketServer
             _stateRequestRouter = stateRequestRouter;
 
             _connectionMap = new ConcurrentDictionary<string, Connection>();
+            _sessionMap = new ConcurrentDictionary<Guid, Connection>();
         }
 
         public void Remove(string connectionId)
@@ -68,9 +64,25 @@ namespace WebSocketServer
             throw new ArgumentException($"Connection-id '{connectionId}' was not found.");
         }
 
-        public bool IsAuthenticated(string connectionId)
+        public bool CheckValidConnection(string connectionId, Guid sessionId)
         {
-            return _connectionMap.ContainsKey(connectionId);
+            if (_connectionMap.ContainsKey(connectionId))
+            {
+                return true;
+            }
+
+            if (_sessionMap.ContainsKey(sessionId))
+            {
+                _logger.Info("Refreshing connection map based on previous session");
+                var connection = _sessionMap[sessionId];
+                if (RegisterNewConnection(connection))
+                {
+                    connection.ConnectionId = connectionId;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public List<Connection> GetConnections()
@@ -78,25 +90,16 @@ namespace WebSocketServer
             return _connectionMap.Values.ToList();
         }
 
-        public async Task HandleClientMessageAsync(string connectionId, string data)
+        public async Task HandleClientMessageAsync(string connectionId, ClientRequest clientRequest)
         {
             try
             {
-                if (!IsAuthenticated(connectionId))
-                {
-                    throw new ArgumentException("Client is not authorized");
-                }
-
                 var clientId = GetClientId(connectionId);
-                var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(data);
-                if (clientRequest != null)
-                {
-                    await _stateRequestRouter.RouteAsync(clientId, clientRequest).ConfigureAwait(false);
-                }
+                await _stateRequestRouter.RouteAsync(clientId, clientRequest).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.Error(e);
             }
         }
 
@@ -105,22 +108,41 @@ namespace WebSocketServer
             var identity = await _authenticator.AuthenticateAsync(request).ConfigureAwait(false);
             if (identity != null)
             {
-                var success = _connectionMap.TryAdd(request.ConnectionId, new Connection
+                var connection = new Connection
                 {
                     Id = identity.Id,
                     ConnectionId = request.ConnectionId,
+                    SessionId = Guid.NewGuid(),
                     Client = clientProxy
-                });
+                };
 
-                if (!success)
-                {
-                    _logger.Error(new InvalidOperationException($"Was not able to add connection with id {identity.Id} to connection map."));
-                    return false;
-                }
-                _logger.Info($"Successfully logged on client with id {identity.Id}");
-                return true;
+                return RegisterNewConnection(connection) && RegisterNewSession(connection);
             }
             return false;
+        }
+
+        private bool RegisterNewConnection(Connection connection)
+        {
+            var success = _connectionMap.TryAdd(connection.ConnectionId, connection);
+            if (!success)
+            {
+                _logger.Error(new InvalidOperationException($"Was not able to add connection with id {connection.Id} to connection map."));
+                return false;
+            }
+            _logger.Debug($"Added connection id '{connection.ConnectionId} to connection map");
+            return true;
+        }
+
+        private bool RegisterNewSession(Connection connection)
+        {
+            var success = _sessionMap.TryAdd(connection.SessionId, connection);
+            if (!success)
+            {
+                _logger.Error(new InvalidOperationException($"Was not able to add session for connection id {connection.Id} to session map."));
+                return false;
+            }
+            _logger.Debug($"Added session id '{connection.SessionId} to session map");
+            return true;
         }
 
         private string GetClientId(string connectionId)
