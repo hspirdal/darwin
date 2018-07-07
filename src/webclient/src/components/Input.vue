@@ -6,14 +6,10 @@
 <script>
 export default {
   mounted: function() {
-    window.addEventListener(
-      "keypress",
-      function(e) {
-        var code = e.charCode;
-        var ch = String.fromCharCode(code);
-        this.$emit("key-pressed", ch);
-      }.bind(this)
-    );
+    window.onkeydown = function() {
+      const key = event.key;
+      this.$emit("key-pressed", key);
+    }.bind(this);
   }
 };
 </script>

@@ -16,15 +16,15 @@ export default {
     Input
   },
   methods: {
-    onKeyPressed: function(ch) {
+    onKeyPressed: function(key) {
       var movementDirection = 0;
-      if (ch === "w") {
+      if (key === "w" || key === "ArrowUp") {
         movementDirection = 2;
-      } else if (ch === "s") {
+      } else if (key === "s" || key === "ArrowDown") {
         movementDirection = 3;
-      } else if (ch === "a") {
+      } else if (key === "a" || key === "ArrowLeft") {
         movementDirection = 0;
-      } else if (ch === "d") {
+      } else if (key === "d" || key === "ArrowRight") {
         movementDirection = 1;
       } else {
         return;
