@@ -24,9 +24,10 @@ namespace WebSocketServer
         private readonly PlayArea _playArea;
         private readonly IPlayerRepository _playerRepository;
         private readonly IGameStateRepository _gameStateRepository;
+        private readonly GameConfiguration _gameConfiguration;
 
         public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IPositionRepository positionRepository, IActionResolver actionResolver,
-            PlayArea playArea, IPlayerRepository playerRepository, IGameStateRepository gameStateRepository)
+            PlayArea playArea, IPlayerRepository playerRepository, IGameStateRepository gameStateRepository, GameConfiguration gameConfiguration)
         {
             _socketServer = socketServer;
             _actionRepository = actionRepository;
@@ -35,6 +36,7 @@ namespace WebSocketServer
             _playArea = playArea;
             _playerRepository = playerRepository;
             _gameStateRepository = gameStateRepository;
+            _gameConfiguration = gameConfiguration;
         }
 
         public async Task StartAsync()
@@ -47,7 +49,7 @@ namespace WebSocketServer
                 if (currentTime > nextGameTick)
                 {
                     var diff = currentTime - nextGameTick;
-                    nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
+                    nextGameTick = DateTime.UtcNow.AddMilliseconds(_gameConfiguration.GameTickMiliseconds) - diff;
 
                     await _actionResolver.ResolveAsync().ConfigureAwait(false);
                     var connections = _socketServer.GetConnections();

@@ -21,6 +21,7 @@ namespace WebSocketServer
             RegisterGameRouter(builder);
             RegisterActionResolver(builder);
             RegisterPlayArea(builder);
+            RegisterGameConfigurations(builder);
 
             builder.RegisterType<SocketServer>().As<ISocketServer>().As<IClientRegistry>().SingleInstance();
             builder.RegisterType<Logger>().As<ILogger>();
@@ -87,6 +88,15 @@ namespace WebSocketServer
                 var mapGenerator = c.Resolve<IMapGenerator>();
                 return new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
             }).SingleInstance();
+        }
+
+        private static void RegisterGameConfigurations(ContainerBuilder builder)
+        {
+            builder.Register<GameConfiguration>(c =>
+            {
+                var gameTickMiliseconds = int.Parse(Environment.GetEnvironmentVariable("GameTickMiliseconds"));
+                return new GameConfiguration() { GameTickMiliseconds = gameTickMiliseconds };
+            });
         }
     }
 }
