@@ -32,6 +32,11 @@ namespace GameLib.Area
             return _map.GetAllCells().Where(i => i.IsInFov).Select(c => new Cell { X = c.X, Y = c.Y, IsWalkable = c.IsWalkable }).ToList();
         }
 
+        public List<Cell> GetAllWalkableCells()
+        {
+            return _map.GetAllCells().Where(i => i.IsWalkable).Select(c => new Cell { X = c.X, Y = c.Y, IsWalkable = c.IsWalkable }).ToList();
+        }
+
         public Cell GetCell(int x, int y)
         {
             if (x < Width && y < Height)

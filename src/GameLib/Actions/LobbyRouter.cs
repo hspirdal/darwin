@@ -32,7 +32,7 @@ namespace GameLib.Actions
             // Temp until there are more actions here.
             if (clientRequest.RequestName == "lobby.newgame")
             {
-                var cell = FindFirstOpenCell();
+                var cell = GetRandomOpenCell();
                 await _positionRepository.SetPositionAsync(clientId, cell.X, cell.Y).ConfigureAwait(false);
                 var player = _playerRepository.GetById(clientId);
                 var playerMap = _playArea.GameMap.Clone();
@@ -43,21 +43,12 @@ namespace GameLib.Actions
             }
         }
 
-        private Cell FindFirstOpenCell()
+        private Cell GetRandomOpenCell()
         {
-            for (var y = 0; y < _playArea.GameMap.Height; ++y)
-            {
-                for (var x = 0; x < _playArea.GameMap.Width; ++x)
-                {
-                    var cell = _playArea.GameMap.GetCell(x, y);
-                    if (cell.IsWalkable)
-                    {
-                        return cell;
-                    }
-                }
-            }
-
-            throw new ArgumentException("No cells are walkable.");
+            var openCells = _playArea.GameMap.GetAllWalkableCells();
+            var random = new Random();
+            var cellIndex = random.Next(openCells.Count - 1);
+            return openCells[cellIndex];
         }
     }
 }
