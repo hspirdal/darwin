@@ -68,13 +68,22 @@ namespace WebSocketServer
 
         public Task SendAsync(string connectionId, ServerResponse response)
         {
-            if (_connectionMap.ContainsKey(connectionId))
+            try
             {
-                var json = JsonConvert.SerializeObject(response);
-                return _connectionMap[connectionId].Client.SendAsync("direct", json);
-            }
+                if (_connectionMap.ContainsKey(connectionId))
+                {
+                    var json = JsonConvert.SerializeObject(response);
+                    return _connectionMap[connectionId].Client.SendAsync("direct", json);
+                }
+                // NOTE: Race condition when connection dropped while server is sending out status messages.
+                _logger.Warn($"Connection-id '{connectionId}' was not found.");
 
-            throw new ArgumentException($"Connection-id '{connectionId}' was not found.");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+            return Task.CompletedTask;
         }
 
         public bool CheckValidConnection(string connectionId, Guid sessionId, IClientProxy clientProxy)
