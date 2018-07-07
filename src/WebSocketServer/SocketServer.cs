@@ -16,9 +16,9 @@ namespace WebSocketServer
     {
         Guid GetSessionId(string connectionId);
         void Remove(string connectionId);
-        bool CheckValidConnection(string connectionId, Guid sessionId);
+        bool CheckValidConnection(string connectionId, Guid sessionId, IClientProxy clientProxy);
 
-        Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy);
+        Task<AuthenticationResponse> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy);
         Task HandleClientMessageAsync(string connectionId, ClientRequest clientRequest);
     }
 
@@ -53,9 +53,16 @@ namespace WebSocketServer
 
         public void Remove(string connectionId)
         {
+            _logger.Debug($"Trying to remove connectionId '{connectionId}'");
             if (_connectionMap.ContainsKey(connectionId))
             {
-                _connectionMap.TryRemove(connectionId, out Connection connection);
+                var success = _connectionMap.TryRemove(connectionId, out Connection connection);
+                var msg = success ? "Successfully removed connection id" : "Was not able to remove connection id";
+                _logger.Debug(msg);
+            }
+            else
+            {
+                _logger.Debug($"Could not find connectionId '{connectionId}'");
             }
         }
 
@@ -70,8 +77,9 @@ namespace WebSocketServer
             throw new ArgumentException($"Connection-id '{connectionId}' was not found.");
         }
 
-        public bool CheckValidConnection(string connectionId, Guid sessionId)
+        public bool CheckValidConnection(string connectionId, Guid sessionId, IClientProxy clientProxy)
         {
+            _logger.Debug($"Validating connection - connectionId: '{connectionId}'. sessionId: '{sessionId}'");
             if (_connectionMap.ContainsKey(connectionId))
             {
                 return true;
@@ -81,13 +89,14 @@ namespace WebSocketServer
             {
                 _logger.Info("Refreshing connection map based on previous session");
                 var connection = _sessionMap[sessionId];
+                connection.ConnectionId = connectionId;
+                connection.Client = clientProxy;
                 if (RegisterNewConnection(connection))
                 {
-                    connection.ConnectionId = connectionId;
                     return true;
                 }
             }
-
+            _logger.Debug("Not valid connection");
             return false;
         }
 
@@ -109,8 +118,9 @@ namespace WebSocketServer
             }
         }
 
-        public async Task<bool> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy)
+        public async Task<AuthenticationResponse> AuthenticateAsync(AuthentificationRequest request, IClientProxy clientProxy)
         {
+            _logger.Debug($"Attempting to authenticate connection '{request.ConnectionId}'");
             var identity = await _authenticator.AuthenticateAsync(request).ConfigureAwait(false);
             if (identity != null)
             {
@@ -122,9 +132,12 @@ namespace WebSocketServer
                     Client = clientProxy
                 };
 
-                return RegisterNewConnection(connection) && RegisterNewSession(connection);
+                if (RegisterNewConnection(connection) && RegisterNewSession(connection))
+                {
+                    return new AuthenticationResponse { Success = true, SessionId = connection.SessionId };
+                }
             }
-            return false;
+            return new AuthenticationResponse { Success = false };
         }
 
         private bool RegisterNewConnection(Connection connection)

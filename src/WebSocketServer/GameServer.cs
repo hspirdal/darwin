@@ -50,8 +50,8 @@ namespace WebSocketServer
                     nextGameTick = DateTime.UtcNow.AddSeconds(1) - diff;
 
                     await _actionResolver.ResolveAsync().ConfigureAwait(false);
-
-                    foreach (var connection in _socketServer.GetConnections())
+                    var connections = _socketServer.GetConnections();
+                    foreach (var connection in connections)
                     {
                         var player = await _playerRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
                         if (player.GameState == GameState.InGame)

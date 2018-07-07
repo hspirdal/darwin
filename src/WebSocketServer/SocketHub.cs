@@ -11,10 +11,17 @@ namespace WebSocketServer
     public class SocketHub : Hub
     {
         private readonly IClientRegistry _clientRegistry;
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         public SocketHub(IClientRegistry clientRegistry)
         {
             _clientRegistry = clientRegistry;
+
+            _jsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
         }
 
         public override Task OnConnectedAsync()
@@ -35,54 +42,66 @@ namespace WebSocketServer
             return base.OnDisconnectedAsync(exception);
         }
 
+        public async Task AutenticateAsync(string authenticationRequest)
+        {
+            var request = JsonConvert.DeserializeObject<TcpGameServer.Contracts.AuthenticationRequest>(authenticationRequest, _jsonSerializerSettings);
+            if (request != null)
+            {
+                var auth = new AuthentificationRequest { UserName = request.UserName, Password = request.Password, ConnectionId = Context.ConnectionId };
+                var proxyClient = Clients.Client(Context.ConnectionId);
+                var response = await _clientRegistry.AuthenticateAsync(auth, proxyClient).ConfigureAwait(false);
+                Console.WriteLine($"Performed client authentification. Success: {response.Success}. SessionId: {response.SessionId}");
+                await Clients.Caller.SendAsync("authenticate", JsonConvert.SerializeObject(response)).ConfigureAwait(false);
+                return;
+            }
+            await RespondMalformedRequestAsync().ConfigureAwait(false);
+        }
+
         public async Task SendAsync(string message)
         {
             var connectionId = Context.ConnectionId;
-            var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(message);
-            if (clientRequest == null)
+            var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(message, _jsonSerializerSettings);
+            if (clientRequest == null || clientRequest.SessionId == Guid.Empty)
             {
                 await RespondMalformedRequestAsync().ConfigureAwait(false);
             }
 
-            if (_clientRegistry.CheckValidConnection(connectionId, clientRequest.SessionId))
-            {
+            Console.WriteLine($"Incoming request: Name: '{clientRequest.RequestName}'. SessionId: '{clientRequest.SessionId}' Payload: '{clientRequest.Payload}'");
 
-                await _clientRegistry.HandleClientMessageAsync(connectionId, clientRequest).ConfigureAwait(false);
+            var proxyClient = Clients.Client(Context.ConnectionId);
+            if (_clientRegistry.CheckValidConnection(connectionId, clientRequest.SessionId, proxyClient))
+            {
+                if (clientRequest.RequestName != "Connection.Refresh")
+                {
+                    await _clientRegistry.HandleClientMessageAsync(connectionId, clientRequest).ConfigureAwait(false);
+                }
+                await RespondRequestAcceptedAsync().ConfigureAwait(false);
             }
             else
             {
-                await TempAuthenticate(message).ConfigureAwait(false);
+                await RespondNotAuthenticatedAsync().ConfigureAwait(false);
             }
-        }
-
-        private async Task TempAuthenticate(string json)
-        {
-            Console.WriteLine("begin auth: " + json);
-            var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(json);
-            var connectionString = clientRequest.Payload;
-            var kvp = connectionString.Split(';');
-            var request = new AuthentificationRequest
-            {
-                UserName = kvp[0],
-                Password = kvp[1],
-                ConnectionId = Context.ConnectionId,
-            };
-
-            var proxyClient = Clients.Client(Context.ConnectionId);
-
-            Console.WriteLine("Trying to auth..");
-            var success = await _clientRegistry.AuthenticateAsync(request, proxyClient).ConfigureAwait(false);
-            var msg = success ? "Authenticated successfully" : "Could not authenticate";
-            Console.WriteLine(msg);
-            var sessionId = _clientRegistry.GetSessionId(Context.ConnectionId);
-            var response = new ServerResponse { Type = "string", Message = msg, Payload = $"SessionId: {sessionId}" };
-            var serializedResponse = JsonConvert.SerializeObject(response);
-            await proxyClient.SendAsync("direct", serializedResponse).ConfigureAwait(false);
         }
 
         private Task RespondMalformedRequestAsync()
         {
-            return Clients.Caller.SendAsync("direct", "Malformed request");
+            return SendClientResponseAsync("direct", new ServerResponse("Request malformed"));
+        }
+
+        private Task RespondNotAuthenticatedAsync()
+        {
+            return SendClientResponseAsync("direct", new ServerResponse("Not authenticated"));
+        }
+
+        private Task RespondRequestAcceptedAsync()
+        {
+            return SendClientResponseAsync("direct", new ServerResponse("Request accepted"));
+        }
+
+        private Task SendClientResponseAsync(string channel, ServerResponse response)
+        {
+            var json = JsonConvert.SerializeObject(response);
+            return Clients.Caller.SendAsync(channel, json);
         }
     }
 }
