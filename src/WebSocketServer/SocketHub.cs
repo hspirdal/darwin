@@ -90,7 +90,7 @@ namespace WebSocketServer
 
         private Task RespondNotAuthenticatedAsync()
         {
-            return SendClientResponseAsync("direct", new ServerResponse("Not authenticated"));
+            return SendClientResponseAsync("direct", new ServerResponse("Not authenticated") { Type = "NotAuthenticated" });
         }
 
         private Task RespondRequestAcceptedAsync()

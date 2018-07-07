@@ -4,6 +4,7 @@
 </template>
 <script>
 export default {
+  /*eslint no-console: [off] */
   data() {
     return {
       connection: null,
@@ -24,6 +25,11 @@ export default {
         if (status) {
           this.$store.commit("gamestatus/setStatus", status);
         }
+      } else if (response.Type === "NotAuthenticated") {
+        // Server might have restarted and purged active session list.
+        console.log(response.Message + "\nPayload: " + response.Payload);
+        sessionStorage.removeItem("sessionId");
+        location.reload();
       } else {
         console.log(response.Message + "\nPayload: " + response.Payload);
       }
