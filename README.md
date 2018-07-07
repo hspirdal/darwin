@@ -10,5 +10,7 @@ Prototype project for a bot-friendly multiplayer game to learn some l33t w3bskyl
 
 ## Credits
 http://ondras.github.io/rot.js/hp/ (Used for some basic tile rendering)
+
 https://bitbucket.org/FaronBracy/roguesharp (Used for random map generation)
+
 https://www.thepolyglotdeveloper.com/2018/04/simple-user-login-vuejs-web-application/
