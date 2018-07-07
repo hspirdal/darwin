@@ -1,19 +1,23 @@
 <template>
-    <div>
+    <div id="game">
         <h1>Mah Vue Client</h1>
         <Network ref="network"/>
         <Input v-on:key-pressed="onKeyPressed"/>
+        <Display/>
     </div>
 </template>
 
 <script>
 import Network from "./Network";
 import Input from "./Input";
+import Display from "./Display";
 
 export default {
+  name: "Game",
   components: {
     Network,
-    Input
+    Input,
+    Display
   },
   methods: {
     onKeyPressed: function(key) {
@@ -34,3 +38,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+#game {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 20px;
+  margin-top: 10px;
+}
+</style>

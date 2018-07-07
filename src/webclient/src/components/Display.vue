@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <p>{{ renderMap }}</p>
+    <div id="display">
+        <div id="renderMap">{{ renderMap }}</div>
         <p>Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</p>
     </div>
 </template>
@@ -9,6 +9,7 @@
 import ROT from "rot-js";
 
 export default {
+  name: "display",
   data() {
     return {
       display: null
@@ -17,6 +18,8 @@ export default {
   mounted: function() {
     this.display = new ROT.Display({ width: 100, height: 40 });
     document.body.appendChild(this.display.getContainer());
+    this.display.getContainer().style.cssText =
+      "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block;width: 1024px;";
   },
   computed: {
     renderMap: function() {
