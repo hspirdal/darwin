@@ -15,7 +15,7 @@ export default {
     };
   },
   mounted: function() {
-    this.display = new ROT.Display({ width: 15, height: 30 });
+    this.display = new ROT.Display({ width: 100, height: 40 });
     document.body.appendChild(this.display.getContainer());
   },
   computed: {
@@ -23,6 +23,7 @@ export default {
       var map = this.$store.getters["gamestatus/map"];
       var posx = this.$store.getters["gamestatus/x"];
       var posy = this.$store.getters["gamestatus/y"];
+
       if (map && this.display) {
         map.VisibleCells.forEach(cell => {
           var cellSymbol = cell.IsWalkable ? " " : "#";
