@@ -38,6 +38,15 @@ namespace Darwin.Api
         options.SuppressModelStateInvalidFilter = false;
       });
 
+      services.AddCors(options => options.AddPolicy("CorsPolicy",
+      builder =>
+      {
+        builder.AllowAnyMethod().AllowAnyHeader()
+                     .WithOrigins("http://localhost:5001")
+                     .WithOrigins("http://localhost:8080")
+                     .AllowCredentials();
+      }));
+
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new Info { Title = "Darwin API", Version = "v1" });
@@ -64,6 +73,8 @@ namespace Darwin.Api
       {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Darwin API v1");
       });
+
+      app.UseCors("CorsPolicy");
 
       app.UseMvc();
     }
