@@ -91,7 +91,9 @@ namespace Darwin.Api
       {
         var configuration = new ConfigurationOptions { ResolveDns = true };
         configuration.EndPoints.Add(Configuration["RedisHost"]);
-        return ConnectionMultiplexer.Connect(configuration);
+        var connectionMultiplexer = ConnectionMultiplexer.Connect(configuration);
+        connectionMultiplexer.PreserveAsyncOrder = false;
+        return connectionMultiplexer;
       });
     }
   }
