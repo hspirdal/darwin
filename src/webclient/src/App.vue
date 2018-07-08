@@ -25,9 +25,11 @@ export default {
   methods: {
     setAuthenticated(status) {
       this.authenticated = status;
+      console.log("setting session to " + status);
     },
     logout() {
-      this.authenticated = false;
+      sessionStorage.removeItem("sessionId");
+      this.setAuthenticated(false);
     },
     checkAuthentication() {
       var sessionId = sessionStorage.getItem("sessionId");

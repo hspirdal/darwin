@@ -27,7 +27,6 @@ namespace WebSocketServer
     public override Task OnConnectedAsync()
     {
       var connectionId = Context.ConnectionId;
-      var clientProxy = Clients.Client(connectionId);
       Console.WriteLine($"{connectionId} connected.");
 
       return base.OnConnectedAsync();
@@ -49,6 +48,7 @@ namespace WebSocketServer
       if (clientRequest == null || clientRequest.SessionId == Guid.Empty)
       {
         await RespondMalformedRequestAsync().ConfigureAwait(false);
+        return;
       }
 
       Console.WriteLine($"Incoming request: Name: '{clientRequest.RequestName}'. SessionId: '{clientRequest.SessionId}' Payload: '{clientRequest.Payload}'");
