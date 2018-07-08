@@ -36,7 +36,6 @@ export default {
               sessionStorage.setItem("sessionId", response.data.sessionId);
               this.$emit("authenticated", true);
               this.$router.replace({ name: "game" });
-              console.log(response);
             } else {
               console.log("Failed to log in!");
             }
