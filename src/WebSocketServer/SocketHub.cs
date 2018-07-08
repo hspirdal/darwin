@@ -57,10 +57,7 @@ namespace WebSocketServer
       var success = await _clientRegistry.CheckValidConnectionAsync(connectionId, clientRequest.SessionId, proxyClient).ConfigureAwait(false);
       if (success)
       {
-        if (clientRequest.RequestName != "Connection.Refresh")
-        {
-          await _clientRegistry.HandleClientMessageAsync(connectionId, clientRequest).ConfigureAwait(false);
-        }
+        await _clientRegistry.HandleClientMessageAsync(connectionId, clientRequest).ConfigureAwait(false);
         await RespondRequestAcceptedAsync().ConfigureAwait(false);
       }
       else
