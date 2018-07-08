@@ -9,17 +9,15 @@
 
 <script>
 export default {
+  /*eslint no-console: [off] */
   name: "App",
   data() {
     return {
-      authenticated: false,
-      mockAccount: {
-        username: "arch",
-        password: "1234"
-      }
+      authenticated: false
     };
   },
   mounted() {
+    this.checkAuthentication();
     if (!this.authenticated) {
       this.$router.replace({ name: "login" });
     }
@@ -30,6 +28,15 @@ export default {
     },
     logout() {
       this.authenticated = false;
+    },
+    checkAuthentication() {
+      var sessionId = sessionStorage.getItem("sessionId");
+      console.log("session contents: " + sessionId);
+      if (sessionId === null || Object.keys(sessionId) === 0) {
+        this.authenticated = false;
+      } else {
+        this.authenticated = true;
+      }
     }
   }
 };

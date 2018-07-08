@@ -35,42 +35,14 @@ export default {
       }
     });
 
-    this.connection.on("authenticate", data => {
-      console.log(data);
-      var response = JSON.parse(data);
-      if (response.Success) {
-        console.log(
-          "Successfully logged on. Session id: " + response.SessionId
-        );
-        sessionStorage.setItem("sessionId", response.SessionId);
-        var o = {
-          RequestName: "lobby.newgame",
-          SessionId: response.SessionId
-        };
-        this.connection.invoke("SendAsync", JSON.stringify(o));
-      }
+    this.connection.start().then(() => {
+      var sessionId = sessionStorage.getItem("sessionId");
+      var o = {
+        RequestName: "lobby.newgame",
+        SessionId: sessionId
+      };
+      this.connection.invoke("SendAsync", JSON.stringify(o));
     });
-
-    var sessionId = sessionStorage.getItem("sessionId");
-    console.log("session contents: " + sessionId);
-    if (sessionId === null || Object.keys(sessionId) === 0) {
-      console.log("Performing authentification..");
-      this.connection.start().then(() => {
-        var o = {
-          UserName: "arch",
-          Password: "1234"
-        };
-        this.connection.invoke("AutenticateAsync", JSON.stringify(o));
-      });
-    } else {
-      this.connection.start().then(() => {
-        var o = {
-          RequestName: "Connection.Refresh",
-          SessionId: sessionId
-        };
-        this.connection.invoke("SendAsync", JSON.stringify(o));
-      });
-    }
   },
   methods: {
     move(movementDirection) {
