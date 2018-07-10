@@ -9,13 +9,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{9D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin.Api", "src\Services\Darwin.Api\Darwin.Api.csproj", "{467A2874-2A32-4401-868B-0E110E8001AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpGameServer.Contracts", "src\TcpGameServer.Contracts\TcpGameServer.Contracts.csproj", "{BACDF06A-42FD-4DC1-9251-1F005D72486F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Contracts", "src\GameServer.Contracts\GameServer.Contracts.csproj", "{BACDF06A-42FD-4DC1-9251-1F005D72486F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C17D6E72-9B2A-4BE9-BDED-2DAA6D9718CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLib.Tests", "tests\GameLib.Tests\GameLib.Tests.csproj", "{AFF289DE-B9E0-4D05-B77D-059A0A7EF395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketServer", "src\WebSocketServer\WebSocketServer.csproj", "{D63E39D1-C644-4E20-8C94-EDC2544110FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsocketServer.Tests", "tests\WebsocketServer.Tests\WebsocketServer.Tests.csproj", "{80D7C398-011B-49DA-8B05-573A15B51F73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +80,18 @@ Global
 		{D63E39D1-C644-4E20-8C94-EDC2544110FC}.Release|x64.Build.0 = Release|Any CPU
 		{D63E39D1-C644-4E20-8C94-EDC2544110FC}.Release|x86.ActiveCfg = Release|Any CPU
 		{D63E39D1-C644-4E20-8C94-EDC2544110FC}.Release|x86.Build.0 = Release|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Debug|x64.Build.0 = Debug|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Debug|x86.Build.0 = Debug|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Release|x64.ActiveCfg = Release|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Release|x64.Build.0 = Release|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Release|x86.ActiveCfg = Release|Any CPU
+		{80D7C398-011B-49DA-8B05-573A15B51F73}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9D265654-F8A8-41A1-89B7-127FDD522279} = {0A557B44-C054-4156-9D79-A45D7BE1FF02}
@@ -85,5 +99,6 @@ Global
 		{BACDF06A-42FD-4DC1-9251-1F005D72486F} = {0A557B44-C054-4156-9D79-A45D7BE1FF02}
 		{AFF289DE-B9E0-4D05-B77D-059A0A7EF395} = {C17D6E72-9B2A-4BE9-BDED-2DAA6D9718CD}
 		{D63E39D1-C644-4E20-8C94-EDC2544110FC} = {0A557B44-C054-4156-9D79-A45D7BE1FF02}
+		{80D7C398-011B-49DA-8B05-573A15B51F73} = {C17D6E72-9B2A-4BE9-BDED-2DAA6D9718CD}
 	EndGlobalSection
 EndGlobal
