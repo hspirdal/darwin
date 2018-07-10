@@ -30,6 +30,7 @@ namespace WebSocketServer
       builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
       builder.RegisterType<PositionRepository>().As<IPositionRepository>().SingleInstance();
       builder.RegisterType<GameStateRepository>().As<IGameStateRepository>().SingleInstance();
+      builder.RegisterType<ConnectionStore>().As<IConnectionStore>().SingleInstance();
       builder.RegisterType<Authenticator>().As<IAuthenticator>();
       builder.RegisterType<MapGenerator>().As<IMapGenerator>();
       builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();

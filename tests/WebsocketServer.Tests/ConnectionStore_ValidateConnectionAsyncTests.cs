@@ -19,7 +19,7 @@ namespace WebsocketServer.Tests
     private Mock<IClientProxy> _clientProxy;
 
     [TestInitialize]
-    public void GivenAnEmptyConnectionStore()
+    public void GivenAConnectionStore()
     {
       _container = AutoMock.GetLoose();
       _store = _container.Create<ConnectionStore>();
@@ -46,15 +46,34 @@ namespace WebsocketServer.Tests
     {
       var connectionId = Guid.NewGuid().ToString();
       var sessionId = Guid.NewGuid();
-      var repository = _container.Mock<IIdentityRepository>();
-      repository.Setup(i => i.GetAllAsync()).ReturnsAsync(new List<Identity> { new Identity { SessionId = sessionId } });
 
-      var nullConnection = _store.GetById(sessionId);
+      _store.RegisterNewConnection(new Connection { ConnectionId = "arbitrary", SessionId = sessionId, Client = _clientProxy.Object });
+
+      var nullConnection = _store.GetById(connectionId);
       var success = await _store.ValidateConnectionAsync(connectionId, sessionId, _clientProxy.Object);
-      var validConnection = _store.GetById(sessionId);
+      var validConnection = _store.GetById(connectionId);
 
       Assert.IsNull(nullConnection);
       Assert.IsNotNull(validConnection);
+    }
+
+    [TestMethod]
+    public async Task WhenSessionIsValidButConnectionIdIsNotKnown_ThenClientProxyIsUpdatedInBothSessionAndConnectionMap()
+    {
+      var connectionId = Guid.NewGuid().ToString();
+      var sessionId = Guid.NewGuid();
+      var newProxyClient = _container.Mock<IClientProxy>();
+
+      _store.RegisterNewConnection(new Connection { ConnectionId = "arbitrary", SessionId = sessionId, Client = _clientProxy.Object });
+
+      var oldClient = _store.GetById(sessionId).Client;
+      var success = await _store.ValidateConnectionAsync(connectionId, sessionId, newProxyClient.Object);
+      var connectionFromSessionId = _store.GetById(sessionId);
+      var connectionFromConnectionId = _store.GetById(connectionId);
+
+      Assert.AreSame(_clientProxy.Object, oldClient);
+      Assert.AreSame(newProxyClient.Object, connectionFromConnectionId.Client);
+      Assert.AreSame(newProxyClient.Object, connectionFromSessionId.Client);
     }
 
     [TestMethod]
