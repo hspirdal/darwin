@@ -30,10 +30,16 @@ export default {
       if (map && this.display) {
         map.VisibleCells.forEach(cell => {
           var cellSymbol = cell.IsWalkable ? " " : "#";
+          var color = "rgb(127, 127, 127)";
+          if (cell.Visitor) {
+            cellSymbol = "P";
+            color = "rgb(255, 0, 0)";
+          }
           if (cell.X == posx && cell.Y == posy) {
             cellSymbol = "@";
+            color = "rgb(255, 255, 255)";
           }
-          this.display.draw(cell.X, cell.Y, cellSymbol, "rgb(127, 127, 127)");
+          this.display.draw(cell.X, cell.Y, cellSymbol, color);
         });
       }
       return "";

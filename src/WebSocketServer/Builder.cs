@@ -28,7 +28,6 @@ namespace WebSocketServer
       builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
       builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
       builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
-      builder.RegisterType<PositionRepository>().As<IPositionRepository>().SingleInstance();
       builder.RegisterType<GameStateRepository>().As<IGameStateRepository>().SingleInstance();
       builder.RegisterType<ConnectionStore>().As<IConnectionStore>().SingleInstance();
       builder.RegisterType<Authenticator>().As<IAuthenticator>();
@@ -71,7 +70,7 @@ namespace WebSocketServer
     {
       builder.Register<ActionResolver>(c =>
       {
-        var movementResolver = new MovementResolver(c.Resolve<IPositionRepository>(), c.Resolve<PlayArea>());
+        var movementResolver = new MovementResolver(c.Resolve<IPlayerRepository>(), c.Resolve<PlayArea>());
         var resolverMap = new Dictionary<string, IResolver>
           {
                     { movementResolver.ActionName, movementResolver }

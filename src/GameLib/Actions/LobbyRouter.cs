@@ -14,15 +14,13 @@ namespace GameLib.Actions
   public class LobbyRouter : ILobbyRouter
   {
     private readonly IPlayerRepository _playerRepository;
-    private readonly IPositionRepository _positionRepository;
     private readonly IGameStateRepository _gameStateRepository;
     private readonly PlayArea _playArea;
 
-    public LobbyRouter(IPlayerRepository playerRepository, IPositionRepository positionRepository,
+    public LobbyRouter(IPlayerRepository playerRepository,
     IGameStateRepository gameStateRepository, PlayArea playArea)
     {
       _playerRepository = playerRepository;
-      _positionRepository = positionRepository;
       _gameStateRepository = gameStateRepository;
       _playArea = playArea;
     }
@@ -34,13 +32,14 @@ namespace GameLib.Actions
       {
         Console.WriteLine("Spawning player..");
         var cell = GetRandomOpenCell();
-        await _positionRepository.SetPositionAsync(clientId, cell.X, cell.Y).ConfigureAwait(false);
         var player = _playerRepository.GetById(clientId);
+        player.Position.SetPosition(cell.X, cell.Y);
+        await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
         var playerMap = _playArea.GameMap.Clone();
         _gameStateRepository.SetMapById(player.Id, playerMap);
 
         player.GameState = GameState.InGame;
-        await _playerRepository.AddPlayerAsync(player).ConfigureAwait(false);
+        await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
       }
     }
 

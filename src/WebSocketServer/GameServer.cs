@@ -7,6 +7,8 @@ using GameLib.Area;
 using GameLib.Players;
 using TcpGameServer.Contracts.Area;
 using TcpGameServer.Contracts;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace WebSocketServer
 {
@@ -19,19 +21,17 @@ namespace WebSocketServer
   {
     private readonly ISocketServer _socketServer;
     private readonly IActionRepository _actionRepository;
-    private readonly IPositionRepository _positionRepository;
     private readonly IActionResolver _actionResolver;
     private readonly PlayArea _playArea;
     private readonly IPlayerRepository _playerRepository;
     private readonly IGameStateRepository _gameStateRepository;
     private readonly GameConfiguration _gameConfiguration;
 
-    public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IPositionRepository positionRepository, IActionResolver actionResolver,
+    public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
         PlayArea playArea, IPlayerRepository playerRepository, IGameStateRepository gameStateRepository, GameConfiguration gameConfiguration)
     {
       _socketServer = socketServer;
       _actionRepository = actionRepository;
-      _positionRepository = positionRepository;
       _actionResolver = actionResolver;
       _playArea = playArea;
       _playerRepository = playerRepository;
@@ -53,12 +53,15 @@ namespace WebSocketServer
 
           await _actionResolver.ResolveAsync().ConfigureAwait(false);
           var connections = _socketServer.ActiveConnections;
+          var players = await _playerRepository.GetAllPlayersAsync().ConfigureAwait(false);
+          var playerMap = players.ToDictionary(i => i.Id);
+          var activePlayers = players.Where(i => i.GameState == GameState.InGame).ToList();
           foreach (var connection in connections)
           {
-            var player = await _playerRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
+            var player = playerMap[connection.Id];
             if (player.GameState == GameState.InGame)
             {
-              var response = await TempCreateStatusResponseAsync(connection).ConfigureAwait(false);
+              var response = TempCreateStatusResponse(connection, activePlayers);
               await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
             }
           }
@@ -66,9 +69,10 @@ namespace WebSocketServer
       }
     }
 
-    private async Task<ServerResponse> TempCreateStatusResponseAsync(Connection connection)
+    private ServerResponse TempCreateStatusResponse(Connection connection, List<Player> activePlayers)
     {
-      var pos = await _positionRepository.GetByIdAsync(connection.Id).ConfigureAwait(false);
+      var player = activePlayers.Single(i => i.Id == connection.Id);
+      var pos = player.Position;
       var map = _gameStateRepository.GetMapById(connection.Id);
       const int LightRadius = 8;
       map.ComputeFov(pos.X, pos.Y, LightRadius);
@@ -78,6 +82,19 @@ namespace WebSocketServer
         Y = pos.Y,
         Map = new TcpGameServer.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = map.GetVisibleCells() }
       };
+
+      foreach (var otherPlayer in activePlayers.Where(i => i.Id != connection.Id))
+      {
+        foreach (var cell in status.Map.VisibleCells)
+        {
+          var p = otherPlayer.Position;
+          if (cell.X == p.X && cell.Y == p.Y)
+          {
+            cell.Visitor = new Entity { Name = otherPlayer.Name, Type = "Player" };
+          }
+        }
+      }
+
       var response = new ServerResponse
       {
         Type = nameof(GameStatus).ToLower(),
