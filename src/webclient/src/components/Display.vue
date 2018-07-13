@@ -1,6 +1,6 @@
 <template>
     <div id="display">
-        <div id="renderMap">{{ renderMap }}</div>
+			<div id="container">{{ renderMap }}</div>
         <p>Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</p>
     </div>
 </template>
@@ -31,6 +31,15 @@ export default {
       averageRender: 0,
       ticksRunning: 0
     };
+  },
+  mounted: function() {
+    // var ctx = canvas.getContext("2d");
+    // ctx.textAlign = "center";
+    // for (var w = 0; w < canvas.width; w += 100) {
+    //   for (var h = 0; h < canvas.height; h += 100) {
+    //     ctx.fillText(w + "," + h, w, h);
+    //   }
+    // }
   },
   computed: {
     renderMap: function() {
@@ -130,10 +139,19 @@ export default {
         width: width,
         height: height
       });
-      document.body.appendChild(this.display.getContainer());
+      var container = document.getElementById("container");
+      container.appendChild(this.display.getContainer());
       this.display.getContainer().style.cssText =
-        "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block;width: 1024px;";
+        "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block; width: 1600px; height: 1600px;";
     }
   }
 };
 </script>
+<style scoped>
+#container {
+  width: 600px;
+  height: 600px;
+  overflow: auto;
+  border: 1px solid;
+}
+</style>
