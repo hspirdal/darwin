@@ -26,20 +26,21 @@ export default {
       mapInitiated: false,
       map: Create2DArray(0),
       lastVisibleCells: new Array(),
+      container: {
+        width: 600,
+        height: 600,
+        gameResolution: {
+          width: 1600,
+          height: 1600
+        },
+        halfWidth: 300,
+        halfHeight: 300
+      },
       averageClear: 0,
       averageUpdate: 0,
       averageRender: 0,
       ticksRunning: 0
     };
-  },
-  mounted: function() {
-    // var ctx = canvas.getContext("2d");
-    // ctx.textAlign = "center";
-    // for (var w = 0; w < canvas.width; w += 100) {
-    //   for (var h = 0; h < canvas.height; h += 100) {
-    //     ctx.fillText(w + "," + h, w, h);
-    //   }
-    // }
   },
   computed: {
     renderMap: function() {
@@ -56,6 +57,8 @@ export default {
         this.initRender(map.Width, map.Height);
         this.mapInitiated = true;
       }
+
+      this.centerPlayer(posx, posy, map.Width, map.Height);
 
       var pre_clear = performance.now();
       var cellsToRender = new Array();
@@ -142,7 +145,20 @@ export default {
       var container = document.getElementById("container");
       container.appendChild(this.display.getContainer());
       this.display.getContainer().style.cssText =
-        "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block; width: 1600px; height: 1600px;";
+        "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block; width: " +
+        this.container.gameResolution.width +
+        "px; height: " +
+        this.container.gameResolution.height +
+        "px";
+    },
+    centerPlayer(posx, posy, mapWidth, mapHeight) {
+      var container = document.getElementById("container");
+      var normx = posx / mapWidth;
+      var normy = posy / mapHeight;
+      container.scrollTo(
+        normx * this.container.gameResolution.width - this.container.halfWidth,
+        normy * this.container.gameResolution.width - this.container.halfHeight
+      );
     }
   }
 };
@@ -151,7 +167,7 @@ export default {
 #container {
   width: 600px;
   height: 600px;
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid;
 }
 </style>
