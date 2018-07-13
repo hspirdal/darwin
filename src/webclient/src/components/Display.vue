@@ -24,7 +24,7 @@ export default {
     return {
       display: null,
       mapInitiated: false,
-      map: Create2DArray(50),
+      map: Create2DArray(0),
       lastVisibleCells: new Array(),
       averageClear: 0,
       averageUpdate: 0,
@@ -32,24 +32,19 @@ export default {
       ticksRunning: 0
     };
   },
-  mounted: function() {
-    this.display = new ROT.Display({ width: 100, height: 40 });
-    document.body.appendChild(this.display.getContainer());
-    this.display.getContainer().style.cssText =
-      "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block;width: 1024px;";
-  },
   computed: {
     renderMap: function() {
       var map = this.$store.getters["gamestatus/map"];
       var posx = this.$store.getters["gamestatus/x"];
       var posy = this.$store.getters["gamestatus/y"];
 
-      if (!map || !this.display) {
+      if (!map) {
         return;
       }
 
       if (!this.mapInitiated) {
         this.initMap(map.Width, map.Height);
+        this.initRender(map.Width, map.Height);
         this.mapInitiated = true;
       }
 
@@ -116,6 +111,7 @@ export default {
   },
   methods: {
     initMap(width, height) {
+      this.map = Create2DArray(width);
       for (var y = 0; y < height; ++y) {
         for (var x = 0; x < width; ++x) {
           this.map[y][x] = {
@@ -128,6 +124,15 @@ export default {
           };
         }
       }
+    },
+    initRender(width, height) {
+      this.display = new ROT.Display({
+        width: width,
+        height: height
+      });
+      document.body.appendChild(this.display.getContainer());
+      this.display.getContainer().style.cssText =
+        "padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block;width: 1024px;";
     }
   }
 };
