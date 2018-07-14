@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="autofac" Version="4.8.1" />
+    <PackageReference Include="automapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="stackexchange.redis" Version="1.2.6" />
   </ItemGroup>
