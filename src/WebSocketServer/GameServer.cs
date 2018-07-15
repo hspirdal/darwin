@@ -23,13 +23,13 @@ namespace WebSocketServer
 		private readonly ISocketServer _socketServer;
 		private readonly IActionRepository _actionRepository;
 		private readonly IActionResolver _actionResolver;
-		private readonly PlayArea _playArea;
+		private readonly IPlayArea _playArea;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly GameConfiguration _gameConfiguration;
 		private readonly IMapper _mapper;
 
 		public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
-				PlayArea playArea, IPlayerRepository playerRepository, GameConfiguration gameConfiguration, IMapper mapper
+				IPlayArea playArea, IPlayerRepository playerRepository, GameConfiguration gameConfiguration, IMapper mapper
 		)
 		{
 			_socketServer = socketServer;
@@ -85,18 +85,6 @@ namespace WebSocketServer
 				Y = pos.Y,
 				Map = new TcpGameServer.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }
 			};
-
-			foreach (var otherPlayer in activePlayers.Where(i => i.Id != connection.Id))
-			{
-				foreach (var cell in status.Map.VisibleCells)
-				{
-					var p = otherPlayer.Position;
-					if (cell.X == p.X && cell.Y == p.Y)
-					{
-						cell.Visitor = new TcpGameServer.Contracts.Area.Entity { Name = otherPlayer.Name, Type = "Player" };
-					}
-				}
-			}
 
 			var response = new ServerResponse
 			{

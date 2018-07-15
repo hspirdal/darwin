@@ -1,7 +1,12 @@
 
 namespace GameLib.Area
 {
-	public class PlayArea
+	public interface IPlayArea
+	{
+		Map GameMap { get; set; }
+	}
+
+	public class PlayArea : IPlayArea
 	{
 		public Map GameMap { get; set; }
 	}

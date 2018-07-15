@@ -77,7 +77,7 @@ export default {
         cell.IsVisible = true;
         cell.IsExplored = true;
         cell.IsWalkable = c.IsWalkable;
-        cell.Visitor = c.Visitor;
+        cell.Content = c.Content;
         cellsToRender.push({ X: cell.X, Y: cell.Y });
 
         this.lastVisibleCells.push({ X: cell.X, Y: cell.Y });
@@ -92,7 +92,7 @@ export default {
         var backgroundColor = cell.IsVisible
           ? "rgb(255, 255, 140)"
           : "rgb(65, 65, 65)";
-        if (cell.Visitor) {
+        if (cell.Content != null && cell.Content.length > 0) {
           cellSymbol = "P";
           color = "rgb(255, 0, 0)";
         }
@@ -108,16 +108,16 @@ export default {
       this.averageClear = this.averageClear + (post_clear - pre_clear);
       this.averageUpdate = this.averageUpdate + (post_update - pre_update);
       this.averageRender = this.averageRender + (post_render - pre_render);
-      console.log(
-        "tick: " +
-          this.ticksRunning +
-          ".\nclear: " +
-          this.averageClear / this.ticksRunning +
-          ".\nupd: " +
-          this.averageUpdate / this.ticksRunning +
-          ".\nrender: " +
-          this.averageRender / this.ticksRunning
-      );
+      // console.log(
+      //   "tick: " +
+      //     this.ticksRunning +
+      //     ".\nclear: " +
+      //     this.averageClear / this.ticksRunning +
+      //     ".\nupd: " +
+      //     this.averageUpdate / this.ticksRunning +
+      //     ".\nrender: " +
+      //     this.averageRender / this.ticksRunning
+      // );
       return "";
     }
   },
@@ -130,7 +130,7 @@ export default {
             IsExplored: false,
             IsWalkable: false,
             IsVisible: false,
-            Inhabitant: null,
+            Content: null,
             X: x,
             Y: y
           };

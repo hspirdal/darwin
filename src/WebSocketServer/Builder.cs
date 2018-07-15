@@ -71,7 +71,7 @@ namespace WebSocketServer
 		{
 			builder.Register<ActionResolver>(c =>
 			{
-				var movementResolver = new MovementResolver(c.Resolve<IPlayerRepository>(), c.Resolve<PlayArea>());
+				var movementResolver = new MovementResolver(c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 										{ movementResolver.ActionName, movementResolver }
@@ -89,7 +89,7 @@ namespace WebSocketServer
 				var mapHeight = int.Parse(Environment.GetEnvironmentVariable("MapHeight"));
 				var mapGenerator = c.Resolve<IMapGenerator>();
 				return new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
-			}).SingleInstance();
+			}).As<IPlayArea>().SingleInstance();
 		}
 
 		private static void RegisterGameConfigurations(ContainerBuilder builder)

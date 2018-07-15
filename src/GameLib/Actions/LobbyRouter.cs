@@ -1,11 +1,9 @@
 using System;
-using TcpGameServer.Contracts;
-using TcpGameServer.Contracts.Area;
 using GameLib.Actions.Movement;
 using GameLib.Area;
-
 using GameLib.Players;
 using System.Threading.Tasks;
+using TcpGameServer.Contracts;
 
 namespace GameLib.Actions
 {
@@ -14,10 +12,10 @@ namespace GameLib.Actions
 	public class LobbyRouter : ILobbyRouter
 	{
 		private readonly IPlayerRepository _playerRepository;
-		private readonly PlayArea _playArea;
+		private readonly IPlayArea _playArea;
 
 		public LobbyRouter(IPlayerRepository playerRepository,
-		PlayArea playArea)
+		IPlayArea playArea)
 		{
 			_playerRepository = playerRepository;
 			_playArea = playArea;
@@ -32,20 +30,18 @@ namespace GameLib.Actions
 				var cell = GetRandomOpenCell();
 				var player = _playerRepository.GetById(clientId);
 				player.Position.SetPosition(cell.X, cell.Y);
-				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
-
 				player.GameState = GameState.InGame;
 				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
+				_playArea.GameMap.Add(cell.X, cell.Y, player);
 			}
 		}
 
-		private TcpGameServer.Contracts.Area.Cell GetRandomOpenCell()
+		private Cell GetRandomOpenCell()
 		{
 			var openCells = _playArea.GameMap.GetAllWalkableCells();
 			var random = new Random();
 			var cellIndex = random.Next(openCells.Count - 1);
-			var cell = openCells[cellIndex];
-			return new TcpGameServer.Contracts.Area.Cell { X = cell.X, Y = cell.Y, IsWalkable = cell.IsWalkable };
+			return openCells[cellIndex];
 		}
 	}
 }
