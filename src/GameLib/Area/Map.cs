@@ -14,14 +14,7 @@ namespace GameLib.Area
 		{
 			_map = map;
 			_cellContent = new CellContent[map.Height][];
-			for (var column = 0; column < map.Height; ++column)
-			{
-				_cellContent[column] = new CellContent[map.Width];
-				for (var row = 0; row < map.Width; ++row)
-				{
-					_cellContent[column][row] = new CellContent();
-				}
-			}
+			InitializeCellContent();
 		}
 
 		public int Width => _map.Width;
@@ -35,6 +28,16 @@ namespace GameLib.Area
 		public bool IsInFov(int x, int y)
 		{
 			return _map.IsInFov(x, y);
+		}
+
+		public Cell GetCell(int x, int y)
+		{
+			if (x < Width && y < Height)
+			{
+				var cell = _map.GetCell(x, y);
+				return new Cell { X = x, Y = y, IsWalkable = cell.IsWalkable, Content = _cellContent[y][x] };
+			}
+			throw new ArgumentException("X or Y was out of bounds.");
 		}
 
 		public List<Cell> GetVisibleCells()
@@ -59,14 +62,12 @@ namespace GameLib.Area
 			}).ToList();
 		}
 
-		public Cell GetCell(int x, int y)
+		public Cell GetRandomOpenCell()
 		{
-			if (x < Width && y < Height)
-			{
-				var cell = _map.GetCell(x, y);
-				return new Cell { X = x, Y = y, IsWalkable = cell.IsWalkable, Content = _cellContent[y][x] };
-			}
-			throw new ArgumentException("X or Y was out of bounds.");
+			var openCells = GetAllWalkableCells();
+			var random = new Random();
+			var cellIndex = random.Next(openCells.Count - 1);
+			return openCells[cellIndex];
 		}
 
 		public void Add(int x, int y, Entity entity)
@@ -96,5 +97,16 @@ namespace GameLib.Area
 			return new Map(_map.Clone());
 		}
 
+		private void InitializeCellContent()
+		{
+			for (var column = 0; column < _map.Height; ++column)
+			{
+				_cellContent[column] = new CellContent[_map.Width];
+				for (var row = 0; row < _map.Width; ++row)
+				{
+					_cellContent[column][row] = new CellContent();
+				}
+			}
+		}
 	}
 }

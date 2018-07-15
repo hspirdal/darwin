@@ -27,21 +27,13 @@ namespace GameLib.Actions
 			if (clientRequest.RequestName == "lobby.newgame")
 			{
 				Console.WriteLine("Spawning player..");
-				var cell = GetRandomOpenCell();
+				var cell = _playArea.GameMap.GetRandomOpenCell();
 				var player = _playerRepository.GetById(clientId);
 				player.Position.SetPosition(cell.X, cell.Y);
 				player.GameState = GameState.InGame;
 				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
 				_playArea.GameMap.Add(cell.X, cell.Y, player);
 			}
-		}
-
-		private Cell GetRandomOpenCell()
-		{
-			var openCells = _playArea.GameMap.GetAllWalkableCells();
-			var random = new Random();
-			var cellIndex = random.Next(openCells.Count - 1);
-			return openCells[cellIndex];
 		}
 	}
 }
