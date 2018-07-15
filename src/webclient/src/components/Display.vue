@@ -1,8 +1,12 @@
 <template>
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
-        <p>Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</p>
-    </div>
+			<div id="status">
+        Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}] <br />
+				Name: {{ this.$store.getters['gamestatus/name'] }} <br />
+				Level 1 Human Fighter<br />
+    	</div>
+		</div>
 </template>
 
 <script>
@@ -180,5 +184,13 @@ export default {
   height: 600px;
   overflow: hidden;
   border: 1px solid;
+  float: left;
+}
+#status {
+  width: 360px;
+  height: 600px;
+  margin-left: 600px;
+  border: 1px solid;
+  padding: 10px;
 }
 </style>
