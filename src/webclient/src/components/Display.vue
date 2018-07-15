@@ -2,17 +2,37 @@
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
 			<div id="status">
+				<h3>Character</h3>
 				<p>Name: {{ this.$store.getters['gamestatus/name'] }}<br />
 				Level: 1<br />
 				Race: Human<br />
-				Class: Fighter<br />
-        Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]<p/>
-				<p>Cell contents:</p>
+				Class: Fighter<br /></p>
+				<h3>Inventory</h3>
 				<ul>
-					<li v-for="entity in activeCellContents">
+					<li>Torch</li>
+					<li>Leather Armor</li>
+					<li>Rusty Shortsword</li>
+				</ul>
+				<h3>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h3>
+				<p>A dark stone cave.</p>
+				<div id="activecell_creatures" v-if="activeCellCreatures.length > 0">
+				<h4>Creatures</h4>
+				<ul>
+					<li v-for="entity in activeCellCreatures">
 						{{ entity.Name }}
 					</li>
 				</ul>
+				</div>
+				<div id="activecell_items" v-if="activeCellItems.length > 0">
+				<h4>Items</h4>
+				<ul>
+					<li v-for="entity in activeCellItems">
+						{{ entity.Name }}
+					</li>
+				</ul>
+				</div>
+				<h3>Commands</h3>
+				WASD to move | Space to attack creature in cell | L to loot all in cell
     	</div>
 		</div>
 </template>
@@ -43,11 +63,8 @@ export default {
       mapInitiated: false,
       map: Create2DArray(0),
       lastVisibleCells: new Array(),
-      activeCellContents: [
-        { Name: "Arch" },
-        { Name: "Torch" },
-        { Name: "Chest" }
-      ],
+      activeCellItems: [],
+      activeCellCreatures: [],
       container: {
         width: 600,
         height: 600,
@@ -83,6 +100,8 @@ export default {
       this.centerPlayer(posx, posy, map.Width, map.Height);
 
       var pre_clear = performance.now();
+      this.activeCellCreatures = new Array();
+      this.activeCellItems = new Array();
       var cellsToRender = new Array();
       this.lastVisibleCells.forEach(cell => {
         this.map[cell.Y][cell.X].IsVisible = false;
@@ -102,11 +121,15 @@ export default {
         cell.Content = c.Content;
         cellsToRender.push({ X: cell.X, Y: cell.Y });
 
+        // Update content lists for active cell
         if (cell.X == posx && cell.Y == posy && cell.Content) {
-          this.activeCellContents = new Array();
           cell.Content.forEach(entity => {
             if (entity.Name !== this.$store.getters["gamestatus/name"]) {
-              this.activeCellContents.push(entity);
+              if (entity.Type === "Item") {
+                this.activeCellItems.push(entity);
+              } else {
+                this.activeCellCreatures.push(entity);
+              }
             }
           });
         }
@@ -129,7 +152,7 @@ export default {
               cellSymbol = "I";
               color = "green";
             } else {
-              cellSymbol = "P";
+              cellSymbol = "@";
               color = "rgb(255, 0, 0)";
             }
           });
@@ -210,11 +233,14 @@ export default {
   float: left;
 }
 #status {
-  width: 360px;
-  height: 580px;
+  width: 340px;
+  height: 600px;
   margin-left: 600px;
   border: 1px solid;
-  padding: 10px;
+  padding: 0px 20px;
   font-family: Luminary, Fantasy;
+}
+#status ul {
+  list-style-type: none;
 }
 </style>
