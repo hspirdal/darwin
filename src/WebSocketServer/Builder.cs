@@ -88,7 +88,15 @@ namespace WebSocketServer
 				var mapWidth = int.Parse(Environment.GetEnvironmentVariable("MapWidth"));
 				var mapHeight = int.Parse(Environment.GetEnvironmentVariable("MapHeight"));
 				var mapGenerator = c.Resolve<IMapGenerator>();
-				return new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
+				var playArea = new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
+				// Temp until there exists a better map initialization place.
+				var itemSpawner = new ItemSpawner(playArea);
+				var totalItemsToAdd = (playArea.GameMap.Width * playArea.GameMap.Height) * 0.01;
+				for (var i = 0; i < totalItemsToAdd; ++i)
+				{
+					itemSpawner.AddRandomly();
+				}
+				return playArea;
 			}).As<IPlayArea>().SingleInstance();
 		}
 

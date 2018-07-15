@@ -97,8 +97,15 @@ export default {
           ? "rgb(255, 255, 140)"
           : "rgb(65, 65, 65)";
         if (cell.Content != null && cell.Content.length > 0) {
-          cellSymbol = "P";
-          color = "rgb(255, 0, 0)";
+          cell.Content.forEach(entity => {
+            if (entity.Type === "Item") {
+              cellSymbol = "I";
+              color = "green";
+            } else {
+              cellSymbol = "P";
+              color = "rgb(255, 0, 0)";
+            }
+          });
         }
         if (cell.X == posx && cell.Y == posy) {
           cellSymbol = "@";
