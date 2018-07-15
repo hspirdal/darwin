@@ -6,6 +6,10 @@
 </template>
 
 <script>
+/*eslint no-console: [off] */
+/*eslint vue/no-side-effects-in-computed-properties: [off] */
+// ^-- Turn off temporary until I find a better way than rendering using Computed.
+
 import ROT from "rot-js";
 
 function Create2DArray(rows) {
@@ -108,16 +112,16 @@ export default {
       this.averageClear = this.averageClear + (post_clear - pre_clear);
       this.averageUpdate = this.averageUpdate + (post_update - pre_update);
       this.averageRender = this.averageRender + (post_render - pre_render);
-      // console.log(
-      //   "tick: " +
-      //     this.ticksRunning +
-      //     ".\nclear: " +
-      //     this.averageClear / this.ticksRunning +
-      //     ".\nupd: " +
-      //     this.averageUpdate / this.ticksRunning +
-      //     ".\nrender: " +
-      //     this.averageRender / this.ticksRunning
-      // );
+      console.log(
+        "tick: " +
+          this.ticksRunning +
+          ".\nclear: " +
+          this.averageClear / this.ticksRunning +
+          ".\nupd: " +
+          this.averageUpdate / this.ticksRunning +
+          ".\nrender: " +
+          this.averageRender / this.ticksRunning
+      );
       return "";
     }
   },
