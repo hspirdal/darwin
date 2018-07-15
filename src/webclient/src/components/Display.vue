@@ -2,17 +2,24 @@
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
 			<div id="status">
-				Name: {{ this.$store.getters['gamestatus/name'] }}<br />
+				<p>Name: {{ this.$store.getters['gamestatus/name'] }}<br />
 				Level: 1<br />
 				Race: Human<br />
 				Class: Fighter<br />
-        Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]<br />
+        Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]<p/>
+				<p>Cell contents:</p>
+				<ul>
+					<li v-for="entity in activeCellContents">
+						{{ entity.Name }}
+					</li>
+				</ul>
     	</div>
 		</div>
 </template>
 
 <script>
 /*eslint no-console: [off] */
+/*eslint vue/require-v-for-key: [off] */
 /*eslint vue/no-side-effects-in-computed-properties: [off] */
 // ^-- Turn off temporary until I find a better way than rendering using Computed.
 
@@ -36,6 +43,11 @@ export default {
       mapInitiated: false,
       map: Create2DArray(0),
       lastVisibleCells: new Array(),
+      activeCellContents: [
+        { Name: "Arch" },
+        { Name: "Torch" },
+        { Name: "Chest" }
+      ],
       container: {
         width: 600,
         height: 600,
@@ -90,6 +102,15 @@ export default {
         cell.Content = c.Content;
         cellsToRender.push({ X: cell.X, Y: cell.Y });
 
+        if (cell.X == posx && cell.Y == posy && cell.Content) {
+          this.activeCellContents = new Array();
+          cell.Content.forEach(entity => {
+            if (entity.Name !== this.$store.getters["gamestatus/name"]) {
+              this.activeCellContents.push(entity);
+            }
+          });
+        }
+
         this.lastVisibleCells.push({ X: cell.X, Y: cell.Y });
       });
       var post_update = performance.now();
@@ -125,16 +146,16 @@ export default {
       this.averageClear = this.averageClear + (post_clear - pre_clear);
       this.averageUpdate = this.averageUpdate + (post_update - pre_update);
       this.averageRender = this.averageRender + (post_render - pre_render);
-      console.log(
-        "tick: " +
-          this.ticksRunning +
-          ".\nclear: " +
-          this.averageClear / this.ticksRunning +
-          ".\nupd: " +
-          this.averageUpdate / this.ticksRunning +
-          ".\nrender: " +
-          this.averageRender / this.ticksRunning
-      );
+      // console.log(
+      //   "tick: " +
+      //     this.ticksRunning +
+      //     ".\nclear: " +
+      //     this.averageClear / this.ticksRunning +
+      //     ".\nupd: " +
+      //     this.averageUpdate / this.ticksRunning +
+      //     ".\nrender: " +
+      //     this.averageRender / this.ticksRunning
+      // );
       return "";
     }
   },
@@ -190,7 +211,7 @@ export default {
 }
 #status {
   width: 360px;
-  height: 600px;
+  height: 580px;
   margin-left: 600px;
   border: 1px solid;
   padding: 10px;
