@@ -2,9 +2,11 @@
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
 			<div id="status">
-        Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}] <br />
-				Name: {{ this.$store.getters['gamestatus/name'] }} <br />
-				Level 1 Human Fighter<br />
+				Name: {{ this.$store.getters['gamestatus/name'] }}<br />
+				Level: 1<br />
+				Race: Human<br />
+				Class: Fighter<br />
+        Position [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]<br />
     	</div>
 		</div>
 </template>
@@ -192,5 +194,6 @@ export default {
   margin-left: 600px;
   border: 1px solid;
   padding: 10px;
+  font-family: Luminary, Fantasy;
 }
 </style>

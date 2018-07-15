@@ -1,6 +1,6 @@
 <template>
     <div id="game" v-if="this.$parent.authenticated">
-        <h1>Mah Vue Client</h1>
+        <h1>Darwin Game Client</h1>
         <Network ref="network"/>
         <Input v-on:key-pressed="onKeyPressed"/>
         <Display/>
