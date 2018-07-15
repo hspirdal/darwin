@@ -81,6 +81,7 @@ namespace WebSocketServer
 			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<TcpGameServer.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
 			var status = new GameStatus
 			{
+				Name = player.Name,
 				X = pos.X,
 				Y = pos.Y,
 				Map = new TcpGameServer.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }
