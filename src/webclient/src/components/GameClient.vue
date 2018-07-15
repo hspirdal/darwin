@@ -20,6 +20,11 @@ export default {
   },
   methods: {
     onKeyPressed: function(key) {
+      if (key === "l") {
+        this.$refs.network.lootAll();
+        return;
+      }
+
       var movementDirection = 0;
       if (key === "w" || key === "ArrowUp") {
         movementDirection = 2;

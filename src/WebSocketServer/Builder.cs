@@ -9,6 +9,7 @@ using GameLib.Logging;
 using GameLib.Identities;
 using GameLib.Area;
 using AutoMapper;
+using GameLib.Actions.Loot;
 
 namespace WebSocketServer
 {
@@ -58,9 +59,11 @@ namespace WebSocketServer
 			builder.Register<GameRouter>(c =>
 			{
 				var movementInserter = new MovementInserter(c.Resolve<IActionRepository>());
+				var lootAllInserter = new LootAllInserter(c.Resolve<IActionRepository>());
 				var inserterMap = new Dictionary<string, IRequestInserter>
 					{
-										{ movementInserter.ActionName, movementInserter }
+						{ movementInserter.ActionName, movementInserter },
+						{ lootAllInserter.ActionName, lootAllInserter}
 					};
 
 				return new GameRouter(c.Resolve<ILogger>(), inserterMap);
@@ -72,9 +75,11 @@ namespace WebSocketServer
 			builder.Register<ActionResolver>(c =>
 			{
 				var movementResolver = new MovementResolver(c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
-										{ movementResolver.ActionName, movementResolver }
+						{ movementResolver.ActionName, movementResolver },
+						{ lootAllResolver.ActionName, lootAllResolver }
 					};
 
 				return new ActionResolver(c.Resolve<IActionRepository>(), resolverMap);

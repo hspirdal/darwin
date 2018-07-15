@@ -76,8 +76,8 @@ namespace WebSocketServer
 			var player = activePlayers.Single(i => i.Id == connection.Id);
 			var pos = player.Position;
 			var map = _playArea.GameMap;
-			const int LightRadius = 8;
-			map.ComputeFov(pos.X, pos.Y, LightRadius);
+			var lightRadius = player.Inventory.Items.FirstOrDefault(i => i.Name == "Torch") != null ? 8 : 2;
+			map.ComputeFov(pos.X, pos.Y, lightRadius);
 			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<TcpGameServer.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
 			var p = _mapper.Map<GameLib.Players.Player, TcpGameServer.Contracts.Players.Player>(player);
 			var status = new GameStatus
