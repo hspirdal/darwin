@@ -79,9 +79,10 @@ namespace WebSocketServer
 			const int LightRadius = 8;
 			map.ComputeFov(pos.X, pos.Y, LightRadius);
 			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<TcpGameServer.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
+			var p = _mapper.Map<GameLib.Players.Player, TcpGameServer.Contracts.Players.Player>(player);
 			var status = new GameStatus
 			{
-				Name = player.Name,
+				Player = p,
 				X = pos.X,
 				Y = pos.Y,
 				Map = new TcpGameServer.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }

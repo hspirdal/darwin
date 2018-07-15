@@ -1,18 +1,20 @@
 <template>
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
-			<div id="status">
+			<div id="status" v-if="mapInitiated">
 				<h3>Character</h3>
-				<p>Name: {{ this.$store.getters['gamestatus/name'] }}<br />
+				<p>Name: {{ this.$store.getters['gamestatus/player'].Name }}<br />
 				Level: 1<br />
 				Race: Human<br />
 				Class: Fighter<br /></p>
+				<div id="inventory" v-if="mapInitiated">
 				<h3>Inventory</h3>
-				<ul>
-					<li>Torch</li>
-					<li>Leather Armor</li>
-					<li>Rusty Shortsword</li>
+				<ul v-if="inventoryItems.length > 0">
+					<li v-for="item in inventoryItems">
+						{{ item }}
+						</li>
 				</ul>
+				</div>
 				<h3>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h3>
 				<p>A dark stone cave.</p>
 				<div id="activecell_creatures" v-if="activeCellCreatures.length > 0">
@@ -63,6 +65,7 @@ export default {
       mapInitiated: false,
       map: Create2DArray(0),
       lastVisibleCells: new Array(),
+      inventoryItems: [],
       activeCellItems: [],
       activeCellCreatures: [],
       container: {
@@ -84,6 +87,7 @@ export default {
   computed: {
     renderMap: function() {
       var map = this.$store.getters["gamestatus/map"];
+      var player = this.$store.getters["gamestatus/player"];
       var posx = this.$store.getters["gamestatus/x"];
       var posy = this.$store.getters["gamestatus/y"];
 
@@ -98,6 +102,7 @@ export default {
       }
 
       this.centerPlayer(posx, posy, map.Width, map.Height);
+      this.inventoryItems = player.Inventory.Items;
 
       var pre_clear = performance.now();
       this.activeCellCreatures = new Array();

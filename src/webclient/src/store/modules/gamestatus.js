@@ -1,6 +1,6 @@
 const state = {
 	map: null,
-	name: "",
+	player: { Name: "", Inventory: { Items: [] } },
 	x: 0,
 	y: 0
 };
@@ -9,8 +9,8 @@ const getters = {
 	map(state) {
 		return state.map;
 	},
-	name(state) {
-		return state.name;
+	player(state) {
+		return state.player;
 	},
 	x(state) {
 		return state.x;
@@ -23,7 +23,7 @@ const getters = {
 const mutations = {
 	setStatus(state, status) {
 		state.map = status.Map;
-		state.name = status.Name;
+		state.player = status.Player;
 		state.x = status.X;
 		state.y = status.Y;
 	}

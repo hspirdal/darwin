@@ -6,14 +6,14 @@ using WebSocketServer.Profiles;
 namespace WebsocketServer.Tests.Profiles
 {
 	[TestClass]
-	public class CellProfileTests
+	public class InventoryProfileTests
 	{
 		[TestMethod]
-		public void WhenMappingCell_ThenMappingIsSuccessfull()
+		public void WhenMappingInventory_ThenMappingIsSuccessfull()
 		{
 			var mapperConfiguration = new MapperConfiguration(cfg =>
 			{
-				cfg.AddProfile(typeof(CellProfile));
+				cfg.AddProfile(typeof(InventoryProfile));
 			});
 
 			mapperConfiguration.AssertConfigurationIsValid();
