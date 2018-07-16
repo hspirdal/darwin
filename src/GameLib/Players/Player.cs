@@ -7,6 +7,7 @@ namespace GameLib.Players
 	{
 		public GameState GameState { get; set; }
 		public Inventory Inventory { get; set; }
+		public Position Position { get; set; }
 
 		public Player()
 		{
