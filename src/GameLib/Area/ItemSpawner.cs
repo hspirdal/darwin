@@ -1,4 +1,5 @@
 using System;
+using GameLib.Entities;
 
 namespace GameLib.Area
 {

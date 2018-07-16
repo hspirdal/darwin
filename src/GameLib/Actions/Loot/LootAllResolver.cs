@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using GameLib.Actions;
 using GameLib.Area;
-using GameLib.Players;
-using System.Linq;
 using GameLib.Logging;
+using GameLib.Entities;
 
 namespace GameLib.Actions.Loot
 {

@@ -1,6 +1,7 @@
 using System.Linq;
 using Autofac.Extras.Moq;
 using GameLib.Area;
+using GameLib.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 

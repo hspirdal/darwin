@@ -1,4 +1,4 @@
-namespace GameLib.Actions.Movement
+namespace GameLib.Properties
 {
 	public class Position
 	{

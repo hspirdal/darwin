@@ -1,8 +1,8 @@
 using System;
-using GameLib.Actions.Movement;
-using GameLib.Area;
-using GameLib.Players;
 using System.Threading.Tasks;
+using GameLib.Area;
+using GameLib.Entities;
+using GameLib.Properties;
 using TcpGameServer.Contracts;
 
 namespace GameLib.Actions

@@ -1,15 +1,16 @@
 using System;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
 using Newtonsoft.Json;
+using AutoMapper;
 using GameLib.Actions;
 using GameLib.Actions.Movement;
 using GameLib.Area;
-using GameLib.Players;
+using GameLib.Entities;
+using GameLib.Properties;
 using TcpGameServer.Contracts.Area;
 using TcpGameServer.Contracts;
-using System.Linq;
-using System.Collections.Generic;
-using AutoMapper;
 
 namespace WebSocketServer
 {
@@ -79,7 +80,7 @@ namespace WebSocketServer
 			var lightRadius = player.Inventory.Items.FirstOrDefault(i => i.Name == "Torch") != null ? 8 : 2;
 			map.ComputeFov(pos.X, pos.Y, lightRadius);
 			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<TcpGameServer.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
-			var p = _mapper.Map<GameLib.Players.Player, TcpGameServer.Contracts.Players.Player>(player);
+			var p = _mapper.Map<GameLib.Entities.Player, TcpGameServer.Contracts.Players.Player>(player);
 			var status = new GameStatus
 			{
 				Player = p,

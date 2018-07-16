@@ -6,7 +6,7 @@ namespace WebSocketServer.Profiles
 	{
 		public PlayerProfile()
 		{
-			CreateMap<GameLib.Players.Player, TcpGameServer.Contracts.Players.Player>();
+			CreateMap<GameLib.Entities.Player, TcpGameServer.Contracts.Players.Player>();
 		}
 	}
 }

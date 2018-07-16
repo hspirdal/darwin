@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using GameLib.Actions;
 using GameLib.Area;
-using GameLib.Players;
+using GameLib.Entities;
+using GameLib.Properties;
 
 namespace GameLib.Actions.Movement
 {

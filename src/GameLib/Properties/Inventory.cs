@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using GameLib.Area;
+using GameLib.Entities;
 
-namespace GameLib.Players
+namespace GameLib.Properties
 {
 	public class Inventory
 	{

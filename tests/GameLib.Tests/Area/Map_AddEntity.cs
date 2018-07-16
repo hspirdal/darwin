@@ -1,5 +1,5 @@
 using System.Linq;
-using GameLib.Area;
+using GameLib.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GameLib.Tests.Area

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Autofac;
+using AutoMapper;
 using StackExchange.Redis;
 using GameLib.Actions;
 using GameLib.Actions.Movement;
-using GameLib.Players;
+using GameLib.Entities;
+using GameLib.Properties;
 using GameLib.Logging;
 using GameLib.Identities;
 using GameLib.Area;
-using AutoMapper;
 using GameLib.Actions.Loot;
 
 namespace WebSocketServer

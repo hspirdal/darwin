@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TcpGameServer.Contracts.Area;
+using GameLib.Entities;
 
 namespace GameLib.Area
 {

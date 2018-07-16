@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GameLib.Entities;
 
 namespace GameLib.Area
 {

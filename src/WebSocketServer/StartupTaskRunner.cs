@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using GameLib.Actions;
 using GameLib.Actions.Movement;
 using GameLib.Area;
+using GameLib.Entities;
+using GameLib.Properties;
 using GameLib.Identities;
-using GameLib.Players;
 
 namespace WebSocketServer
 {

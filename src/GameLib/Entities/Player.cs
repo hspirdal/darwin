@@ -1,7 +1,6 @@
-using GameLib.Actions.Movement;
-using GameLib.Area;
+using GameLib.Properties;
 
-namespace GameLib.Players
+namespace GameLib.Entities
 {
 	public class Player : Entity
 	{

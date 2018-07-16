@@ -1,4 +1,4 @@
-namespace GameLib.Area
+namespace GameLib.Entities
 {
 	public class Item : Entity
 	{
