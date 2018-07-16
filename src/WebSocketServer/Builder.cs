@@ -59,12 +59,14 @@ namespace WebSocketServer
 		{
 			builder.Register<GameRouter>(c =>
 			{
-				var movementInserter = new MovementInserter(c.Resolve<IActionRepository>());
-				var lootAllInserter = new LootAllInserter(c.Resolve<IActionRepository>());
+				var movementInserter = new MovementInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
+				var lootAllInserter = new LootAllInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
+				var lootInserter = new LootInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
 				var inserterMap = new Dictionary<string, IRequestInserter>
 					{
 						{ movementInserter.ActionName, movementInserter },
-						{ lootAllInserter.ActionName, lootAllInserter}
+						{ lootAllInserter.ActionName, lootAllInserter},
+						{ lootInserter.ActionName, lootInserter}
 					};
 
 				return new GameRouter(c.Resolve<ILogger>(), inserterMap);
@@ -77,10 +79,12 @@ namespace WebSocketServer
 			{
 				var movementResolver = new MovementResolver(c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },
-						{ lootAllResolver.ActionName, lootAllResolver }
+						{ lootAllResolver.ActionName, lootAllResolver },
+						{ lootResolver.ActionName, lootResolver }
 					};
 
 				return new ActionResolver(c.Resolve<IActionRepository>(), resolverMap);

@@ -5,5 +5,15 @@ namespace GameLib.Actions.Movement
 	public class MovementAction : Action
 	{
 		public MovementDirection MovementDirection { get; set; }
+
+		public override bool IsValid()
+		{
+			return base.IsValid();
+		}
+
+		public override string ToString()
+		{
+			return base.ToString() + $", {nameof(MovementDirection)}: '{MovementDirection}'";
+		}
 	}
 }

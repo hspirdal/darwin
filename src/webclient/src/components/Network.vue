@@ -69,6 +69,19 @@ export default {
         })
       };
       this.connection.invoke("SendAsync", JSON.stringify(o));
+    },
+    loot(itemId) {
+      var sessionId = sessionStorage.getItem("sessionId");
+      var o = {
+        RequestName: "Action.Loot",
+        SessionId: sessionId,
+        Payload: JSON.stringify({
+          OwnerId: 1,
+          Name: "Action.Loot",
+          ItemId: itemId
+        })
+      };
+      this.connection.invoke("SendAsync", JSON.stringify(o));
     }
   }
 };
