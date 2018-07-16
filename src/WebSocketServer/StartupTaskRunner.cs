@@ -7,6 +7,7 @@ using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
 using GameLib.Identities;
+using GameLib.Properties.Stats;
 
 namespace WebSocketServer
 {
@@ -39,6 +40,12 @@ namespace WebSocketServer
 				Id = "1",
 				Name = "Jools",
 				GameState = GameState.lobby,
+				Statistics = new CharacterStatistics("Human", "Fighter", 1)
+				{
+					AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
+					AttackScores = new AttackScores(),
+					DefenseScores = new DefenseScores(8, 12)
+				},
 				Inventory = new Inventory
 				{
 					Items = new List<Item>
@@ -53,6 +60,12 @@ namespace WebSocketServer
 				Id = "2",
 				Name = "Jops",
 				GameState = GameState.lobby,
+				Statistics = new CharacterStatistics("Human", "Wizard", 1)
+				{
+					AbilityScores = new AbilityScores(8, 16, 12, 18, 9, 9),
+					AttackScores = new AttackScores(),
+					DefenseScores = new DefenseScores(10, 6)
+				},
 				Inventory = new Inventory
 				{
 					Items = new List<Item>

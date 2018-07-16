@@ -1,10 +1,13 @@
 <template>
 	<div id="status" v-if="gameStarted">
 		<h3>Character</h3>
-		<p>Name: {{ this.$store.getters['gamestatus/player'].Name }}<br />
-		Level: 1<br />
-		Race: Human<br />
-		Class: Fighter<br /></p>
+		<p>Name: {{ characterName }}<br />
+		Level: {{ characterLevel }}<br />
+		Race: {{ characterRace }}<br />
+		Class: {{ characterClass }}<br /></p>
+		<p>Str: {{ strength }}, Dex: {{ dexterity }}, Con: {{ constitution }}, Int: {{ intelligence }}, Wis: {{ wisdom }}, Cha: {{ charisma }}</p>
+		<p>Hit points: {{ characterHitPoints }} / {{ characterHitPoints }}<br/>
+		Armor Class: {{ characterArmorClass }}</p>
 		<div id="inventory" v-if="gameStarted">
 		<h3>Inventory</h3>
 		<ul v-if="inventoryItems.length > 0">
@@ -84,6 +87,50 @@ export default {
         }
       });
       return creatures;
+    },
+    characterName: function() {
+      return this.$store.getters["gamestatus/player"].Name;
+    },
+    characterRace: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.Race;
+    },
+    characterClass: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.Class;
+    },
+    characterLevel: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.Level;
+    },
+    characterArmorClass: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.DefenseScores
+        .ArmorClass;
+    },
+    characterHitPoints: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.DefenseScores
+        .HitPoints;
+    },
+    strength: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
+        .Strength;
+    },
+    dexterity: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
+        .Dexterity;
+    },
+    constitution: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
+        .Constitution;
+    },
+    intelligence: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
+        .Intelligence;
+    },
+    wisdom: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
+        .Wisdom;
+    },
+    charisma: function() {
+      return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
+        .Charisma;
     }
   }
 };
