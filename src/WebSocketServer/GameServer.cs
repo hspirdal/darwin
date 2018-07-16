@@ -9,9 +9,9 @@ using GameLib.Actions.Movement;
 using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
-using TcpGameServer.Contracts.Area;
-using TcpGameServer.Contracts;
-using TcpGameServer.Contracts.Properties;
+using Client.Contracts.Area;
+using Client.Contracts;
+using Client.Contracts.Properties;
 
 namespace WebSocketServer
 {
@@ -80,14 +80,14 @@ namespace WebSocketServer
 			var map = _playArea.GameMap;
 			var lightRadius = player.Inventory.Items.FirstOrDefault(i => i.Name == "Torch") != null ? 8 : 2;
 			map.ComputeFov(pos.X, pos.Y, lightRadius);
-			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<TcpGameServer.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
-			var p = _mapper.Map<GameLib.Entities.Player, TcpGameServer.Contracts.Entities.Player>(player);
+			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<Client.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
+			var p = _mapper.Map<GameLib.Entities.Player, Client.Contracts.Entities.Player>(player);
 			var status = new GameStatus
 			{
 				Player = p,
 				X = pos.X,
 				Y = pos.Y,
-				Map = new TcpGameServer.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }
+				Map = new Client.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }
 			};
 
 			var response = new ServerResponse

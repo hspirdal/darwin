@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{9D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin.Api", "src\Services\Darwin.Api\Darwin.Api.csproj", "{467A2874-2A32-4401-868B-0E110E8001AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Contracts", "src\GameServer.Contracts\GameServer.Contracts.csproj", "{BACDF06A-42FD-4DC1-9251-1F005D72486F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Contracts", "src\Client.Contracts\Client.Contracts.csproj", "{BACDF06A-42FD-4DC1-9251-1F005D72486F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C17D6E72-9B2A-4BE9-BDED-2DAA6D9718CD}"
 EndProject

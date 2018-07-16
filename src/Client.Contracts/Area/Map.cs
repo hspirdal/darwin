@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TcpGameServer.Contracts.Area
+namespace Client.Contracts.Area
 {
 	public class Map
 	{

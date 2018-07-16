@@ -2,7 +2,7 @@ using GameLib.Entities;
 using GameLib.Properties;
 using System;
 using System.Threading.Tasks;
-using TcpGameServer.Contracts;
+using Client.Contracts;
 
 namespace GameLib.Actions
 {

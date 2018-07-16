@@ -1,6 +1,6 @@
-using TcpGameServer.Contracts.Properties;
+using Client.Contracts.Properties;
 
-namespace TcpGameServer.Contracts.Entities
+namespace Client.Contracts.Entities
 {
 	public class Player
 	{

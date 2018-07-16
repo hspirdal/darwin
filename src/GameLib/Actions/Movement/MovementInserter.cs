@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using TcpGameServer.Contracts;
+using Client.Contracts;
 
 namespace GameLib.Actions.Movement
 {

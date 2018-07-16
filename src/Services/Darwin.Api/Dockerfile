@@ -2,7 +2,7 @@ FROM microsoft/dotnet:2.1-sdk AS build-env
 
 WORKDIR /src
 COPY Services/Darwin.Api services/api
-COPY GameServer.Contracts GameServer.Contracts
+COPY Client.Contracts Client.Contracts
 COPY GameLib GameLib
 
 WORKDIR /src/services/api

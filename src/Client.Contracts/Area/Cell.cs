@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using TcpGameServer.Contracts.Entities;
+using Client.Contracts.Entities;
 
-namespace TcpGameServer.Contracts.Area
+namespace Client.Contracts.Area
 {
 	public class Cell
 	{

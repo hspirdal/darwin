@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TcpGameServer.Contracts.Properties
+namespace Client.Contracts.Properties
 {
 	public class Inventory
 	{

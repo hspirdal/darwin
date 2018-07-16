@@ -6,7 +6,7 @@ namespace WebSocketServer.Profiles
 	{
 		public CellProfile()
 		{
-			CreateMap<GameLib.Area.Cell, TcpGameServer.Contracts.Area.Cell>()
+			CreateMap<GameLib.Area.Cell, Client.Contracts.Area.Cell>()
 			.ForMember(i => i.Content, opt => opt.MapFrom(x => x.Content.Entities));
 		}
 	}

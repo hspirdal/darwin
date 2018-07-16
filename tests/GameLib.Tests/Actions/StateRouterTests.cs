@@ -2,7 +2,7 @@ using Autofac.Extras.Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using GameLib.Actions;
-using TcpGameServer.Contracts;
+using Client.Contracts;
 using System.Threading.Tasks;
 using GameLib.Entities;
 using GameLib.Properties;

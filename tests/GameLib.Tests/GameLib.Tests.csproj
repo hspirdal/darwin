@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\GameLib\GameLib.csproj" />
-    <ProjectReference Include="..\..\src\GameServer.Contracts\GameServer.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Client.Contracts\Client.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

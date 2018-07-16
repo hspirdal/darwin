@@ -1,4 +1,4 @@
-namespace TcpGameServer.Contracts.Entities
+namespace Client.Contracts.Entities
 {
 	public class Entity
 	{

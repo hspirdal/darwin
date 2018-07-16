@@ -1,4 +1,4 @@
-using TcpGameServer.Contracts;
+using Client.Contracts;
 
 namespace GameLib.Actions
 {

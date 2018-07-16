@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
-using TcpGameServer.Contracts;
+using Client.Contracts;
 
 namespace GameLib.Actions
 {
