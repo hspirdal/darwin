@@ -1,50 +1,16 @@
 <template>
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
-			<div id="status" v-if="mapInitiated">
-				<h3>Character</h3>
-				<p>Name: {{ this.$store.getters['gamestatus/player'].Name }}<br />
-				Level: 1<br />
-				Race: Human<br />
-				Class: Fighter<br /></p>
-				<div id="inventory" v-if="mapInitiated">
-				<h3>Inventory</h3>
-				<ul v-if="inventoryItems.length > 0">
-					<li v-for="item in inventoryItems">
-						{{ item }}
-						</li>
-				</ul>
-				</div>
-				<h3>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h3>
-				<p>A dark stone cave.</p>
-				<div id="activecell_creatures" v-if="activeCellCreatures.length > 0">
-				<h4>Creatures</h4>
-				<ul>
-					<li v-for="entity in activeCellCreatures">
-						{{ entity.Name }}
-					</li>
-				</ul>
-				</div>
-				<div id="activecell_items" v-if="activeCellItems.length > 0">
-				<h4>Items</h4>
-				<ul>
-					<li v-for="entity in activeCellItems">
-						{{ entity.Name }}
-					</li>
-				</ul>
-				</div>
-				<h3>Commands</h3>
-				WASD to move | Space to attack creature in cell | L to loot all in cell
-    	</div>
+			<CharStatus />
 		</div>
 </template>
 
 <script>
 /*eslint no-console: [off] */
-/*eslint vue/require-v-for-key: [off] */
 /*eslint vue/no-side-effects-in-computed-properties: [off] */
 // ^-- Turn off temporary until I find a better way than rendering using Computed.
 
+import CharStatus from "./CharStatus";
 import ROT from "rot-js";
 
 function Create2DArray(rows) {
@@ -59,15 +25,15 @@ function Create2DArray(rows) {
 
 export default {
   name: "display",
+  components: {
+    CharStatus
+  },
   data() {
     return {
       display: null,
       mapInitiated: false,
       map: Create2DArray(0),
       lastVisibleCells: new Array(),
-      inventoryItems: [],
-      activeCellItems: [],
-      activeCellCreatures: [],
       container: {
         width: 600,
         height: 600,
@@ -87,7 +53,6 @@ export default {
   computed: {
     renderMap: function() {
       var map = this.$store.getters["gamestatus/map"];
-      var player = this.$store.getters["gamestatus/player"];
       var posx = this.$store.getters["gamestatus/x"];
       var posy = this.$store.getters["gamestatus/y"];
 
@@ -102,12 +67,8 @@ export default {
       }
 
       this.centerPlayer(posx, posy, map.Width, map.Height);
-      this.inventoryItems = player.Inventory.Items;
-
-      var pre_clear = performance.now();
-      this.activeCellCreatures = new Array();
-      this.activeCellItems = new Array();
       var cellsToRender = new Array();
+      var pre_clear = performance.now();
       this.lastVisibleCells.forEach(cell => {
         this.map[cell.Y][cell.X].IsVisible = false;
         cellsToRender.push({ X: cell.X, Y: cell.Y });
@@ -125,20 +86,6 @@ export default {
         cell.IsWalkable = c.IsWalkable;
         cell.Content = c.Content;
         cellsToRender.push({ X: cell.X, Y: cell.Y });
-
-        // Update content lists for active cell
-        if (cell.X == posx && cell.Y == posy && cell.Content) {
-          cell.Content.forEach(entity => {
-            if (entity.Name !== this.$store.getters["gamestatus/name"]) {
-              if (entity.Type === "Item") {
-                this.activeCellItems.push(entity);
-              } else {
-                this.activeCellCreatures.push(entity);
-              }
-            }
-          });
-        }
-
         this.lastVisibleCells.push({ X: cell.X, Y: cell.Y });
       });
       var post_update = performance.now();
