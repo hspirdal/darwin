@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TcpGameServer.Contracts.Entities;
 
 namespace TcpGameServer.Contracts.Area
 {

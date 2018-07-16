@@ -1,7 +1,7 @@
-using TcpGameServer.Contracts.Players;
+using TcpGameServer.Contracts.Entities;
 using TcpGameServer.Contracts.Area;
 
-namespace TcpGameServer.Contracts
+namespace TcpGameServer.Contracts.Properties
 {
 	public class GameStatus
 	{

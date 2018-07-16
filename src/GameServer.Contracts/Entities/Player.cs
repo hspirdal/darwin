@@ -1,4 +1,6 @@
-namespace TcpGameServer.Contracts.Players
+using TcpGameServer.Contracts.Properties;
+
+namespace TcpGameServer.Contracts.Entities
 {
 	public class Player
 	{

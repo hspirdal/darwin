@@ -7,7 +7,7 @@ namespace WebSocketServer.Profiles
 	{
 		public InventoryProfile()
 		{
-			CreateMap<GameLib.Properties.Inventory, TcpGameServer.Contracts.Players.Inventory>()
+			CreateMap<GameLib.Properties.Inventory, TcpGameServer.Contracts.Properties.Inventory>()
 			.ForMember(a => a.Items, m => m.MapFrom(s => s.Items.Select(i => i.Name)));
 		}
 	}
