@@ -1,6 +1,12 @@
+/*eslint no-console: [off] */
+/*eslint prettier/prettier:[off] */
+// ^-- keeps whining about tabs over spaces; go away.
 const state = {
 	map: null,
 	player: { Name: "", Inventory: { Items: [] } },
+	gameStarted: false,
+	activeCellCreatures: [{}],
+	activeCellItems: [{}],
 	x: 0,
 	y: 0
 };
@@ -17,6 +23,15 @@ const getters = {
 	},
 	y(state) {
 		return state.y;
+	},
+	activecellcreatures(state) {
+		return state.activeCellCreatures;
+	},
+	activecellitems(state) {
+		return state.activeCellItems;
+	},
+	gamestarted(state) {
+		return state.gameStarted;
 	}
 };
 
@@ -26,8 +41,56 @@ const mutations = {
 		state.player = status.Player;
 		state.x = status.X;
 		state.y = status.Y;
+
+		if (!state.gameStarted) {
+			state.gameStarted = true;
+		}
+
+		// Only update if either items or creatures in cell has changed.
+		var cell = status.Map.VisibleCells.find(c => c.X == status.X && c.Y == status.Y);
+		if (cell == null || (cell.Items == null && cell.Creatures == null)) {
+			return;
+		}
+
+		var creatures = new Array();
+		cell.Creatures.forEach(c => {
+			creatures.push(c);
+		});
+
+		var items = new Array();
+		cell.Items.forEach(i => {
+			items.push(i);
+		});
+
+		var creaturesChanged = arrayChanged(state.activeCellCreatures, creatures)
+		var itemsChanged = arrayChanged(state.activeCellItems, items);
+
+		if (creaturesChanged || itemsChanged) {
+			console.log("Refresh entity state");
+			state.activeCellCreatures = creatures;
+			state.activeCellItems = items;
+		}
 	}
 };
+
+function arrayChanged(oldArray, newArray) {
+	if (oldArray.length != newArray.length) {
+		return true;
+	}
+
+	var found = false;
+	oldArray.forEach(o => {
+		newArray.forEach(n => {
+			if (o.Id == n.Id) {
+				found = true;
+			}
+		});
+		if (!found) {
+			return true;
+		}
+	});
+	return false;
+}
 
 export default {
 	namespaced: true,
