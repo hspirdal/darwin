@@ -26,13 +26,13 @@ export default {
       }
 
       var movementDirection = 0;
-      if (key === "w" || key === "ArrowUp") {
+      if (key === "w") {
         movementDirection = 2;
-      } else if (key === "s" || key === "ArrowDown") {
+      } else if (key === "s") {
         movementDirection = 3;
-      } else if (key === "a" || key === "ArrowLeft") {
+      } else if (key === "a") {
         movementDirection = 0;
-      } else if (key === "d" || key === "ArrowRight") {
+      } else if (key === "d") {
         movementDirection = 1;
       } else {
         return;

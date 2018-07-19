@@ -84,7 +84,8 @@ export default {
         cell.IsVisible = true;
         cell.IsExplored = true;
         cell.IsWalkable = c.IsWalkable;
-        cell.Content = c.Content;
+        cell.Creatures = c.Creatures;
+        cell.Items = c.Items;
         cellsToRender.push({ X: cell.X, Y: cell.Y });
         this.lastVisibleCells.push({ X: cell.X, Y: cell.Y });
       });
@@ -98,16 +99,13 @@ export default {
         var backgroundColor = cell.IsVisible
           ? "rgb(255, 255, 140)"
           : "rgb(65, 65, 65)";
-        if (cell.Content != null && cell.Content.length > 0) {
-          cell.Content.forEach(entity => {
-            if (entity.Type === "Item") {
-              cellSymbol = "I";
-              color = "green";
-            } else {
-              cellSymbol = "@";
-              color = "rgb(255, 0, 0)";
-            }
-          });
+        if (cell.Items != null && cell.Items.length > 0) {
+          cellSymbol = "I";
+          color = "green";
+        }
+        if (cell.Creatures != null && cell.Creatures.length > 0) {
+          cellSymbol = "@";
+          color = "rgb(255, 0, 0)";
         }
         if (cell.X == posx && cell.Y == posy) {
           cellSymbol = "@";

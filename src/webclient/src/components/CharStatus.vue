@@ -18,21 +18,16 @@
 		</div>
 		<h3>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h3>
 		<p>A dark stone cave.</p>
-		<div id="activecell_creatures" v-if="activeCellCreatures.length > 0">
-		<h4>Creatures</h4>
-		<ul>
-			<li v-for="entity in activeCellCreatures">
-				{{ entity.Name }}
-			</li>
-		</ul>
-		</div>
-		<div id="activecell_items" v-if="activeCellItems.length > 0">
-		<h4>Items</h4>
-		<ul>
-			<li v-for="entity in activeCellItems">
-				{{ entity.Name }}
-			</li>
-		</ul>
+		<div id="activecell_entities" v-if="activeCellCreatures.length > 0 || activeCellItems.length > 0">
+			<b-form-select v-model="selectedItem" class="mb-3" :select-size="activeCellRowCount" v-on:change="selectItem">
+				<optgroup label="Creatures" v-if="activeCellCreatures.length > 0">
+					<option v-for="(entity, index) in activeCellCreatures" v-bind:value="entity.Id">{{ entity.Name }}</option>
+				</optgroup>
+				<optgroup label="Items" v-if="activeCellItems.length > 0">
+					<option v-for="(entity, index) in activeCellItems" v-bind:value="entity.Id">{{ entity.Name }}</option>
+				</optgroup>
+			</b-form-select>
+			<div>Selected: <strong>{{ selectedItem }}</strong></div>
 		</div>
 		<h3>Commands</h3>
 		WASD to move | Space to attack creature in cell | L to loot all in cell
@@ -41,52 +36,41 @@
 
 <script>
 /*eslint vue/require-v-for-key: [off] */
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
 export default {
   name: "charstatus",
   data() {
     return {
-      gameStarted: true
+      selectedItem: null
     };
   },
   computed: {
+    gameStarted: function() {
+      return this.$store.getters["gamestatus/gamestarted"];
+    },
     inventoryItems: function() {
       return this.$store.getters["gamestatus/player"].Inventory.Items;
     },
     activeCellItems: function() {
-      var map = this.$store.getters["gamestatus/map"];
-      var posx = this.$store.getters["gamestatus/x"];
-      var posy = this.$store.getters["gamestatus/y"];
-      var items = new Array();
-      if (!map) {
-        return items;
-      }
-
-      var cell = map.VisibleCells.find(c => c.X == posx && c.Y == posy);
-      cell.Content.forEach(entity => {
-        if (entity.Type === "Item") {
-          items.push(entity);
-        }
-      });
-      return items;
+      console.log("Active cell item refresh");
+      return this.$store.getters["gamestatus/activecellitems"];
     },
     activeCellCreatures: function() {
-      var map = this.$store.getters["gamestatus/map"];
-      var player = this.$store.getters["gamestatus/player"];
-      var posx = this.$store.getters["gamestatus/x"];
-      var posy = this.$store.getters["gamestatus/y"];
-      var creatures = new Array();
-      if (!map) {
-        return creatures;
+      console.log("Active cell creature refresh");
+      return this.$store.getters["gamestatus/activecellcreatures"];
+    },
+    activeCellRowCount: function() {
+      var totalCount = 0;
+      var categoryGroupSize = 1;
+      if (this.activeCellCreatures.length > 0) {
+        totalCount += this.activeCellCreatures.length + categoryGroupSize;
       }
-
-      var cell = map.VisibleCells.find(c => c.X == posx && c.Y == posy);
-      cell.Content.forEach(entity => {
-        if (entity.Type === "Player" && entity.Name !== player.Name) {
-          creatures.push(entity);
-        }
-      });
-      return creatures;
+      if (this.activeCellItems.length > 0) {
+        totalCount += this.activeCellItems.length + categoryGroupSize;
+      }
+      return totalCount;
     },
     characterName: function() {
       return this.$store.getters["gamestatus/player"].Name;
@@ -132,6 +116,11 @@ export default {
       return this.$store.getters["gamestatus/player"].Statistics.AbilityScores
         .Charisma;
     }
+  },
+  methods: {
+    selectItem: function(item) {
+      console.log("Selected: " + item);
+    }
   }
 };
 </script>
@@ -146,5 +135,8 @@ export default {
 }
 #status ul {
   list-style-type: none;
+}
+#status select {
+  overflow: auto;
 }
 </style>
