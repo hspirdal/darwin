@@ -90,6 +90,11 @@ namespace WebSocketServer
 				Map = new Client.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }
 			};
 
+			// Temp, no point letting the client have to filter out self all the time...
+			var activeCell = visibleCells.Single(i => i.X == player.Position.X && i.Y == player.Position.Y);
+			var playerInCell = activeCell.Creatures.Single(i => i.Id == player.Id);
+			activeCell.Creatures.Remove(playerInCell);
+
 			var response = new ServerResponse
 			{
 				Type = nameof(GameStatus).ToLower(),
