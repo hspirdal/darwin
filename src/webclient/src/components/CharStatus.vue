@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     selectItem: function(item) {
-      console.log("Selected: " + item);
+      this.$store.commit("selection/setSelectedEntityId", item);
     }
   }
 };

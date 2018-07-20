@@ -25,6 +25,13 @@ export default {
         return;
       }
 
+      if (key === " ") {
+        var selectedId = this.$store.getters["selection/selectedEntityId"];
+        if (selectedId != null && selectedId.length > 0) {
+          this.$refs.network.loot(selectedId);
+        }
+      }
+
       var movementDirection = 0;
       if (key === "w") {
         movementDirection = 2;
