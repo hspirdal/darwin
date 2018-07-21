@@ -3,10 +3,9 @@ using Client.Contracts.Properties.Stats;
 
 namespace Client.Contracts.Entities
 {
-	public class Player
+	public class Player : Creature
 	{
-		public string Name { get; set; }
-		public CharacterStatistics Statistics { get; set; }
+		public int Level { get; set; }
 		public Inventory Inventory { get; set; }
 	}
 }

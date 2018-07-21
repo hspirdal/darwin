@@ -35,17 +35,15 @@ namespace WebSocketServer
 
 		private async Task CreateInitialPlayers()
 		{
-			await _playerRepository.AddorUpdateAsync(new Player
+			var fighterStats = new Statistics()
 			{
-				Id = "1",
-				Name = "Jools",
-				GameState = GameState.lobby,
-				Statistics = new CharacterStatistics("Human", "Fighter", 1)
-				{
-					AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
-					AttackScores = new AttackScores(),
-					DefenseScores = new DefenseScores(8, 12)
-				},
+				AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
+				AttackScores = new AttackScores(),
+				DefenseScores = new DefenseScores(8, 12)
+			};
+
+			await _playerRepository.AddorUpdateAsync(new Player(id: "1", "Jools", "Human", "Fighter", level: 1, fighterStats)
+			{
 				Inventory = new Inventory
 				{
 					Items = new List<Item>
@@ -55,17 +53,16 @@ namespace WebSocketServer
 					}
 				}
 			}).ConfigureAwait(false);
-			await _playerRepository.AddorUpdateAsync(new Player
+
+			var wizardStats = new Statistics()
 			{
-				Id = "2",
-				Name = "Jops",
-				GameState = GameState.lobby,
-				Statistics = new CharacterStatistics("Human", "Wizard", 1)
-				{
-					AbilityScores = new AbilityScores(8, 16, 12, 18, 9, 9),
-					AttackScores = new AttackScores(),
-					DefenseScores = new DefenseScores(10, 6)
-				},
+				AbilityScores = new AbilityScores(8, 16, 12, 18, 9, 9),
+				AttackScores = new AttackScores(),
+				DefenseScores = new DefenseScores(10, 6)
+			};
+
+			await _playerRepository.AddorUpdateAsync(new Player(id: "2", "Jops", "Human", "Wizard", level: 1, wizardStats)
+			{
 				Inventory = new Inventory
 				{
 					Items = new List<Item>

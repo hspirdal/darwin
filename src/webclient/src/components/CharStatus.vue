@@ -77,13 +77,13 @@ export default {
       return this.$store.getters["gamestatus/player"].Name;
     },
     characterRace: function() {
-      return this.$store.getters["gamestatus/player"].Statistics.Race;
+      return this.$store.getters["gamestatus/player"].Race;
     },
     characterClass: function() {
-      return this.$store.getters["gamestatus/player"].Statistics.Class;
+      return this.$store.getters["gamestatus/player"].Class;
     },
     characterLevel: function() {
-      return this.$store.getters["gamestatus/player"].Statistics.Level;
+      return this.$store.getters["gamestatus/player"].Level;
     },
     characterArmorClass: function() {
       return this.$store.getters["gamestatus/player"].Statistics.DefenseScores
