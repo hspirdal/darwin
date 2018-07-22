@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameLib.Utility;
 
 namespace GameLib.Entities
 {
@@ -11,17 +12,17 @@ namespace GameLib.Entities
 	public class CreatureFactory : ICreatureFactory
 	{
 		private readonly List<Creature> _creatureTemplates;
-		private readonly Random _random;
+		private readonly IRandomGenerator _randomGenerator;
 
-		public CreatureFactory(List<Creature> creatureTemplates)
+		public CreatureFactory(List<Creature> creatureTemplates, IRandomGenerator randomGenerator)
 		{
 			_creatureTemplates = creatureTemplates;
-			_random = new Random();
+			_randomGenerator = randomGenerator;
 		}
 
 		public Creature CreateRandom()
 		{
-			var index = _random.Next(0, _creatureTemplates.Count - 1);
+			var index = _randomGenerator.Next(0, _creatureTemplates.Count);
 			var creature = _creatureTemplates[index].DeepCopy();
 			creature.Id = Guid.NewGuid().ToString();
 			return creature;

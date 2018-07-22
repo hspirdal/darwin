@@ -27,6 +27,14 @@ namespace GameLib.Entities
 			Statistics = statistics;
 		}
 
+		public Creature(string id, string name, string race, string entityClass, Statistics statistics)
+	: base(id, name, type: nameof(Creature))
+		{
+			Race = race;
+			Class = entityClass;
+			Statistics = statistics;
+		}
+
 		public Creature DeepCopy()
 		{
 			return new Creature(string.Copy(Id), string.Copy(Name), string.Copy(Race), string.Copy(Class), string.Copy(Type), Statistics.DeepCopy());

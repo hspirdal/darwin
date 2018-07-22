@@ -11,6 +11,8 @@ using GameLib.Logging;
 using GameLib.Identities;
 using GameLib.Area;
 using GameLib.Actions.Loot;
+using GameLib.Properties.Stats;
+using GameLib.Utility;
 
 namespace WebSocketServer
 {
@@ -24,6 +26,7 @@ namespace WebSocketServer
 			RegisterRedis(builder);
 			RegisterGameRouter(builder);
 			RegisterActionResolver(builder);
+			RegisterCreatureFactory(builder);
 			RegisterPlayArea(builder);
 			RegisterGameConfigurations(builder);
 
@@ -39,6 +42,7 @@ namespace WebSocketServer
 			builder.RegisterType<GameServer>().As<IGameServer>();
 			builder.RegisterType<LobbyRouter>().As<ILobbyRouter>();
 			builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
+			builder.RegisterType<RandomGenerator>().As<IRandomGenerator>();
 
 			return builder.Build();
 		}
@@ -101,13 +105,45 @@ namespace WebSocketServer
 				var playArea = new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
 				// Temp until there exists a better map initialization place.
 				var itemSpawner = new ItemSpawner(playArea);
-				var totalItemsToAdd = (playArea.GameMap.Width * playArea.GameMap.Height) * 0.01;
-				for (var i = 0; i < totalItemsToAdd; ++i)
-				{
-					itemSpawner.AddRandomly();
-				}
+				var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
+				itemSpawner.AddRandomly(totalItemsToAdd);
+				var creatureSpawner = new CreatureSpawner(playArea, c.Resolve<ICreatureFactory>());
+				var totalCreaturesToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
+				creatureSpawner.SpawnRandomly(totalCreaturesToAdd);
 				return playArea;
 			}).As<IPlayArea>().SingleInstance();
+		}
+
+		private static void RegisterCreatureFactory(ContainerBuilder builder)
+		{
+			builder.Register<CreatureFactory>(c =>
+			{
+				var templates = new List<Creature>
+				{
+					new Creature(Guid.NewGuid().ToString(), "Orc Warrior", "Orc", "Fighter", new Statistics{
+						AbilityScores = new AbilityScores(17, 11, 12, 7, 8, 6),
+						AttackScores = new AttackScores(),
+						DefenseScores = new DefenseScores(13, 6)
+					}),
+					new Creature(Guid.NewGuid().ToString(), "Dire Bat", "Animal", string.Empty, new Statistics{
+						AbilityScores = new AbilityScores(17, 15, 13, 2, 14, 6),
+						AttackScores = new AttackScores(),
+						DefenseScores = new DefenseScores(14, 22)
+					}),
+					new Creature(Guid.NewGuid().ToString(), "Ghoul", "Undead", string.Empty, new Statistics{
+						AbilityScores = new AbilityScores(13, 15, 0, 13, 14, 14),
+						AttackScores = new AttackScores(),
+						DefenseScores = new DefenseScores(14, 13)
+					}),
+					new Creature(Guid.NewGuid().ToString(), "Grizzly Bear", "Animal", string.Empty, new Statistics{
+						AbilityScores = new AbilityScores(21, 13, 19, 2, 12, 6),
+						AttackScores = new AttackScores(),
+						DefenseScores = new DefenseScores(16, 42)
+					}),
+				};
+
+				return new CreatureFactory(templates, c.Resolve<IRandomGenerator>());
+			}).As<ICreatureFactory>();
 		}
 
 		private static void RegisterGameConfigurations(ContainerBuilder builder)

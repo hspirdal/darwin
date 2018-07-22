@@ -5,7 +5,7 @@ namespace GameLib.Area
 {
 	public interface IItemSpawner
 	{
-		void AddRandomly();
+		void AddRandomly(int totalItemsToAdd);
 	}
 
 	public class ItemSpawner : IItemSpawner
@@ -17,13 +17,16 @@ namespace GameLib.Area
 			_playArea = playArea;
 		}
 
-		public void AddRandomly()
+		public void AddRandomly(int totalItemsToAdd)
 		{
-			var torch = new Item { Name = "Torch", Id = Guid.NewGuid().ToString() };
-			var shovel = new Item { Name = "Shovel", Id = Guid.NewGuid().ToString() };
-			var cell = _playArea.GameMap.GetRandomOpenCell();
-			_playArea.GameMap.Add(cell.X, cell.Y, torch);
-			_playArea.GameMap.Add(cell.X, cell.Y, shovel);
+			for (var i = 0; i < totalItemsToAdd; ++i)
+			{
+				var torch = new Item { Name = "Torch", Id = Guid.NewGuid().ToString() };
+				var shovel = new Item { Name = "Shovel", Id = Guid.NewGuid().ToString() };
+				var cell = _playArea.GameMap.GetRandomOpenCell();
+				_playArea.GameMap.Add(cell.X, cell.Y, torch);
+				_playArea.GameMap.Add(cell.X, cell.Y, shovel);
+			}
 		}
 	}
 }
