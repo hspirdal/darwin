@@ -1,22 +1,22 @@
 <template>
 	<div id="status" v-if="gameStarted">
-		<h3>Character</h3>
+		<h1>Character</h1>
 		<p>Name: {{ characterName }}<br />
 		Level: {{ characterLevel }}<br />
 		Race: {{ characterRace }}<br />
 		Class: {{ characterClass }}<br /></p>
-		<p>Str: {{ strength }}, Dex: {{ dexterity }}, Con: {{ constitution }}, Int: {{ intelligence }}, Wis: {{ wisdom }}, Cha: {{ charisma }}</p>
-		<p>Hit points: {{ characterHitPoints }} / {{ characterHitPoints }}<br/>
+		<p>Str: {{ strength }}, Dex: {{ dexterity }}, Con: {{ constitution }}, Int: {{ intelligence }}, Wis: {{ wisdom }}, Cha: {{ charisma }}<br/>
+		Hit points: {{ characterHitPoints }} / {{ characterHitPoints }}<br/>
 		Armor Class: {{ characterArmorClass }}</p>
 		<div id="inventory" v-if="gameStarted">
-		<h3>Inventory</h3>
+		<h1>Inventory</h1>
 		<ul v-if="inventoryItems.length > 0">
 			<li v-for="item in inventoryItems">
 				{{ item }}
 				</li>
 		</ul>
 		</div>
-		<h3>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h3>
+		<h1>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h1>
 		<p>A dark stone cave.</p>
 		<div id="activecell_entities" v-if="activeCellCreatures.length > 0 || activeCellItems.length > 0">
 			<b-form-select v-model="selectedItem" class="mb-3" :select-size="activeCellRowCount" v-on:change="selectItem">
@@ -27,10 +27,7 @@
 					<option v-for="(entity) in activeCellItems" v-bind:value="entity.Id">{{ entity.Name }}</option>
 				</optgroup>
 			</b-form-select>
-			<div>Selected: <strong>{{ selectedItem }}</strong></div>
 		</div>
-		<h3>Commands</h3>
-		WASD to move | Space to attack creature in cell | L to loot all in cell
 	</div>
 </template>
 
@@ -138,5 +135,8 @@ export default {
 }
 #status select {
   overflow: auto;
+}
+#status h1 {
+  font-size: 24px;
 }
 </style>
