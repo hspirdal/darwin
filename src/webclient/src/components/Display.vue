@@ -104,8 +104,32 @@ export default {
           color = "green";
         }
         if (cell.Creatures != null && cell.Creatures.length > 0) {
-          cellSymbol = "@";
-          color = "rgb(255, 0, 0)";
+          if (cell.Creatures.length > 1) {
+            cellSymbol = "&";
+            color = "rgb(0, 0, 255)";
+          } else if (cell.Creatures[0].Type === "Player") {
+            cellSymbol = "@";
+            color = "rgb(255, 0, 0)";
+          } else {
+            var creature = cell.Creatures[0];
+            switch (creature.Name) {
+              case "Dire Bat":
+                cellSymbol = "b";
+                color = "gray";
+                break;
+              case "Grizzly Bear":
+                cellSymbol = "B";
+                color = "brown";
+                break;
+              case "Ghoul":
+                cellSymbol = "G";
+                color = "gray";
+                break;
+              case "Orc Warrior":
+                cellSymbol = "O";
+                color = "rgb(32, 107, 0)";
+            }
+          }
         }
         if (cell.X == posx && cell.Y == posy) {
           cellSymbol = "@";
