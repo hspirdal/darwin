@@ -127,7 +127,6 @@ export default {
 </script>
 <style scoped>
 #status {
-  width: 340px;
   height: 600px;
   margin-left: 600px;
   border: 1px solid;

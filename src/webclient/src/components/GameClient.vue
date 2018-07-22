@@ -53,8 +53,7 @@ export default {
 <style scoped>
 #game {
   background-color: #ffffff;
-  border: 1px solid #cccccc;
-  padding: 20px;
+  padding: 0px;
   margin-top: 10px;
 }
 </style>

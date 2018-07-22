@@ -26,7 +26,7 @@ const getters = {
 		return state.y;
 	},
 	feedback(state) {
-		return state.feedback();
+		return state.feedback;
 	},
 	activecellcreatures(state) {
 		return state.activeCellCreatures;
@@ -49,13 +49,6 @@ const mutations = {
 
 		if (!state.gameStarted) {
 			state.gameStarted = true;
-		}
-
-
-		if (status.Feedback != null && status.Feedback.length > 0) {
-			status.Feedback.forEach(f => {
-				console.log(f.Type + " " + f.Category + " " + f.Message)
-			});
 		}
 
 		// Only update if either items or creatures in cell has changed.

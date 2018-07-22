@@ -2,6 +2,7 @@
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
 			<CharStatus />
+			<GameLog />
 		</div>
 </template>
 
@@ -11,6 +12,7 @@
 // ^-- Turn off temporary until I find a better way than rendering using Computed.
 
 import CharStatus from "./CharStatus";
+import GameLog from "./GameLog";
 import ROT from "rot-js";
 
 function Create2DArray(rows) {
@@ -26,7 +28,8 @@ function Create2DArray(rows) {
 export default {
   name: "display",
   components: {
-    CharStatus
+    CharStatus,
+    GameLog
   },
   data() {
     return {
@@ -207,7 +210,6 @@ export default {
   float: left;
 }
 #status {
-  width: 340px;
   height: 600px;
   margin-left: 600px;
   border: 1px solid;
