@@ -31,6 +31,12 @@ export default {
           this.$refs.network.loot(selectedId);
         }
       }
+      if (key === "b") {
+        var selectedId = this.$store.getters["selection/selectedEntityId"];
+        if (selectedId != null && selectedId.length > 0) {
+          this.$refs.network.attack(selectedId);
+        }
+      }
 
       var movementDirection = 0;
       if (key === "w") {

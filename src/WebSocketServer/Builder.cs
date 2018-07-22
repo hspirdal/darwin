@@ -13,6 +13,7 @@ using GameLib.Area;
 using GameLib.Actions.Loot;
 using GameLib.Properties.Stats;
 using GameLib.Utility;
+using GameLib.Actions.Combat;
 
 namespace WebSocketServer
 {
@@ -67,11 +68,13 @@ namespace WebSocketServer
 				var movementInserter = new MovementInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
 				var lootAllInserter = new LootAllInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
 				var lootInserter = new LootInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
+				var attackInserter = new AttackInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
 				var inserterMap = new Dictionary<string, IRequestInserter>
 					{
 						{ movementInserter.ActionName, movementInserter },
 						{ lootAllInserter.ActionName, lootAllInserter},
-						{ lootInserter.ActionName, lootInserter}
+						{ lootInserter.ActionName, lootInserter},
+						{ attackInserter.ActionName, attackInserter}
 					};
 
 				return new GameRouter(c.Resolve<ILogger>(), inserterMap);
@@ -85,11 +88,13 @@ namespace WebSocketServer
 				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },
 						{ lootAllResolver.ActionName, lootAllResolver },
-						{ lootResolver.ActionName, lootResolver }
+						{ lootResolver.ActionName, lootResolver },
+						{ attackResolver.ActionName, attackResolver }
 					};
 
 				return new ActionResolver(c.Resolve<IActionRepository>(), resolverMap);

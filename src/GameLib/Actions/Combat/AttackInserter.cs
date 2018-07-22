@@ -2,16 +2,16 @@ using Newtonsoft.Json;
 using Client.Contracts;
 using GameLib.Logging;
 
-namespace GameLib.Actions.Loot
+namespace GameLib.Actions.Combat
 {
-	public class LootInserter : IRequestInserter
+	public class AttackInserter : IRequestInserter
 	{
 		private readonly ILogger _logger;
 		private readonly IActionRepository _actionRepository;
 
-		public string ActionName => "action.loot";
+		public string ActionName => "action.attack";
 
-		public LootInserter(ILogger logger, IActionRepository actionRepository)
+		public AttackInserter(ILogger logger, IActionRepository actionRepository)
 		{
 			_logger = logger;
 			_actionRepository = actionRepository;
@@ -20,7 +20,7 @@ namespace GameLib.Actions.Loot
 
 		public void Resolve(string clientId, ClientRequest clientRequest)
 		{
-			var action = JsonConvert.DeserializeObject<LootAction>(clientRequest.Payload);
+			var action = JsonConvert.DeserializeObject<AttackAction>(clientRequest.Payload);
 			if (IsValidAction(action))
 			{
 				action.Name = ActionName;
@@ -29,11 +29,11 @@ namespace GameLib.Actions.Loot
 			}
 		}
 
-		private bool IsValidAction(LootAction action)
+		private bool IsValidAction(AttackAction action)
 		{
 			if (!action.IsValid())
 			{
-				_logger.Warn($"{nameof(LootAction)} did not validate correctly. Fields: {action}");
+				_logger.Warn($"{nameof(AttackAction)} did not validate correctly. Fields: {action}");
 				return false;
 			}
 			return true;
