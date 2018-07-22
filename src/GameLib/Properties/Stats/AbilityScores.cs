@@ -1,6 +1,8 @@
+using GameLib.Utility;
+
 namespace GameLib.Properties.Stats
 {
-	public class AbilityScores
+	public class AbilityScores : IDeepCopy<AbilityScores>
 	{
 		public AttributeScore Strength { get; set; }
 		public AttributeScore Dexterity { get; set; }
@@ -27,6 +29,19 @@ namespace GameLib.Properties.Stats
 			Intelligence = new AttributeScore(intelligence);
 			Wisdom = new AttributeScore(wisdom);
 			Charisma = new AttributeScore(charisma);
+		}
+
+		public AbilityScores DeepCopy()
+		{
+			return new AbilityScores
+			{
+				Strength = Strength.DeepCopy(),
+				Dexterity = Dexterity.DeepCopy(),
+				Constitution = Constitution.DeepCopy(),
+				Intelligence = Intelligence.DeepCopy(),
+				Wisdom = Wisdom.DeepCopy(),
+				Charisma = Charisma.DeepCopy(),
+			};
 		}
 	}
 }

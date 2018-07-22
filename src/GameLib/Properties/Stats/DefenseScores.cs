@@ -1,6 +1,8 @@
+using GameLib.Utility;
+
 namespace GameLib.Properties.Stats
 {
-	public class DefenseScores
+	public class DefenseScores : IDeepCopy<DefenseScores>
 	{
 		public AttributeScore ArmorClass { get; set; }
 		public AttributeScore HitPoints { get; set; }
@@ -15,6 +17,15 @@ namespace GameLib.Properties.Stats
 		{
 			ArmorClass = new AttributeScore(armorClass);
 			HitPoints = new AttributeScore(hitpoints);
+		}
+
+		public DefenseScores DeepCopy()
+		{
+			return new DefenseScores
+			{
+				ArmorClass = ArmorClass.DeepCopy(),
+				HitPoints = HitPoints.DeepCopy()
+			};
 		}
 	}
 }

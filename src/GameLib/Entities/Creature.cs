@@ -1,9 +1,11 @@
+using System;
 using GameLib.Properties;
 using GameLib.Properties.Stats;
+using GameLib.Utility;
 
 namespace GameLib.Entities
 {
-	public class Creature : Entity
+	public class Creature : Entity, IDeepCopy<Creature>
 	{
 		public string Race { get; set; }
 		public string Class { get; set; }
@@ -23,6 +25,11 @@ namespace GameLib.Entities
 			Race = race;
 			Class = entityClass;
 			Statistics = statistics;
+		}
+
+		public Creature DeepCopy()
+		{
+			return new Creature(string.Copy(Id), string.Copy(Name), string.Copy(Race), string.Copy(Class), string.Copy(Type), Statistics.DeepCopy());
 		}
 	}
 }
