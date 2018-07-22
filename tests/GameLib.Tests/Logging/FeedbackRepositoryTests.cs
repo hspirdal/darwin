@@ -1,4 +1,5 @@
 using System;
+using Autofac.Extras.Moq;
 using GameLib.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,14 +13,15 @@ namespace GameLib.Tests.Logging
 		[TestInitialize]
 		public void GivenAFeedbakRepository()
 		{
-			_feedbackRepository = new FeedbackRepository();
+			var container = AutoMock.GetLoose();
+			_feedbackRepository = container.Create<FeedbackRepository>();
 		}
 
 		[TestMethod]
 		public void WhenAddingValidMessage_ThenRepositoryMessageCountIsIncreasedByOne()
 		{
 			var preCount = _feedbackRepository.GetById("arbitraryId").Count;
-			_feedbackRepository.WriteLine("arbitraryId", "Some message");
+			_feedbackRepository.Write("arbitraryId", "arbitraryCategory", "Some message");
 			var postCount = _feedbackRepository.GetById("arbitraryId").Count;
 
 			Assert.AreEqual(0, preCount);
@@ -29,7 +31,7 @@ namespace GameLib.Tests.Logging
 		[TestMethod]
 		public void WhenClearingRepository_ThenMessageCountIsZero()
 		{
-			_feedbackRepository.WriteLine("arbitraryId", "Some message");
+			_feedbackRepository.Write("arbitraryId", "arbitraryCategory", "Some message");
 			var preCount = _feedbackRepository.GetById("arbitraryId").Count;
 			_feedbackRepository.Clear();
 			var postCount = _feedbackRepository.GetById("arbitraryId").Count;
@@ -41,7 +43,7 @@ namespace GameLib.Tests.Logging
 		[TestMethod]
 		public void WhenAddingMessageWithPlayerIdOfNullOrEmpty_ThenRepositoryThrowsArgumentException()
 		{
-			Assert.ThrowsException<ArgumentException>(() => _feedbackRepository.WriteLine(string.Empty, "arbitrary message"));
+			Assert.ThrowsException<ArgumentException>(() => _feedbackRepository.Write(string.Empty, "arbitraryCategory", "arbitrary message"));
 		}
 	}
 }

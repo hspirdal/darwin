@@ -12,13 +12,15 @@ namespace GameLib.Actions.Loot
 	public class LootResolver : IResolver
 	{
 		private readonly ILogger _logger;
+		private readonly IFeedbackWriter _feedbackWriter;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IPlayArea _playArea;
 		public string ActionName => "action.loot";
 
-		public LootResolver(ILogger logger, IPlayerRepository playerRepository, IPlayArea playArea)
+		public LootResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea)
 		{
 			_logger = logger;
+			_feedbackWriter = feedbackWriter;
 			_playerRepository = playerRepository;
 			_playArea = playArea;
 		}
@@ -40,6 +42,7 @@ namespace GameLib.Actions.Loot
 				cell.Content.Entities.Remove(item);
 				player.Inventory.Items.Add(item);
 				_logger.Info($"Player '{player.Name}' looted item '{item.Name}'");
+				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Looted {item.Name}");
 			}
 			else
 			{

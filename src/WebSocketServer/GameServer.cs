@@ -12,6 +12,7 @@ using GameLib.Properties;
 using Client.Contracts.Area;
 using Client.Contracts;
 using Client.Contracts.Properties;
+using GameLib.Logging;
 
 namespace WebSocketServer
 {
@@ -22,23 +23,27 @@ namespace WebSocketServer
 
 	public class GameServer : IGameServer
 	{
+		private readonly ILogger _logger;
 		private readonly ISocketServer _socketServer;
 		private readonly IActionRepository _actionRepository;
 		private readonly IActionResolver _actionResolver;
 		private readonly IPlayArea _playArea;
 		private readonly IPlayerRepository _playerRepository;
+		private readonly IFeedbackRepository _feedbackRepository;
 		private readonly GameConfiguration _gameConfiguration;
 		private readonly IMapper _mapper;
 
-		public GameServer(ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
-				IPlayArea playArea, IPlayerRepository playerRepository, GameConfiguration gameConfiguration, IMapper mapper
-		)
+		public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
+				IPlayArea playArea, IPlayerRepository playerRepository, IFeedbackRepository feedbackRepository,
+				GameConfiguration gameConfiguration, IMapper mapper)
 		{
+			_logger = logger;
 			_socketServer = socketServer;
 			_actionRepository = actionRepository;
 			_actionResolver = actionResolver;
 			_playArea = playArea;
 			_playerRepository = playerRepository;
+			_feedbackRepository = feedbackRepository;
 			_gameConfiguration = gameConfiguration;
 			_mapper = mapper;
 		}
@@ -69,6 +74,7 @@ namespace WebSocketServer
 							await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
 						}
 					}
+					_feedbackRepository.Clear();
 				}
 			}
 		}
@@ -82,12 +88,14 @@ namespace WebSocketServer
 			map.ComputeFov(pos.X, pos.Y, lightRadius);
 			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<Client.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
 			var p = _mapper.Map<GameLib.Entities.Player, Client.Contracts.Entities.Player>(player);
+			var feedback = _mapper.Map<List<GameLib.Logging.Feedback>, List<Client.Contracts.Logging.Feedback>>(_feedbackRepository.GetById(player.Id));
 			var status = new GameStatus
 			{
 				Player = p,
 				X = pos.X,
 				Y = pos.Y,
-				Map = new Client.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells }
+				Map = new Client.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells },
+				Feedback = feedback
 			};
 
 			// Temp, no point letting the client have to filter out self all the time...

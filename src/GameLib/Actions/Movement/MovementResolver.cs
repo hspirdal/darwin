@@ -5,17 +5,22 @@ using GameLib.Actions;
 using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
+using GameLib.Logging;
 
 namespace GameLib.Actions.Movement
 {
 	public class MovementResolver : IResolver
 	{
+		private readonly ILogger _logger;
+		private readonly IFeedbackWriter _feedbackWriter;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IPlayArea _playArea;
 		public string ActionName => "action.movement";
 
-		public MovementResolver(IPlayerRepository playerRepository, IPlayArea playArea)
+		public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea)
 		{
+			_logger = logger;
+			_feedbackWriter = feedbackWriter;
 			_playerRepository = playerRepository;
 			_playArea = playArea;
 		}
@@ -48,6 +53,9 @@ namespace GameLib.Actions.Movement
 				case MovementDirection.South:
 					futureY = 1;
 					break;
+				default:
+					_logger.Warn("Invalid movement direction: " + direction);
+					return;
 			}
 
 			if (IsValidPosition(currentPosition, futureX, futureY))
@@ -56,6 +64,11 @@ namespace GameLib.Actions.Movement
 				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
 				_playArea.GameMap.Remove(currentPosition.X, currentPosition.Y, player);
 				_playArea.GameMap.Add(player.Position.X, player.Position.Y, player);
+				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Walked {direction.ToString().ToLower()}");
+			}
+			else
+			{
+				_feedbackWriter.WriteFailure(playerId, nameof(Action), "Crashed into a wall!");
 			}
 		}
 

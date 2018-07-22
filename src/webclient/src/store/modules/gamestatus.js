@@ -4,6 +4,7 @@
 const state = {
 	map: null,
 	player: { Name: "", Inventory: { Items: [] } },
+	feedback: [{}],
 	gameStarted: false,
 	activeCellCreatures: [{}],
 	activeCellItems: [{}],
@@ -24,6 +25,9 @@ const getters = {
 	y(state) {
 		return state.y;
 	},
+	feedback(state) {
+		return state.feedback();
+	},
 	activecellcreatures(state) {
 		return state.activeCellCreatures;
 	},
@@ -41,9 +45,17 @@ const mutations = {
 		state.player = status.Player;
 		state.x = status.X;
 		state.y = status.Y;
+		state.feedback = status.Feedback;
 
 		if (!state.gameStarted) {
 			state.gameStarted = true;
+		}
+
+
+		if (status.Feedback != null && status.Feedback.length > 0) {
+			status.Feedback.forEach(f => {
+				console.log(f.Type + " " + f.Category + " " + f.Message)
+			});
 		}
 
 		// Only update if either items or creatures in cell has changed.

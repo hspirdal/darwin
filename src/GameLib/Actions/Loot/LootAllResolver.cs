@@ -12,13 +12,15 @@ namespace GameLib.Actions.Loot
 	public class LootAllResolver : IResolver
 	{
 		private readonly ILogger _logger;
+		private readonly IFeedbackWriter _FeedbackWriter;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IPlayArea _playArea;
 		public string ActionName => "action.lootall";
 
-		public LootAllResolver(ILogger logger, IPlayerRepository playerRepository, IPlayArea playArea)
+		public LootAllResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea)
 		{
 			_logger = logger;
+			_FeedbackWriter = feedbackWriter;
 			_playerRepository = playerRepository;
 			_playArea = playArea;
 		}
@@ -44,6 +46,7 @@ namespace GameLib.Actions.Loot
 				}
 			}
 			await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
+			_FeedbackWriter.WriteSuccess(playerId, nameof(Action), "Looted all items");
 		}
 	}
 }

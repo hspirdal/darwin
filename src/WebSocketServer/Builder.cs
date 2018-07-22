@@ -43,6 +43,7 @@ namespace WebSocketServer
 			builder.RegisterType<LobbyRouter>().As<ILobbyRouter>();
 			builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
 			builder.RegisterType<RandomGenerator>().As<IRandomGenerator>();
+			builder.RegisterType<FeedbackRepository>().As<IFeedbackRepository>().As<IFeedbackWriter>().SingleInstance();
 
 			return builder.Build();
 		}
@@ -81,9 +82,9 @@ namespace WebSocketServer
 		{
 			builder.Register<ActionResolver>(c =>
 			{
-				var movementResolver = new MovementResolver(c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
-				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
-				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },
