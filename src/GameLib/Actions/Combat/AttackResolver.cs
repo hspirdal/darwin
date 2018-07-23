@@ -6,6 +6,7 @@ using GameLib.Actions;
 using GameLib.Area;
 using GameLib.Logging;
 using GameLib.Entities;
+using GameLib.Combat;
 
 namespace GameLib.Actions.Combat
 {
@@ -15,14 +16,18 @@ namespace GameLib.Actions.Combat
 		private readonly IFeedbackWriter _feedbackWriter;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IPlayArea _playArea;
+		private readonly ICombatRegistry _combatRegistry;
+
 		public string ActionName => "action.attack";
 
-		public AttackResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea)
+		public AttackResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea,
+		ICombatRegistry combatRegistry)
 		{
 			_logger = logger;
 			_feedbackWriter = feedbackWriter;
 			_playerRepository = playerRepository;
 			_playArea = playArea;
+			_combatRegistry = combatRegistry;
 		}
 
 		public Task ResolveAsync(Action action)
@@ -39,7 +44,7 @@ namespace GameLib.Actions.Combat
 			var target = cell.Content.Entities.SingleOrDefault(i => (i.Type == "Creature" || i.Type == "Player") && i.Id == targetId) as Creature;
 			if (target != null)
 			{
-				// TODO: register combatants
+				_combatRegistry.Register(playerId, targetId);
 				_logger.Info($"Player '{player.Name}' attacks target '{target.Name}'");
 				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Attacking {target.Name}");
 			}
@@ -47,7 +52,6 @@ namespace GameLib.Actions.Combat
 			{
 				_logger.Warn($"Player '{player.Name}' failed to attack target with id '{targetId}'. It was either not found, or was not cast correctly.");
 			}
-			await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
 		}
 	}
 }

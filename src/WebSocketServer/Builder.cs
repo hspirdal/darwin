@@ -14,6 +14,7 @@ using GameLib.Actions.Loot;
 using GameLib.Properties.Stats;
 using GameLib.Utility;
 using GameLib.Actions.Combat;
+using GameLib.Combat;
 
 namespace WebSocketServer
 {
@@ -44,6 +45,7 @@ namespace WebSocketServer
 			builder.RegisterType<LobbyRouter>().As<ILobbyRouter>();
 			builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
 			builder.RegisterType<RandomGenerator>().As<IRandomGenerator>();
+			builder.RegisterType<CombatRegistry>().As<ICombatRegistry>();
 			builder.RegisterType<FeedbackRepository>().As<IFeedbackRepository>().As<IFeedbackWriter>().SingleInstance();
 
 			return builder.Build();
@@ -88,7 +90,7 @@ namespace WebSocketServer
 				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
 				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
-				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatRegistry>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },
