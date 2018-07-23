@@ -20,11 +20,13 @@ namespace WebSocketServer
 	{
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IIdentityRepository _identityRepository;
+		private readonly IWeaponFactory _weaponFactory;
 
-		public StartupTaskRunner(IPlayerRepository playerRepository, IIdentityRepository identityRepository)
+		public StartupTaskRunner(IPlayerRepository playerRepository, IIdentityRepository identityRepository, IWeaponFactory weaponFactory)
 		{
 			_playerRepository = playerRepository;
 			_identityRepository = identityRepository;
+			_weaponFactory = weaponFactory;
 		}
 
 		public async Task ExecuteAsync()
@@ -35,10 +37,11 @@ namespace WebSocketServer
 
 		private async Task CreateInitialPlayers()
 		{
+			var shortSword = _weaponFactory.Create("Short Sword");
 			var fighterStats = new Statistics()
 			{
 				AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
-				AttackScores = new AttackScores(),
+				AttackScores = new AttackScores(shortSword, 1),
 				DefenseScores = new DefenseScores(8, 12)
 			};
 
@@ -48,16 +51,17 @@ namespace WebSocketServer
 				{
 					Items = new List<Item>
 					{
-						new Item { Name = "Rusty Sword", Id = Guid.NewGuid().ToString() },
+						shortSword,
 						new Item { Name = "Studded Leather", Id = Guid.NewGuid().ToString() }
 					}
 				}
 			}).ConfigureAwait(false);
 
+			var quarterStaff = _weaponFactory.Create("Quarterstaff");
 			var wizardStats = new Statistics()
 			{
 				AbilityScores = new AbilityScores(8, 16, 12, 18, 9, 9),
-				AttackScores = new AttackScores(),
+				AttackScores = new AttackScores(quarterStaff, 0),
 				DefenseScores = new DefenseScores(10, 6)
 			};
 
@@ -67,7 +71,7 @@ namespace WebSocketServer
 				{
 					Items = new List<Item>
 					{
-						new Item { Name = "Quarterstaff", Id = Guid.NewGuid().ToString() },
+						quarterStaff,
 						new Item { Name = "Wizard Robes", Id = Guid.NewGuid().ToString() }
 					}
 				}

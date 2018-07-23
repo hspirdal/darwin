@@ -1,6 +1,8 @@
+using GameLib.Utility;
+
 namespace GameLib.Entities
 {
-	public class Entity
+	public class Entity : IDeepCopy<Entity>
 	{
 		public string Id { get; set; }
 		public string Name { get; set; }
@@ -18,6 +20,11 @@ namespace GameLib.Entities
 			Id = id;
 			Name = name;
 			Type = type;
+		}
+
+		public Entity DeepCopy()
+		{
+			return new Entity(string.Copy(Id), string.Copy(Name), string.Copy(Type));
 		}
 	}
 }

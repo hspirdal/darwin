@@ -29,6 +29,7 @@ namespace WebSocketServer
 			RegisterGameRouter(builder);
 			RegisterActionResolver(builder);
 			RegisterCreatureFactory(builder);
+			RegisterWeaponFactory(builder);
 			RegisterPlayArea(builder);
 			RegisterGameConfigurations(builder);
 
@@ -126,32 +127,50 @@ namespace WebSocketServer
 		{
 			builder.Register<CreatureFactory>(c =>
 			{
+				var weaponFactory = c.Resolve<IWeaponFactory>();
+
 				var templates = new List<Creature>
 				{
 					new Creature(Guid.NewGuid().ToString(), "Orc Warrior", "Orc", "Fighter", new Statistics{
 						AbilityScores = new AbilityScores(17, 11, 12, 7, 8, 6),
-						AttackScores = new AttackScores(),
+						AttackScores = new AttackScores(weaponFactory.Create("Falchion"), 1),
 						DefenseScores = new DefenseScores(13, 6)
 					}),
 					new Creature(Guid.NewGuid().ToString(), "Dire Bat", "Animal", string.Empty, new Statistics{
 						AbilityScores = new AbilityScores(17, 15, 13, 2, 14, 6),
-						AttackScores = new AttackScores(),
+						AttackScores = new AttackScores(weaponFactory.Create("Bat Bite"), 3),
 						DefenseScores = new DefenseScores(14, 22)
 					}),
-					new Creature(Guid.NewGuid().ToString(), "Ghoul", "Undead", string.Empty, new Statistics{
-						AbilityScores = new AbilityScores(13, 15, 0, 13, 14, 14),
-						AttackScores = new AttackScores(),
-						DefenseScores = new DefenseScores(14, 13)
+					new Creature(Guid.NewGuid().ToString(), "Goblin", "Goblinoid", "Fighter", new Statistics{
+						AbilityScores = new AbilityScores(11, 15, 12, 10, 9, 6),
+						AttackScores = new AttackScores(weaponFactory.Create("Short Sword"), 1),
+						DefenseScores = new DefenseScores(16, 6)
 					}),
 					new Creature(Guid.NewGuid().ToString(), "Grizzly Bear", "Animal", string.Empty, new Statistics{
 						AbilityScores = new AbilityScores(21, 13, 19, 2, 12, 6),
-						AttackScores = new AttackScores(),
+						AttackScores = new AttackScores(weaponFactory.Create("Bear Bite"), 3),
 						DefenseScores = new DefenseScores(16, 42)
 					}),
 				};
 
 				return new CreatureFactory(templates, c.Resolve<IRandomGenerator>());
-			}).As<ICreatureFactory>();
+			}).As<ICreatureFactory>().SingleInstance();
+		}
+
+		private static void RegisterWeaponFactory(ContainerBuilder builder)
+		{
+			builder.Register<WeaponFactory>(c =>
+			{
+				var templates = new List<Weapon>
+				{
+					new Weapon(Guid.NewGuid().ToString(), "Short Sword", DamageType.Piercing, DiceType.d6, 1, 2, 19 ),
+					new Weapon(Guid.NewGuid().ToString(), "Quarterstaff", DamageType.Bludgeoning, DiceType.d6, 1, 2, 20 ),
+					new Weapon(Guid.NewGuid().ToString(), "Bear Bite", DamageType.Slashing, DiceType.d6, 1, 2, 20 ),
+					new Weapon(Guid.NewGuid().ToString(), "Bat Bite", DamageType.Slashing, DiceType.d8, 1, 2, 20 ),
+					new Weapon(Guid.NewGuid().ToString(), "Falchion", DamageType.Slashing, DiceType.d4, 2, 2, 18 ),
+				};
+				return new WeaponFactory(templates);
+			}).As<IWeaponFactory>().SingleInstance();
 		}
 
 		private static void RegisterGameConfigurations(ContainerBuilder builder)

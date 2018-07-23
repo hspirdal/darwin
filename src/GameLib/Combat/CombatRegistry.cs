@@ -8,7 +8,7 @@ namespace GameLib.Combat
 	{
 		List<CombatEntry> GetAll();
 		void Register(string attackerId, string targetId);
-		void Remove(string entityId);
+		void Remove(string attackerId);
 	}
 
 	public class CombatRegistry : ICombatRegistry
@@ -39,15 +39,15 @@ namespace GameLib.Combat
 			}
 		}
 
-		public void Remove(string entityId)
+		public void Remove(string attackerId)
 		{
-			if (_combatMap.ContainsKey(entityId))
+			if (_combatMap.ContainsKey(attackerId))
 			{
-				_combatMap.Remove(entityId);
+				_combatMap.Remove(attackerId);
 				return;
 			}
 
-			_logger.Warn($"Could not remove creature with id '{entityId}' as it was not found in registry.");
+			_logger.Warn($"Could not remove creature with id '{attackerId}' as it was not found in registry.");
 		}
 	}
 }
