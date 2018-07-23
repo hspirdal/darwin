@@ -4,6 +4,5 @@ namespace GameLib.Combat
 	{
 		public string AttackerId { get; set; }
 		public string TargetId { get; set; }
-		public int Initiative { get; set; }
 	}
 }

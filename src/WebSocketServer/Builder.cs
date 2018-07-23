@@ -46,7 +46,9 @@ namespace WebSocketServer
 			builder.RegisterType<LobbyRouter>().As<ILobbyRouter>();
 			builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
 			builder.RegisterType<RandomGenerator>().As<IRandomGenerator>();
-			builder.RegisterType<CombatRegistry>().As<ICombatRegistry>();
+			builder.RegisterType<CreatureRegistry>().As<ICreatureRegistry>().SingleInstance();
+			builder.RegisterType<CombatRegistry>().As<ICombatRegistry>().SingleInstance();
+			builder.RegisterType<CombatSimulator>().As<ICombatSimulator>();
 			builder.RegisterType<FeedbackRepository>().As<IFeedbackRepository>().As<IFeedbackWriter>().SingleInstance();
 
 			return builder.Build();
@@ -116,7 +118,7 @@ namespace WebSocketServer
 				var itemSpawner = new ItemSpawner(playArea);
 				var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
 				itemSpawner.AddRandomly(totalItemsToAdd);
-				var creatureSpawner = new CreatureSpawner(playArea, c.Resolve<ICreatureFactory>());
+				var creatureSpawner = new CreatureSpawner(playArea, c.Resolve<ICreatureFactory>(), c.Resolve<ICreatureRegistry>());
 				var totalCreaturesToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
 				creatureSpawner.SpawnRandomly(totalCreaturesToAdd);
 				return playArea;

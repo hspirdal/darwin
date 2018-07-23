@@ -75,6 +75,12 @@ namespace GameLib.Area
 			_cellContent[y][x].Entities.Add(entity);
 		}
 
+		public void Add(int x, int y, Creature creature)
+		{
+			_cellContent[y][x].Entities.Add(creature);
+			creature.Position.SetPosition(x, y);
+		}
+
 		public void Remove(int x, int y, Entity entity)
 		{
 			var entities = _cellContent[y][x].Entities;

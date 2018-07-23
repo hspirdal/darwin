@@ -35,7 +35,7 @@ namespace GameLib.Actions.Movement
 		private async Task ResolveAsync(string playerId, MovementDirection direction)
 		{
 			var player = await _playerRepository.GetByIdAsync(playerId).ConfigureAwait(false);
-			var currentPosition = player.Position.Clone();
+			var currentPosition = player.Position.DeepCopy();
 			var futureX = 0;
 			var futureY = 0;
 

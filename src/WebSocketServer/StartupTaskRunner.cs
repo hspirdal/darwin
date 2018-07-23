@@ -21,12 +21,15 @@ namespace WebSocketServer
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IIdentityRepository _identityRepository;
 		private readonly IWeaponFactory _weaponFactory;
+		private readonly ICreatureRegistry _creatureRegistry;
 
-		public StartupTaskRunner(IPlayerRepository playerRepository, IIdentityRepository identityRepository, IWeaponFactory weaponFactory)
+		public StartupTaskRunner(IPlayerRepository playerRepository, IIdentityRepository identityRepository, IWeaponFactory weaponFactory,
+		ICreatureRegistry creatureRegistry)
 		{
 			_playerRepository = playerRepository;
 			_identityRepository = identityRepository;
 			_weaponFactory = weaponFactory;
+			_creatureRegistry = creatureRegistry;
 		}
 
 		public async Task ExecuteAsync()
@@ -45,7 +48,7 @@ namespace WebSocketServer
 				DefenseScores = new DefenseScores(8, 12)
 			};
 
-			await _playerRepository.AddorUpdateAsync(new Player(id: "1", "Jools", "Human", "Fighter", level: 1, fighterStats)
+			var jools = new Player(id: "1", "Jools", "Human", "Fighter", level: 1, fighterStats)
 			{
 				Inventory = new Inventory
 				{
@@ -55,7 +58,9 @@ namespace WebSocketServer
 						new Item { Name = "Studded Leather", Id = Guid.NewGuid().ToString() }
 					}
 				}
-			}).ConfigureAwait(false);
+			};
+			_creatureRegistry.Register(jools);
+			await _playerRepository.AddorUpdateAsync(jools).ConfigureAwait(false);
 
 			var quarterStaff = _weaponFactory.Create("Quarterstaff");
 			var wizardStats = new Statistics()
@@ -65,7 +70,7 @@ namespace WebSocketServer
 				DefenseScores = new DefenseScores(10, 6)
 			};
 
-			await _playerRepository.AddorUpdateAsync(new Player(id: "2", "Jops", "Human", "Wizard", level: 1, wizardStats)
+			var jops = new Player(id: "2", "Jops", "Human", "Wizard", level: 1, wizardStats)
 			{
 				Inventory = new Inventory
 				{
@@ -75,7 +80,9 @@ namespace WebSocketServer
 						new Item { Name = "Wizard Robes", Id = Guid.NewGuid().ToString() }
 					}
 				}
-			}).ConfigureAwait(false);
+			};
+			_creatureRegistry.Register(jops);
+			await _playerRepository.AddorUpdateAsync(jops).ConfigureAwait(false);
 		}
 
 		private async Task CreateInitialIndentities()

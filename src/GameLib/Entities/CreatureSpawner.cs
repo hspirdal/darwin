@@ -10,11 +10,13 @@ namespace GameLib.Entities
 	{
 		private readonly IPlayArea _playArea;
 		private readonly ICreatureFactory _creatureFactory;
+		private readonly ICreatureRegistry _creatureRegistry;
 
-		public CreatureSpawner(IPlayArea playArea, ICreatureFactory creatureFactory)
+		public CreatureSpawner(IPlayArea playArea, ICreatureFactory creatureFactory, ICreatureRegistry creatureRegistry)
 		{
 			_playArea = playArea;
 			_creatureFactory = creatureFactory;
+			_creatureRegistry = creatureRegistry;
 		}
 
 		public void SpawnRandomly(int creatureCount)
@@ -24,6 +26,7 @@ namespace GameLib.Entities
 				var creature = _creatureFactory.CreateRandom();
 				var openCell = _playArea.GameMap.GetRandomOpenCell();
 				_playArea.GameMap.Add(openCell.X, openCell.Y, creature);
+				_creatureRegistry.Register(creature);
 			}
 		}
 	}

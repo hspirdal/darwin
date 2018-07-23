@@ -33,8 +33,8 @@ namespace GameLib.Actions.Combat
 		public Task ResolveAsync(Action action)
 		{
 			// TODO: Improve design to avoid casting.
-			var lootAction = (AttackAction)action;
-			return ResolveAsync(lootAction.OwnerId, lootAction.TargetId);
+			var attackAction = (AttackAction)action;
+			return ResolveAsync(attackAction.OwnerId, attackAction.TargetId);
 		}
 
 		private async Task ResolveAsync(string playerId, string targetId)

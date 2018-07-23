@@ -1,4 +1,4 @@
 namespace GameLib.Combat
 {
-	public enum DiceType { d4, d6, d8, d10, d12, d20, d100 }
+	public enum DiceType { d4 = 5, d6 = 7, d8 = 9, d10 = 11, d12 = 13, d20 = 21, d100 = 101 }
 }

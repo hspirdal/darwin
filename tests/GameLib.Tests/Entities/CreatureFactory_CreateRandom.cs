@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GameLib.Entities;
+using GameLib.Properties;
 using GameLib.Properties.Stats;
 using GameLib.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

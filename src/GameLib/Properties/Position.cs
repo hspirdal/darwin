@@ -1,9 +1,21 @@
+using GameLib.Utility;
+
 namespace GameLib.Properties
 {
-	public class Position
+	public class Position : IDeepCopy<Position>
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
+
+		public Position()
+		{
+		}
+
+		public Position(int x, int y)
+		{
+			X = x;
+			Y = y;
+		}
 
 		public void SetPosition(int x, int y)
 		{
@@ -17,9 +29,9 @@ namespace GameLib.Properties
 			Y += y;
 		}
 
-		public Position Clone()
+		public Position DeepCopy()
 		{
-			return new Position { X = X, Y = Y };
+			return new Position(X, Y);
 		}
 	}
 }

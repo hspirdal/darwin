@@ -5,8 +5,8 @@ namespace GameLib.Properties.Stats
 {
 	public class AttackScores : IDeepCopy<AttackScores>
 	{
-		Weapon Primary { get; set; }
-		AttributeScore BaseAttackBonus { get; set; }
+		public Weapon Primary { get; set; }
+		public AttributeScore BaseAttackBonus { get; set; }
 
 		public AttackScores()
 		{

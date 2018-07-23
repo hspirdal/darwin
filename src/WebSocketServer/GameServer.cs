@@ -13,6 +13,7 @@ using Client.Contracts.Area;
 using Client.Contracts;
 using Client.Contracts.Properties;
 using GameLib.Logging;
+using GameLib.Combat;
 
 namespace WebSocketServer
 {
@@ -30,11 +31,12 @@ namespace WebSocketServer
 		private readonly IPlayArea _playArea;
 		private readonly IPlayerRepository _playerRepository;
 		private readonly IFeedbackRepository _feedbackRepository;
+		private readonly ICombatSimulator _combatSimulator;
 		private readonly GameConfiguration _gameConfiguration;
 		private readonly IMapper _mapper;
 
 		public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
-				IPlayArea playArea, IPlayerRepository playerRepository, IFeedbackRepository feedbackRepository,
+				IPlayArea playArea, IPlayerRepository playerRepository, IFeedbackRepository feedbackRepository, ICombatSimulator combatSimulator,
 				GameConfiguration gameConfiguration, IMapper mapper)
 		{
 			_logger = logger;
@@ -44,6 +46,7 @@ namespace WebSocketServer
 			_playArea = playArea;
 			_playerRepository = playerRepository;
 			_feedbackRepository = feedbackRepository;
+			_combatSimulator = combatSimulator;
 			_gameConfiguration = gameConfiguration;
 			_mapper = mapper;
 		}
@@ -61,6 +64,7 @@ namespace WebSocketServer
 					nextGameTick = DateTime.UtcNow.AddMilliseconds(_gameConfiguration.GameTickMiliseconds) - diff;
 
 					await _actionResolver.ResolveAsync().ConfigureAwait(false);
+					_combatSimulator.CalculateRound();
 					var connections = _socketServer.ActiveConnections;
 					var players = await _playerRepository.GetAllPlayersAsync().ConfigureAwait(false);
 					var playerMap = players.ToDictionary(i => i.Id);
