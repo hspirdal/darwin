@@ -23,6 +23,12 @@ namespace GameLib.Properties
 			Y = y;
 		}
 
+		public void SetPosition(Position position)
+		{
+			X = position.X;
+			Y = position.Y;
+		}
+
 		public void Move(int x, int y)
 		{
 			X += x;

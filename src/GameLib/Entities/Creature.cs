@@ -40,6 +40,8 @@ namespace GameLib.Entities
 			Statistics = statistics;
 		}
 
+		public bool IsAlive => Statistics.DefenseScores.HitPoints.Current > 0;
+
 		public new Creature DeepCopy()
 		{
 			return new Creature(string.Copy(Id), string.Copy(Name), string.Copy(Race), string.Copy(Class), string.Copy(Type), Position.DeepCopy(), Statistics.DeepCopy());

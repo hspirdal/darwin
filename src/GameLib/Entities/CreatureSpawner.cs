@@ -26,6 +26,7 @@ namespace GameLib.Entities
 				var creature = _creatureFactory.CreateRandom();
 				var openCell = _playArea.GameMap.GetRandomOpenCell();
 				_playArea.GameMap.Add(openCell.X, openCell.Y, creature);
+				creature.Position.SetPosition(openCell.X, openCell.Y);
 				_creatureRegistry.Register(creature);
 			}
 		}

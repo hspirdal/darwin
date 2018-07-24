@@ -14,43 +14,42 @@ namespace GameLib.Actions.Combat
 	{
 		private readonly ILogger _logger;
 		private readonly IFeedbackWriter _feedbackWriter;
-		private readonly IPlayerRepository _playerRepository;
+		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IPlayArea _playArea;
-		private readonly ICombatRegistry _combatRegistry;
+		private readonly ICombatSimulator _combatSimulator;
 
 		public string ActionName => "action.attack";
 
-		public AttackResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea,
-		ICombatRegistry combatRegistry)
+		public AttackResolver(ILogger logger, IFeedbackWriter feedbackWriter, ICreatureRegistry creatureRegistry, IPlayArea playArea,
+		ICombatSimulator combatSimulator)
 		{
 			_logger = logger;
 			_feedbackWriter = feedbackWriter;
-			_playerRepository = playerRepository;
+			_creatureRegistry = creatureRegistry;
 			_playArea = playArea;
-			_combatRegistry = combatRegistry;
+			_combatSimulator = combatSimulator;
 		}
 
 		public Task ResolveAsync(Action action)
 		{
 			// TODO: Improve design to avoid casting.
 			var attackAction = (AttackAction)action;
-			return ResolveAsync(attackAction.OwnerId, attackAction.TargetId);
+			Resolve(attackAction.OwnerId, attackAction.TargetId);
+			return Task.CompletedTask;
 		}
 
-		private async Task ResolveAsync(string playerId, string targetId)
+		private void Resolve(string attackerId, string targetId)
 		{
-			var player = await _playerRepository.GetByIdAsync(playerId).ConfigureAwait(false);
-			var cell = _playArea.GameMap.GetCell(player.Position.X, player.Position.Y);
+			var attacker = _creatureRegistry.GetById(attackerId);
+			var cell = _playArea.GameMap.GetCell(attacker.Position.X, attacker.Position.Y);
 			var target = cell.Content.Entities.SingleOrDefault(i => (i.Type == "Creature" || i.Type == "Player") && i.Id == targetId) as Creature;
 			if (target != null)
 			{
-				_combatRegistry.Register(playerId, targetId);
-				_logger.Info($"Player '{player.Name}' attacks target '{target.Name}'");
-				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Attacking {target.Name}");
+				_combatSimulator.PerformAttack(attacker, target);
 			}
 			else
 			{
-				_logger.Warn($"Player '{player.Name}' failed to attack target with id '{targetId}'. It was either not found, or was not cast correctly.");
+				_logger.Warn($"Creature '{attacker.Name}' failed to attack target with id '{targetId}'. It was either not found, or was not cast correctly.");
 			}
 		}
 	}

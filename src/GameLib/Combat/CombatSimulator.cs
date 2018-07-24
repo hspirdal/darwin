@@ -8,7 +8,7 @@ namespace GameLib.Combat
 {
 	public interface ICombatSimulator
 	{
-		void CalculateRound();
+		void PerformAttack(Creature attacker, Creature defender);
 	}
 	public class CombatSimulator : ICombatSimulator
 	{
@@ -30,20 +30,28 @@ namespace GameLib.Combat
 			_playArea = playArea;
 		}
 
-		public void CalculateRound()
+		// public void CalculateRound()
+		// {
+		// 	var entries = _combatRegistry.GetAll();
+		// 	foreach (var entry in entries)
+		// 	{
+		// 		var attacker = _creatureRegistry.GetById(entry.AttackerId);
+		// 		var defender = _creatureRegistry.GetById(entry.TargetId);
+
+		// 		if (attacker.Statistics.DefenseScores.HitPoints.Current <= 0)
+		// 		{
+		// 			_combatRegistry.Remove(entry.AttackerId);
+		// 			continue;
+		// 		}
+
+		// 		ResolveAttack(attacker, defender);
+		// 	}
+		// }
+
+		public void PerformAttack(Creature attacker, Creature defender)
 		{
-			var entries = _combatRegistry.GetAll();
-			foreach (var entry in entries)
+			if (attacker.IsAlive)
 			{
-				var attacker = _creatureRegistry.GetById(entry.AttackerId);
-				var defender = _creatureRegistry.GetById(entry.TargetId);
-
-				if (attacker.Statistics.DefenseScores.HitPoints.Current <= 0)
-				{
-					_combatRegistry.Remove(entry.AttackerId);
-					continue;
-				}
-
 				ResolveAttack(attacker, defender);
 			}
 		}
@@ -62,8 +70,6 @@ namespace GameLib.Combat
 				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {toHit} against AC {armorClass.Total}. Damage: {totalDamage}.");
 				if (hitPoints.Current <= 0)
 				{
-					_combatRegistry.Remove(defender.Id);
-					_combatRegistry.Remove(attacker.Id);
 					_playArea.GameMap.Remove(defender.Position.X, defender.Position.Y, defender);
 					_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"{defender.Name} dies of combat damage!");
 				}

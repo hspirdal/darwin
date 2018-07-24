@@ -14,14 +14,16 @@ namespace GameLib.Actions.Movement
 		private readonly ILogger _logger;
 		private readonly IFeedbackWriter _feedbackWriter;
 		private readonly IPlayerRepository _playerRepository;
+		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IPlayArea _playArea;
 		public string ActionName => "action.movement";
 
-		public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea)
+		public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, ICreatureRegistry creatureRegistry, IPlayArea playArea)
 		{
 			_logger = logger;
 			_feedbackWriter = feedbackWriter;
 			_playerRepository = playerRepository;
+			_creatureRegistry = creatureRegistry;
 			_playArea = playArea;
 		}
 
@@ -62,6 +64,8 @@ namespace GameLib.Actions.Movement
 			{
 				player.Position.Move(futureX, futureY);
 				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
+				var creature = _creatureRegistry.GetById(player.Id);
+				creature.Position.SetPosition(player.Position); // temp until IPlayerRepository is removed for general lookup.
 				_playArea.GameMap.Remove(currentPosition.X, currentPosition.Y, player);
 				_playArea.GameMap.Add(player.Position.X, player.Position.Y, player);
 				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Walked {direction.ToString().ToLower()}");
