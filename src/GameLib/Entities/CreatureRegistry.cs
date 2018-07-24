@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GameLib.Logging;
 
 namespace GameLib.Entities
@@ -7,6 +8,7 @@ namespace GameLib.Entities
 	public interface ICreatureRegistry
 	{
 		Creature GetById(string id);
+		List<Creature> GetAll();
 		void Register(Creature creature);
 		void Remove(string id);
 	}
@@ -21,6 +23,11 @@ namespace GameLib.Entities
 			_logger = logger;
 
 			_creatureMap = new Dictionary<string, Creature>();
+		}
+
+		public List<Creature> GetAll()
+		{
+			return _creatureMap.Values.ToList();
 		}
 
 		public Creature GetById(string id)

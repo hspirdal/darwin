@@ -29,13 +29,13 @@ namespace WebSocketServer
 		private readonly IActionRepository _actionRepository;
 		private readonly IActionResolver _actionResolver;
 		private readonly IPlayArea _playArea;
-		private readonly IPlayerRepository _playerRepository;
 		private readonly IFeedbackRepository _feedbackRepository;
+		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly GameConfiguration _gameConfiguration;
 		private readonly IMapper _mapper;
 
 		public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
-				IPlayArea playArea, IPlayerRepository playerRepository, IFeedbackRepository feedbackRepository,
+				IPlayArea playArea, IFeedbackRepository feedbackRepository, ICreatureRegistry creatureRegistry,
 				GameConfiguration gameConfiguration, IMapper mapper)
 		{
 			_logger = logger;
@@ -43,8 +43,8 @@ namespace WebSocketServer
 			_actionRepository = actionRepository;
 			_actionResolver = actionResolver;
 			_playArea = playArea;
-			_playerRepository = playerRepository;
 			_feedbackRepository = feedbackRepository;
+			_creatureRegistry = creatureRegistry;
 			_gameConfiguration = gameConfiguration;
 			_mapper = mapper;
 		}
@@ -63,26 +63,22 @@ namespace WebSocketServer
 
 					await _actionResolver.ResolveAsync().ConfigureAwait(false);
 					var connections = _socketServer.ActiveConnections;
-					var players = await _playerRepository.GetAllPlayersAsync().ConfigureAwait(false);
-					var playerMap = players.ToDictionary(i => i.Id);
-					var activePlayers = players.Where(i => i.GameState == GameState.InGame).ToList();
 					foreach (var connection in connections)
 					{
-						var player = playerMap[connection.Id];
-						if (player.GameState == GameState.InGame)
-						{
-							var response = TempCreateStatusResponse(connection, activePlayers);
-							await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
-						}
+						var player = _creatureRegistry.GetById(connection.Id) as Player;
+						//if (player.GameState == GameState.InGame)
+						//{
+						var response = TempCreateStatusResponse(connection, player);
+						await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
+						//}
 					}
 					_feedbackRepository.Clear();
 				}
 			}
 		}
 
-		private ServerResponse TempCreateStatusResponse(Connection connection, List<Player> activePlayers)
+		private ServerResponse TempCreateStatusResponse(Connection connection, Player player)
 		{
-			var player = activePlayers.Single(i => i.Id == connection.Id);
 			var pos = player.Position;
 			var map = _playArea.GameMap;
 			var lightRadius = player.Inventory.Items.FirstOrDefault(i => i.Name == "Torch") != null ? 8 : 2;

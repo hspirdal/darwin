@@ -37,7 +37,6 @@ namespace WebSocketServer
 			builder.RegisterType<Logger>().As<ILogger>();
 			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
 			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
-			builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().SingleInstance();
 			builder.RegisterType<ConnectionStore>().As<IConnectionStore>().SingleInstance();
 			builder.RegisterType<Authenticator>().As<IAuthenticator>();
 			builder.RegisterType<MapGenerator>().As<IMapGenerator>();
@@ -90,9 +89,9 @@ namespace WebSocketServer
 		{
 			builder.Register<ActionResolver>(c =>
 			{
-				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
-				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
-				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<IPlayerRepository>(), c.Resolve<IPlayArea>());
+				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
+				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
+				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
 				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatSimulator>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{

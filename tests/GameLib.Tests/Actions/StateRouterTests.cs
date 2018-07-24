@@ -6,13 +6,14 @@ using Client.Contracts;
 using System.Threading.Tasks;
 using GameLib.Entities;
 using GameLib.Properties;
+using GameLib.Identities;
 
 namespace GameLib.Tests.Actions
 {
 	[TestClass]
 	public class StateRouterTests
 	{
-		private Mock<IPlayerRepository> _playerRepository;
+		private Mock<IIdentityRepository> _identityRepository;
 		private Mock<ILobbyRouter> _lobbyRouter;
 		private Mock<IGameRouter> _gameRouter;
 		private StateRequestRouter _stateRouter;
@@ -23,7 +24,7 @@ namespace GameLib.Tests.Actions
 			var container = AutoMock.GetLoose();
 			_lobbyRouter = container.Mock<ILobbyRouter>();
 			_gameRouter = container.Mock<IGameRouter>();
-			_playerRepository = container.Mock<IPlayerRepository>();
+			_identityRepository = container.Mock<IIdentityRepository>();
 			_stateRouter = container.Create<StateRequestRouter>();
 		}
 
@@ -32,7 +33,7 @@ namespace GameLib.Tests.Actions
 		{
 			var request = new ClientRequest { RequestName = "arbitrary_command" };
 			var clientId = "arbitrary_id";
-			_playerRepository.Setup(i => i.GetById(It.IsAny<string>())).Returns(new Player { GameState = GameState.lobby });
+			_identityRepository.Setup(i => i.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Identity { GameState = GameState.lobby });
 
 			await _stateRouter.RouteAsync(clientId, request);
 
@@ -44,7 +45,7 @@ namespace GameLib.Tests.Actions
 		{
 			var request = new ClientRequest { RequestName = "arbitrary_command" };
 			var clientId = "arbitrary_id";
-			_playerRepository.Setup(i => i.GetById(It.IsAny<string>())).Returns(new Player { GameState = GameState.InGame });
+			_identityRepository.Setup(i => i.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new Identity { GameState = GameState.InGame });
 
 			await _stateRouter.RouteAsync(clientId, request);
 

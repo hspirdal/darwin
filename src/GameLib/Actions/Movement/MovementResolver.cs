@@ -13,16 +13,14 @@ namespace GameLib.Actions.Movement
 	{
 		private readonly ILogger _logger;
 		private readonly IFeedbackWriter _feedbackWriter;
-		private readonly IPlayerRepository _playerRepository;
 		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IPlayArea _playArea;
 		public string ActionName => "action.movement";
 
-		public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, ICreatureRegistry creatureRegistry, IPlayArea playArea)
+		public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, ICreatureRegistry creatureRegistry, IPlayArea playArea)
 		{
 			_logger = logger;
 			_feedbackWriter = feedbackWriter;
-			_playerRepository = playerRepository;
 			_creatureRegistry = creatureRegistry;
 			_playArea = playArea;
 		}
@@ -31,13 +29,14 @@ namespace GameLib.Actions.Movement
 		{
 			// TODO: Improve design to avoid casting.
 			var movementAction = (MovementAction)action;
-			return ResolveAsync(movementAction.OwnerId, movementAction.MovementDirection);
+			Resolve(movementAction.OwnerId, movementAction.MovementDirection);
+			return Task.CompletedTask;
 		}
 
-		private async Task ResolveAsync(string playerId, MovementDirection direction)
+		private void Resolve(string creatureId, MovementDirection direction)
 		{
-			var player = await _playerRepository.GetByIdAsync(playerId).ConfigureAwait(false);
-			var currentPosition = player.Position.DeepCopy();
+			var creature = _creatureRegistry.GetById(creatureId);
+			var currentPosition = creature.Position.DeepCopy();
 			var futureX = 0;
 			var futureY = 0;
 
@@ -62,17 +61,14 @@ namespace GameLib.Actions.Movement
 
 			if (IsValidPosition(currentPosition, futureX, futureY))
 			{
-				player.Position.Move(futureX, futureY);
-				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
-				var creature = _creatureRegistry.GetById(player.Id);
-				creature.Position.SetPosition(player.Position); // temp until IPlayerRepository is removed for general lookup.
-				_playArea.GameMap.Remove(currentPosition.X, currentPosition.Y, player);
-				_playArea.GameMap.Add(player.Position.X, player.Position.Y, player);
-				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Walked {direction.ToString().ToLower()}");
+				creature.Position.Move(futureX, futureY);
+				_playArea.GameMap.Remove(currentPosition.X, currentPosition.Y, creature);
+				_playArea.GameMap.Add(creature.Position.X, creature.Position.Y, creature);
+				_feedbackWriter.WriteSuccess(creatureId, nameof(Action), $"Walked {direction.ToString().ToLower()}");
 			}
 			else
 			{
-				_feedbackWriter.WriteFailure(playerId, nameof(Action), "Crashed into a wall!");
+				_feedbackWriter.WriteFailure(creatureId, nameof(Action), "Crashed into a wall!");
 			}
 		}
 

@@ -4,6 +4,7 @@ using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
 using Client.Contracts;
+using GameLib.Identities;
 
 namespace GameLib.Actions
 {
@@ -11,13 +12,12 @@ namespace GameLib.Actions
 
 	public class LobbyRouter : ILobbyRouter
 	{
-		private readonly IPlayerRepository _playerRepository;
+		private readonly IIdentityRepository _identityRepository;
 		private readonly IPlayArea _playArea;
 
-		public LobbyRouter(IPlayerRepository playerRepository,
-		IPlayArea playArea)
+		public LobbyRouter(IIdentityRepository identityRepository, IPlayArea playArea)
 		{
-			_playerRepository = playerRepository;
+			_identityRepository = identityRepository;
 			_playArea = playArea;
 		}
 
@@ -27,12 +27,9 @@ namespace GameLib.Actions
 			if (clientRequest.RequestName == "lobby.newgame")
 			{
 				Console.WriteLine("Spawning player..");
-				var cell = _playArea.GameMap.GetRandomOpenCell();
-				var player = _playerRepository.GetById(clientId);
-				player.Position.SetPosition(cell.X, cell.Y);
+				var player = await _identityRepository.GetByIdAsync(clientId).ConfigureAwait(false);
 				player.GameState = GameState.InGame;
-				await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
-				_playArea.GameMap.Add(cell.X, cell.Y, player);
+				await _identityRepository.AddOrUpdateAsync(player).ConfigureAwait(false);
 			}
 		}
 	}

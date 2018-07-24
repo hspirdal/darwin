@@ -3,6 +3,7 @@ using GameLib.Properties;
 using System;
 using System.Threading.Tasks;
 using Client.Contracts;
+using GameLib.Identities;
 
 namespace GameLib.Actions
 {
@@ -12,25 +13,25 @@ namespace GameLib.Actions
 	{
 		private readonly ILobbyRouter _lobbyRouter;
 		private readonly IGameRouter _gameRouter;
-		private readonly IPlayerRepository _playerRepository;
+		private readonly IIdentityRepository _identityRepository;
 
-		public StateRequestRouter(ILobbyRouter lobbyRouter, IGameRouter gameRouter, IPlayerRepository playerRepository)
+		public StateRequestRouter(ILobbyRouter lobbyRouter, IGameRouter gameRouter, IIdentityRepository identityRepository)
 		{
 			_lobbyRouter = lobbyRouter;
 			_gameRouter = gameRouter;
-			_playerRepository = playerRepository;
+			_identityRepository = identityRepository;
 		}
 
-		public Task RouteAsync(string clientId, ClientRequest clientRequest)
+		public async Task RouteAsync(string clientId, ClientRequest clientRequest)
 		{
-			var player = _playerRepository.GetById(clientId);
+			var player = await _identityRepository.GetByIdAsync(clientId).ConfigureAwait(false);
 			if (player.GameState == GameState.lobby)
 			{
-				return _lobbyRouter.RouteAsync(clientId, clientRequest);
+				await _lobbyRouter.RouteAsync(clientId, clientRequest);
 			}
 			else
 			{
-				return _gameRouter.RouteAsync(clientId, clientRequest);
+				await _gameRouter.RouteAsync(clientId, clientRequest);
 			}
 		}
 	}

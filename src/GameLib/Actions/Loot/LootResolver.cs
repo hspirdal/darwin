@@ -13,15 +13,15 @@ namespace GameLib.Actions.Loot
 	{
 		private readonly ILogger _logger;
 		private readonly IFeedbackWriter _feedbackWriter;
-		private readonly IPlayerRepository _playerRepository;
+		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IPlayArea _playArea;
 		public string ActionName => "action.loot";
 
-		public LootResolver(ILogger logger, IFeedbackWriter feedbackWriter, IPlayerRepository playerRepository, IPlayArea playArea)
+		public LootResolver(ILogger logger, IFeedbackWriter feedbackWriter, ICreatureRegistry creatureRegistry, IPlayArea playArea)
 		{
 			_logger = logger;
 			_feedbackWriter = feedbackWriter;
-			_playerRepository = playerRepository;
+			_creatureRegistry = creatureRegistry;
 			_playArea = playArea;
 		}
 
@@ -29,26 +29,26 @@ namespace GameLib.Actions.Loot
 		{
 			// TODO: Improve design to avoid casting.
 			var lootAction = (LootAction)action;
-			return ResolveAsync(lootAction.OwnerId, lootAction.ItemId);
+			Resolve(lootAction.OwnerId, lootAction.ItemId);
+			return Task.CompletedTask;
 		}
 
-		private async Task ResolveAsync(string playerId, string itemId)
+		private void Resolve(string creatureId, string itemId)
 		{
-			var player = await _playerRepository.GetByIdAsync(playerId).ConfigureAwait(false);
-			var cell = _playArea.GameMap.GetCell(player.Position.X, player.Position.Y);
+			var creature = _creatureRegistry.GetById(creatureId) as Player; // tmp cast
+			var cell = _playArea.GameMap.GetCell(creature.Position.X, creature.Position.Y);
 			var item = cell.Content.Entities.SingleOrDefault(i => i.Type == "Item" && i.Id == itemId) as Item;
 			if (item != null)
 			{
 				cell.Content.Entities.Remove(item);
-				player.Inventory.Items.Add(item);
-				_logger.Info($"Player '{player.Name}' looted item '{item.Name}'");
-				_feedbackWriter.WriteSuccess(playerId, nameof(Action), $"Looted {item.Name}");
+				creature.Inventory.Items.Add(item);
+				_logger.Info($"Player '{creature.Name}' looted item '{item.Name}'");
+				_feedbackWriter.WriteSuccess(creatureId, nameof(Action), $"Looted {item.Name}");
 			}
 			else
 			{
-				_logger.Warn($"Player '{player.Name}' failed to loot item with id '{itemId}'. It was either not found, or did not cast to item.");
+				_logger.Warn($"Player '{creature.Name}' failed to loot item with id '{itemId}'. It was either not found, or did not cast to item.");
 			}
-			await _playerRepository.AddorUpdateAsync(player).ConfigureAwait(false);
 		}
 	}
 }

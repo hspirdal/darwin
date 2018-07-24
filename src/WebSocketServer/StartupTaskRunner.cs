@@ -18,27 +18,27 @@ namespace WebSocketServer
 
 	public class StartupTaskRunner : IStartupTaskRunner
 	{
-		private readonly IPlayerRepository _playerRepository;
 		private readonly IIdentityRepository _identityRepository;
 		private readonly IWeaponFactory _weaponFactory;
 		private readonly ICreatureRegistry _creatureRegistry;
+		private readonly IPlayArea _playArea;
 
-		public StartupTaskRunner(IPlayerRepository playerRepository, IIdentityRepository identityRepository, IWeaponFactory weaponFactory,
-		ICreatureRegistry creatureRegistry)
+		public StartupTaskRunner(IIdentityRepository identityRepository, IWeaponFactory weaponFactory,
+		ICreatureRegistry creatureRegistry, IPlayArea playArea)
 		{
-			_playerRepository = playerRepository;
 			_identityRepository = identityRepository;
 			_weaponFactory = weaponFactory;
 			_creatureRegistry = creatureRegistry;
+			_playArea = playArea;
 		}
 
 		public async Task ExecuteAsync()
 		{
-			await CreateInitialIndentities().ConfigureAwait(false);
-			await CreateInitialPlayers().ConfigureAwait(false);
+			await CreateInitialIndentitiesAsync().ConfigureAwait(false);
+			CreateInitialPlayers();
 		}
 
-		private async Task CreateInitialPlayers()
+		private void CreateInitialPlayers()
 		{
 			var shortSword = _weaponFactory.Create("Short Sword");
 			var fighterStats = new Statistics()
@@ -59,8 +59,8 @@ namespace WebSocketServer
 					}
 				}
 			};
+			SpawnInRandomOpenCell(jools);
 			_creatureRegistry.Register(jools);
-			await _playerRepository.AddorUpdateAsync(jools).ConfigureAwait(false);
 
 			var quarterStaff = _weaponFactory.Create("Quarterstaff");
 			var wizardStats = new Statistics()
@@ -81,14 +81,21 @@ namespace WebSocketServer
 					}
 				}
 			};
+			SpawnInRandomOpenCell(jops);
 			_creatureRegistry.Register(jops);
-			await _playerRepository.AddorUpdateAsync(jops).ConfigureAwait(false);
 		}
 
-		private async Task CreateInitialIndentities()
+		private void SpawnInRandomOpenCell(Player player)
 		{
-			await _identityRepository.AddAsync(new Identity { Id = "1", UserName = "arch", Password = "1234" }).ConfigureAwait(false);
-			await _identityRepository.AddAsync(new Identity { Id = "2", UserName = "clip", Password = "1234" }).ConfigureAwait(false);
+			var cell = _playArea.GameMap.GetRandomOpenCell();
+			player.Position.SetPosition(cell.X, cell.Y);
+			_playArea.GameMap.Add(cell.X, cell.Y, player);
+		}
+
+		private async Task CreateInitialIndentitiesAsync()
+		{
+			await _identityRepository.AddOrUpdateAsync(new Identity { Id = "1", UserName = "arch", Password = "1234" }).ConfigureAwait(false);
+			await _identityRepository.AddOrUpdateAsync(new Identity { Id = "2", UserName = "clip", Password = "1234" }).ConfigureAwait(false);
 		}
 	}
 }
