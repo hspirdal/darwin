@@ -124,9 +124,9 @@ export default {
                 cellSymbol = "B";
                 color = "brown";
                 break;
-              case "Ghoul":
+              case "Goblin":
                 cellSymbol = "G";
-                color = "gray";
+                color = "rgb(32, 107, 0)";
                 break;
               case "Orc Warrior":
                 cellSymbol = "O";
