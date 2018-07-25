@@ -35,6 +35,7 @@ namespace WebSocketServer
 
 			builder.RegisterType<SocketServer>().As<ISocketServer>().As<IClientRegistry>().SingleInstance();
 			builder.RegisterType<Logger>().As<ILogger>();
+			builder.RegisterType<Clock>().As<IClock>();
 			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
 			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
 			builder.RegisterType<ConnectionStore>().As<IConnectionStore>().SingleInstance();
@@ -47,6 +48,7 @@ namespace WebSocketServer
 			builder.RegisterType<RandomGenerator>().As<IRandomGenerator>();
 			builder.RegisterType<CreatureRegistry>().As<ICreatureRegistry>().SingleInstance();
 			builder.RegisterType<CombatRegistry>().As<ICombatRegistry>().SingleInstance();
+			builder.RegisterType<CooldownRegistry>().As<ICooldownRegistry>().SingleInstance();
 			builder.RegisterType<CombatSimulator>().As<ICombatSimulator>();
 			builder.RegisterType<FeedbackRepository>().As<IFeedbackRepository>().As<IFeedbackWriter>().SingleInstance();
 
@@ -72,7 +74,7 @@ namespace WebSocketServer
 				var movementInserter = new MovementInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
 				var lootAllInserter = new LootAllInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
 				var lootInserter = new LootInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
-				var attackInserter = new AttackInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>());
+				var attackInserter = new AttackInserter(c.Resolve<ILogger>(), c.Resolve<IActionRepository>(), c.Resolve<ICooldownRegistry>());
 				var inserterMap = new Dictionary<string, IRequestInserter>
 					{
 						{ movementInserter.ActionName, movementInserter },
