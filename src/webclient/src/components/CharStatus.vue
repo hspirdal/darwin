@@ -16,6 +16,9 @@
 				</li>
 		</ul>
 		</div>
+		<div id="gamestate">
+			<p>Game state: <span id="gamestateCombat" v-if="isInCombat">COMBAT</span><span id="gamestateExplore" v-else>Exploring</span></p>
+		</div>
 		<div id="actionCooldown">
 		<p>Actions: <span id="actionUnavailable" v-if="isCooldown">Unavailable</span><span id="actionReady" v-else>Ready</span></p>
 		</div>
@@ -50,6 +53,9 @@ export default {
   computed: {
     isCooldown: function() {
       return this.$store.getters["gamestatus/isCooldown"];
+    },
+    isInCombat: function() {
+      return this.$store.getters["gamestatus/isInCombat"];
     },
     gameStarted: function() {
       return this.$store.getters["gamestatus/gamestarted"];
@@ -149,6 +155,12 @@ export default {
   color: red;
 }
 #actionReady {
+  color: green;
+}
+#gamestateCombat {
+  color: red;
+}
+#gamestateExplore {
   color: green;
 }
 </style>

@@ -34,10 +34,11 @@ namespace WebSocketServer
     private readonly GameConfiguration _gameConfiguration;
     private readonly IMapper _mapper;
     private readonly ICooldownRegistry _cooldownRegistry;
+    private readonly ICombatRegistry _combatRegistry;
 
     public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
         IPlayArea playArea, IFeedbackRepository feedbackRepository, ICreatureRegistry creatureRegistry,
-        GameConfiguration gameConfiguration, IMapper mapper, ICooldownRegistry cooldownRegistry)
+        GameConfiguration gameConfiguration, IMapper mapper, ICooldownRegistry cooldownRegistry, ICombatRegistry combatRegistry)
     {
       _logger = logger;
       _socketServer = socketServer;
@@ -49,6 +50,7 @@ namespace WebSocketServer
       _gameConfiguration = gameConfiguration;
       _mapper = mapper;
       _cooldownRegistry = cooldownRegistry;
+      _combatRegistry = combatRegistry;
     }
 
     public async Task StartAsync()
@@ -93,6 +95,7 @@ namespace WebSocketServer
         Player = p,
         X = pos.X,
         Y = pos.Y,
+        IsInCombat = _combatRegistry.IsInCombat(player.Id),
         Map = new Client.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells },
         Feedback = feedback,
         NextActionAvailableUtc = _cooldownRegistry.TimeUntilCooldownIsDone(player.Id)

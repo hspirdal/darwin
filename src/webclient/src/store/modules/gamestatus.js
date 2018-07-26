@@ -13,6 +13,7 @@ const state = {
 	activeCellItems: [{}],
 	nextActionAvailableUtc: Moment.utc(Moment.now()),
 	isCooldown: false,
+	isInCombat: false,
 	x: 0,
 	y: 0
 };
@@ -47,6 +48,9 @@ const getters = {
 	},
 	isCooldown(state) {
 		return state.isCooldown;
+	},
+	isInCombat(state) {
+		return state.isInCombat;
 	}
 };
 
@@ -56,6 +60,7 @@ const mutations = {
 		state.player = status.Player;
 		state.x = status.X;
 		state.y = status.Y;
+		state.isInCombat = status.IsInCombat;
 		state.feedback = status.Feedback;
 		state.nextActionAvailableUtc = Moment.utc(status.NextActionAvailableUtc);
 		state.isCooldown = Moment.utc() < state.nextActionAvailableUtc;

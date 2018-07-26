@@ -4,50 +4,56 @@ using GameLib.Logging;
 
 namespace GameLib.Combat
 {
-	public interface ICombatRegistry
-	{
-		List<CombatEntry> GetAll();
-		void Register(string attackerId, string targetId);
-		void Remove(string attackerId);
-	}
+  public interface ICombatRegistry
+  {
+    bool IsInCombat(string id);
+    List<CombatEntry> GetAll();
+    void Register(string attackerId, string targetId);
+    void Remove(string attackerId);
+  }
 
-	public class CombatRegistry : ICombatRegistry
-	{
-		private readonly Dictionary<string, CombatEntry> _combatMap;
-		private readonly ILogger _logger;
+  public class CombatRegistry : ICombatRegistry
+  {
+    private readonly Dictionary<string, CombatEntry> _combatMap;
+    private readonly ILogger _logger;
 
-		public CombatRegistry(ILogger logger)
-		{
-			_logger = logger;
-			_combatMap = new Dictionary<string, CombatEntry>();
-		}
+    public CombatRegistry(ILogger logger)
+    {
+      _logger = logger;
+      _combatMap = new Dictionary<string, CombatEntry>();
+    }
 
-		public List<CombatEntry> GetAll()
-		{
-			return _combatMap.Values.ToList();
-		}
+    public bool IsInCombat(string id)
+    {
+      return _combatMap.ContainsKey(id);
+    }
 
-		public void Register(string attackerId, string targetId)
-		{
-			if (_combatMap.ContainsKey(attackerId) == false)
-			{
-				_combatMap.Add(attackerId, new CombatEntry { AttackerId = attackerId, TargetId = targetId });
-			}
-			else
-			{
-				_combatMap[attackerId] = new CombatEntry { AttackerId = attackerId, TargetId = targetId };
-			}
-		}
+    public List<CombatEntry> GetAll()
+    {
+      return _combatMap.Values.ToList();
+    }
 
-		public void Remove(string attackerId)
-		{
-			if (_combatMap.ContainsKey(attackerId))
-			{
-				_combatMap.Remove(attackerId);
-				return;
-			}
+    public void Register(string attackerId, string targetId)
+    {
+      if (_combatMap.ContainsKey(attackerId) == false)
+      {
+        _combatMap.Add(attackerId, new CombatEntry { AttackerId = attackerId, TargetId = targetId });
+      }
+      else
+      {
+        _combatMap[attackerId] = new CombatEntry { AttackerId = attackerId, TargetId = targetId };
+      }
+    }
 
-			_logger.Warn($"Could not remove creature with id '{attackerId}' as it was not found in registry.");
-		}
-	}
+    public void Remove(string attackerId)
+    {
+      if (_combatMap.ContainsKey(attackerId))
+      {
+        _combatMap.Remove(attackerId);
+        return;
+      }
+
+      _logger.Warn($"Could not remove creature with id '{attackerId}' as it was not found in registry.");
+    }
+  }
 }
