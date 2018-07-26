@@ -25,7 +25,7 @@
 		<h1>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h1>
 		<p>A dark stone cave.</p>
 		<div id="activecell_entities" v-if="activeCellCreatures.length > 0 || activeCellItems.length > 0">
-			<b-form-select v-model="selectedItem" class="mb-3" :select-size="activeCellRowCount" v-on:change="selectItem">
+			<b-form-select v-model="selectedItem" class="mb-3" :select-size="activeCellRowCount" v-on:change="selectEntity">
 				<optgroup label="Creatures" v-if="activeCellCreatures.length > 0">
 					<option v-for="(entity) in activeCellCreatures" v-bind:value="entity.Id">{{ entity.Name }}</option>
 				</optgroup>
@@ -128,8 +128,15 @@ export default {
     }
   },
   methods: {
-    selectItem: function(item) {
-      this.$store.commit("selection/setSelectedEntityId", item);
+    selectEntity: function(id) {
+      var creature = this.$store.getters["gamestatus/activecellcreatures"].find(
+        x => x.Id == id
+      );
+      if (creature != null) {
+        this.$store.commit("selection/setSelectedCreatureId", id);
+      } else {
+        this.$store.commit("selection/setSelectedItemId", id);
+      }
     }
   }
 };

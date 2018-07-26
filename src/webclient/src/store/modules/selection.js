@@ -2,18 +2,31 @@
 /*eslint prettier/prettier:[off] */
 // ^-- keeps whining about tabs over spaces; go away.
 const state = {
-	selectedEntityId: null,
+	selectedCreatureId: null,
+	selectedItemId: null,
 };
 
 const getters = {
-	selectedEntityId(state) {
-		return state.selectedEntityId;
+	selectedCreatureId(state) {
+		return state.selectedCreatureId;
+	},
+	selectedItemId(state) {
+		return state.selectedItemId;
+	},
+	isCreatureSelected(state) {
+		return state.selectedCreatureId != null && state.selectedCreatureId.length > 0
+	},
+	isItemSelected(state) {
+		return state.selectedItemId != null && state.selectedItemId.length > 0
 	}
 };
 
 const mutations = {
-	setSelectedEntityId(state, selectedEntityId) {
-		state.selectedEntityId = selectedEntityId;
+	setSelectedCreatureId(state, selectedCreatureId) {
+		state.selectedCreatureId = selectedCreatureId;
+	},
+	setSelectedItemId(state, selectedItemId) {
+		state.selectedItemId = selectedItemId;
 	}
 };
 
