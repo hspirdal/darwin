@@ -2,7 +2,9 @@
 	<div id="gamelog" v-if="gameStarted">
 	<ul v-if="gamelog.length > 0">
 		<li v-for="log in gamelog">
-		{{ log.Message }}
+		<span id="logSuccess" v-if="log.Type === 1 && log.Category === 'Combat'">{{ log.Message }}</span>
+		<span id="logFailure" v-else-if="log.Type === 2 && log.Category === 'Combat'">{{ log.Message }}</span>
+		<span id="logInfo" v-else>{{ log.Message }}</span>
 		</li>
 	</ul>
 	</div>
@@ -48,5 +50,11 @@ export default {
   list-style-type: none;
   margin: 0;
   padding: 0;
+}
+#logSuccess {
+  color: green;
+}
+#logFailure {
+  color: red;
 }
 </style>
