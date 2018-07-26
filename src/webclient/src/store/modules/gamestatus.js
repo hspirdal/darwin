@@ -1,6 +1,9 @@
 /*eslint no-console: [off] */
 /*eslint prettier/prettier:[off] */
 // ^-- keeps whining about tabs over spaces; go away.
+
+import Moment from "moment";
+
 const state = {
 	map: null,
 	player: { Name: "", Inventory: { Items: [] } },
@@ -8,6 +11,8 @@ const state = {
 	gameStarted: false,
 	activeCellCreatures: [{}],
 	activeCellItems: [{}],
+	nextActionAvailableUtc: Moment.utc(Moment.now()),
+	isCooldown: false,
 	x: 0,
 	y: 0
 };
@@ -36,6 +41,12 @@ const getters = {
 	},
 	gamestarted(state) {
 		return state.gameStarted;
+	},
+	nextActionAvailableUtc(state) {
+		return state.nextActionAvailableUtc;
+	},
+	isCooldown(state) {
+		return state.isCooldown;
 	}
 };
 
@@ -46,6 +57,8 @@ const mutations = {
 		state.x = status.X;
 		state.y = status.Y;
 		state.feedback = status.Feedback;
+		state.nextActionAvailableUtc = Moment.utc(status.NextActionAvailableUtc);
+		state.isCooldown = Moment.utc() < state.nextActionAvailableUtc;
 
 		if (!state.gameStarted) {
 			state.gameStarted = true;

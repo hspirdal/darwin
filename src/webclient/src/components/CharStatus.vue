@@ -16,6 +16,9 @@
 				</li>
 		</ul>
 		</div>
+		<div id="actionCooldown">
+		<p>Actions: <span id="actionUnavailable" v-if="isCooldown">Unavailable</span><span id="actionReady" v-else>Ready</span></p>
+		</div>
 		<h1>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h1>
 		<p>A dark stone cave.</p>
 		<div id="activecell_entities" v-if="activeCellCreatures.length > 0 || activeCellItems.length > 0">
@@ -45,6 +48,9 @@ export default {
     };
   },
   computed: {
+    isCooldown: function() {
+      return this.$store.getters["gamestatus/isCooldown"];
+    },
     gameStarted: function() {
       return this.$store.getters["gamestatus/gamestarted"];
     },
@@ -138,5 +144,11 @@ export default {
 }
 #status h1 {
   font-size: 24px;
+}
+#actionUnavailable {
+  color: red;
+}
+#actionReady {
+  color: green;
 }
 </style>
