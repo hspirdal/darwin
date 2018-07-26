@@ -53,7 +53,9 @@
 		"last 2 versions",
 		"not ie <= 8"
 	],
-	"options": {
-		"prettier.useTabs": true
+	"options": {},
+	"prettier": {
+		"printWidth": 120,
+		"useTabs": true
 	}
 }
