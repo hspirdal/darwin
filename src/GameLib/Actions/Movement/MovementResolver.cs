@@ -6,6 +6,7 @@ using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
 using GameLib.Logging;
+using GameLib.Combat;
 
 namespace GameLib.Actions.Movement
 {
@@ -15,14 +16,18 @@ namespace GameLib.Actions.Movement
     private readonly IFeedbackWriter _feedbackWriter;
     private readonly ICreatureRegistry _creatureRegistry;
     private readonly IPlayArea _playArea;
+    private readonly ICombatRegistry _combatRegistry;
+
     public string ActionName => MovementAction.CanonicalName;
 
-    public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, ICreatureRegistry creatureRegistry, IPlayArea playArea)
+    public MovementResolver(ILogger logger, IFeedbackWriter feedbackWriter, ICreatureRegistry creatureRegistry, IPlayArea playArea,
+      ICombatRegistry combatRegistry)
     {
       _logger = logger;
       _feedbackWriter = feedbackWriter;
       _creatureRegistry = creatureRegistry;
       _playArea = playArea;
+      _combatRegistry = combatRegistry;
     }
 
     public Task ResolveAsync(Action action)
@@ -59,6 +64,12 @@ namespace GameLib.Actions.Movement
           return;
       }
 
+      if (_combatRegistry.IsInCombat(creatureId))
+      {
+        _feedbackWriter.WriteFailure(creatureId, nameof(Action), "You are locked in combat and cannot walk away.");
+        return;
+      }
+
       if (IsValidPosition(currentPosition, futureX, futureY))
       {
         creature.Position.Move(futureX, futureY);
@@ -68,7 +79,7 @@ namespace GameLib.Actions.Movement
       }
       else
       {
-        _feedbackWriter.WriteFailure(creatureId, nameof(Action), "Crashed into a wall!");
+        _feedbackWriter.WriteFailure(creatureId, nameof(Action), "You crashed into a wall!");
       }
     }
 
