@@ -50,11 +50,7 @@ export default {
       var o = {
         RequestName: "Action.Movement",
         SessionId: sessionId,
-        Payload: JSON.stringify({
-          OwnerId: 1,
-          Name: "Action.Movement",
-          MovementDirection: movementDirection
-        })
+        Payload: JSON.stringify({ MovementDirection: movementDirection })
       };
       this.connection.invoke("SendAsync", JSON.stringify(o));
     },

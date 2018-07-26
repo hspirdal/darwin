@@ -1,17 +1,19 @@
 namespace GameLib.Actions.Combat
 {
-	public class AttackAction : Action
-	{
-		public string TargetId { get; set; }
+  public class AttackAction : Action
+  {
+    public static string CanonicalName => "Action.Attack";
+    public string TargetId { get; set; }
 
-		public override bool IsValid()
-		{
-			return base.IsValid() && !string.IsNullOrEmpty(TargetId);
-		}
+    public AttackAction(string ownerId, string targetId)
+      : base(ownerId, name: CanonicalName, cooldownDurationMilisecs: 1000)
+    {
+      TargetId = targetId;
+    }
 
-		public override string ToString()
-		{
-			return base.ToString() + $", {nameof(TargetId)}: '{TargetId}'";
-		}
-	}
+    public override string ToString()
+    {
+      return base.ToString() + $", {nameof(TargetId)}: '{TargetId}'";
+    }
+  }
 }
