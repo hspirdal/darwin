@@ -16,8 +16,6 @@ Vue.use(BootstrapVue);
 
 axios.defaults.baseURL = "http://localhost:5001";
 
-/*eslint prettier/prettier:[off] */
-// ^-- keeps whining about tabs over spaces; go away.
 new Vue({
 	router,
 	store,

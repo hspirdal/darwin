@@ -1,9 +1,7 @@
 /*eslint no-console: [off] */
-/*eslint prettier/prettier:[off] */
-// ^-- keeps whining about tabs over spaces; go away.
 const state = {
 	selectedCreatureId: null,
-	selectedItemId: null,
+	selectedItemId: null
 };
 
 const getters = {
@@ -14,10 +12,10 @@ const getters = {
 		return state.selectedItemId;
 	},
 	isCreatureSelected(state) {
-		return state.selectedCreatureId != null && state.selectedCreatureId.length > 0
+		return state.selectedCreatureId != null && state.selectedCreatureId.length > 0;
 	},
 	isItemSelected(state) {
-		return state.selectedItemId != null && state.selectedItemId.length > 0
+		return state.selectedItemId != null && state.selectedItemId.length > 0;
 	}
 };
 

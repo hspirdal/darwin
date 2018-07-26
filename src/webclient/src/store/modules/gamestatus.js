@@ -1,6 +1,4 @@
 /*eslint no-console: [off] */
-/*eslint prettier/prettier:[off] */
-// ^-- keeps whining about tabs over spaces; go away.
 
 import Moment from "moment";
 
@@ -85,7 +83,7 @@ const mutations = {
 			items.push(i);
 		});
 
-		var creaturesChanged = arrayChanged(state.activeCellCreatures, creatures)
+		var creaturesChanged = arrayChanged(state.activeCellCreatures, creatures);
 		var itemsChanged = arrayChanged(state.activeCellItems, items);
 
 		if (creaturesChanged || itemsChanged) {
