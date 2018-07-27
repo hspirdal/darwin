@@ -20,6 +20,10 @@ export default {
 	},
 	methods: {
 		onKeyPressed: function(key) {
+			if (this.$store.getters["gamestatus/isCooldown"]) {
+				return;
+			}
+
 			if (key === "l") {
 				this.$refs.network.lootAll();
 				return;
