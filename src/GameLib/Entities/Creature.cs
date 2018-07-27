@@ -1,5 +1,6 @@
 using System;
 using GameLib.Combat;
+using GameLib.Messaging;
 using GameLib.Properties;
 using GameLib.Properties.Stats;
 using GameLib.Utility;

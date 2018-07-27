@@ -1,19 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <ProjectReference Include="..\Client.Contracts\Client.Contracts.csproj" />
+    <ProjectReference Include="..\Client.Contracts\Client.Contracts.csproj"/>
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="newtonsoft.json" Version="11.0.2" />
-    <PackageReference Include="roguesharp" Version="4.0.0-pre" />
-    <PackageReference Include="stackexchange.redis" Version="1.2.6" />
+    <PackageReference Include="newtonsoft.json" Version="11.0.2"/>
+    <PackageReference Include="roguesharp" Version="4.0.0-pre"/>
+    <PackageReference Include="stackexchange.redis" Version="1.2.6"/>
+    <PackageReference Include="Stateless" Version="4.2.1"/>
   </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>7.2</LangVersion>
-		<NoWarn>NU1701</NoWarn>
+    <LangVersion>7.2</LangVersion>
+    <NoWarn>NU1701</NoWarn>
   </PropertyGroup>
-
 </Project>

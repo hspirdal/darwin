@@ -69,7 +69,7 @@ namespace GameLib.Logging
 			}
 			var feedback = new Feedback { Message = message, Category = category, Type = type };
 			_feedbackMap[playerId].Add(feedback);
-			_logger.Info("Added feedback: " + feedback);
+			_logger.Info($"Added feedback for creature id '{playerId}': " + feedback);
 		}
 	}
 }
