@@ -51,7 +51,7 @@ namespace WebSocketServer
 			builder.RegisterType<GameRouter>().As<IGameRouter>();
 			builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
 			builder.RegisterType<ActionInserter>().As<IActionInserter>();
-			builder.RegisterType<IRandomNumberGenerator>().As<IRandomNumberGenerator>();
+			builder.RegisterType<RandomNumberGenerator>().As<IRandomNumberGenerator>();
 			builder.RegisterType<DiceRoller>().As<IDiceRoller>();
 			builder.RegisterType<CreatureRegistry>().As<ICreatureRegistry>().SingleInstance();
 			builder.RegisterType<CombatRegistry>().As<ICombatRegistry>().SingleInstance();

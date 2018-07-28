@@ -53,12 +53,18 @@ namespace GameLib.Combat
 			var armorClass = defender.Statistics.DefenseScores.ArmorClass;
 			var hitPoints = defender.Statistics.DefenseScores.HitPoints;
 
-			var toHit = _diceRoller.D20().Result + attackRoll.ToHitModifier;
-			if (toHit >= armorClass.Total)
+			var attackResult = new AttackResult(attackRoll.ToHitModifier, attackRoll.DamageModifier);
+			attackResult.ToHitRoll = _diceRoller.D20().Result;
+
+			var hitResult = MessageTopic.FailedHitBy;
+			if (attackResult.ToHitTotal >= armorClass.Total)
 			{
-				var totalDamage = _diceRoller.Roll(attackRoll.DiceType, attackRoll.TimesApplied).Total + attackRoll.DamageModifier;
-				hitPoints.Current -= totalDamage;
-				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {toHit} against AC {armorClass.Total}. Damage: {totalDamage}.");
+				attackResult.SuccessfulHit = true;
+				attackResult.DamageRoll = _diceRoller.Roll(attackRoll.DiceType, attackRoll.TimesApplied).Total;
+
+				hitPoints.Current -= attackResult.DamageTotal;
+				hitResult = MessageTopic.SuccessfulHitBy;
+				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {attackResult.ToHitTotal} against AC {armorClass.Total}. Damage: {attackResult.DamageTotal}.");
 				if (hitPoints.Current <= 0)
 				{
 					_combatRegistry.Remove(attacker.Id);
@@ -72,8 +78,13 @@ namespace GameLib.Combat
 			}
 			else
 			{
-				_feedbackWriter.WriteFailure(attacker.Id, "Combat", $"Missed attack! ToHit {toHit} against AC {armorClass.Total}.");
+				_feedbackWriter.WriteFailure(attacker.Id, "Combat", $"Missed attack! ToHit {attackResult.ToHitTotal} against AC {armorClass.Total}.");
 			}
+
+			var messageToDefender = new GameMessage(attacker.Id, defender.Id, hitResult, attackResult);
+			var messageToAttacker = new GameMessage(defender.Id, attacker.Id, hitResult, attackResult);
+			_messageDispatcher.Dispatch(messageToDefender);
+			_messageDispatcher.Dispatch(messageToAttacker);
 		}
 	}
 }

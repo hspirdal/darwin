@@ -55,7 +55,7 @@ namespace GameLib.Properties.Autonomy
 			{
 				_stateMachine.Fire(_attackedByTrigger, message.FromEntityId);
 			}
-			else
+			else if (_stateMachine.CanFire(message.Topic))
 			{
 				_stateMachine.Fire(message.Topic);
 			}

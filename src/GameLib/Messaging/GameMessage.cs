@@ -5,6 +5,7 @@ namespace GameLib.Messaging
 		public string FromEntityId { get; set; }
 		public string ToEntityId { get; set; }
 		public MessageTopic Topic { get; set; }
+		public object Payload { get; set; }
 
 		public GameMessage()
 		{
@@ -17,6 +18,14 @@ namespace GameLib.Messaging
 			FromEntityId = fromEntityId;
 			ToEntityId = toEntityId;
 			Topic = topic;
+		}
+
+		public GameMessage(string fromEntityId, string toEntityId, MessageTopic topic, object payload)
+		{
+			FromEntityId = fromEntityId;
+			ToEntityId = toEntityId;
+			Topic = topic;
+			Payload = payload;
 		}
 	}
 }
