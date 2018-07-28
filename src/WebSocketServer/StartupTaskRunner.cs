@@ -8,6 +8,8 @@ using GameLib.Entities;
 using GameLib.Properties;
 using GameLib.Identities;
 using GameLib.Properties.Stats;
+using GameLib;
+using GameLib.Messaging;
 
 namespace WebSocketServer
 {
@@ -22,14 +24,18 @@ namespace WebSocketServer
 		private readonly IWeaponFactory _weaponFactory;
 		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IPlayArea _playArea;
+		private readonly IClientSender _clientSender;
+		private readonly IRecipientRegistry _recipientRegistry;
 
 		public StartupTaskRunner(IIdentityRepository identityRepository, IWeaponFactory weaponFactory,
-		ICreatureRegistry creatureRegistry, IPlayArea playArea)
+		ICreatureRegistry creatureRegistry, IPlayArea playArea, IClientSender clientSender, IRecipientRegistry recipientRegistry)
 		{
 			_identityRepository = identityRepository;
 			_weaponFactory = weaponFactory;
 			_creatureRegistry = creatureRegistry;
 			_playArea = playArea;
+			_clientSender = clientSender;
+			_recipientRegistry = recipientRegistry;
 		}
 
 		public async Task ExecuteAsync()
@@ -61,6 +67,7 @@ namespace WebSocketServer
 			};
 			SpawnInRandomOpenCell(jools);
 			_creatureRegistry.Register(jools);
+			_recipientRegistry.Register(new ClientMessageProxy(_clientSender, jools.Id));
 
 			var quarterStaff = _weaponFactory.Create("Quarterstaff");
 			var wizardStats = new Statistics()
@@ -83,6 +90,7 @@ namespace WebSocketServer
 			};
 			SpawnInRandomOpenCell(jops);
 			_creatureRegistry.Register(jops);
+			_recipientRegistry.Register(new ClientMessageProxy(_clientSender, jops.Id));
 		}
 
 		private void SpawnInRandomOpenCell(Player player)

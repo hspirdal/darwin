@@ -17,6 +17,7 @@ using GameLib.Actions.Combat;
 using GameLib.Combat;
 using GameLib.Properties.Autonomy;
 using GameLib.Messaging;
+using GameLib;
 
 namespace WebSocketServer
 {
@@ -35,7 +36,7 @@ namespace WebSocketServer
 			RegisterPlayArea(builder);
 			RegisterGameConfigurations(builder);
 
-			builder.RegisterType<SocketServer>().As<ISocketServer>().As<IClientRegistry>().SingleInstance();
+			builder.RegisterType<SocketServer>().As<ISocketServer>().As<IClientRegistry>().As<IClientSender>().SingleInstance();
 			builder.RegisterType<Logger>().As<ILogger>();
 			builder.RegisterType<Clock>().As<IClock>();
 			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
