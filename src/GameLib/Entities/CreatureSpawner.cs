@@ -1,4 +1,5 @@
 using GameLib.Area;
+using GameLib.Messaging;
 using GameLib.Properties.Autonomy;
 
 namespace GameLib.Entities
@@ -14,15 +15,17 @@ namespace GameLib.Entities
 		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IAutonomousFactory _autonomousFactory;
 		private readonly IAutonomousRegistry _autonomousRegistry;
+		private readonly IRecipientRegistry _recipientRegistry;
 
 		public CreatureSpawner(IPlayArea playArea, ICreatureFactory creatureFactory, ICreatureRegistry creatureRegistry,
-			IAutonomousFactory autonomousFactory, IAutonomousRegistry autonomousRegistry)
+			IAutonomousFactory autonomousFactory, IAutonomousRegistry autonomousRegistry, IRecipientRegistry recipientRegistry)
 		{
 			_playArea = playArea;
 			_creatureFactory = creatureFactory;
 			_creatureRegistry = creatureRegistry;
 			_autonomousFactory = autonomousFactory;
 			_autonomousRegistry = autonomousRegistry;
+			_recipientRegistry = recipientRegistry;
 		}
 
 		public void SpawnRandomly(int creatureCount)
@@ -32,10 +35,13 @@ namespace GameLib.Entities
 				var creature = _creatureFactory.CreateRandom();
 				var autonomousModel = _autonomousFactory.Create("simpledefender", creature);
 				var openCell = _playArea.GameMap.GetRandomOpenCell();
+
+				// TODO: Simplify all the registering.
 				_playArea.GameMap.Add(openCell.X, openCell.Y, creature);
 				creature.Position.SetPosition(openCell.X, openCell.Y);
 				_autonomousRegistry.Register(autonomousModel);
 				_creatureRegistry.Register(creature);
+				_recipientRegistry.Register(autonomousModel);
 			}
 		}
 	}

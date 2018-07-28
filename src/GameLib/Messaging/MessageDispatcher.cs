@@ -10,17 +10,17 @@ namespace GameLib.Messaging
 
 	public class MessageDispatcher : IMessageDispatcher
 	{
-		private readonly IAutonomousRegistry _autonomousRegistry;
+		private readonly IRecipientRegistry _recipientRegistry;
 
-		public MessageDispatcher(IAutonomousRegistry autonomousRegistry)
+		public MessageDispatcher(IRecipientRegistry recipientRegistry)
 		{
-			_autonomousRegistry = autonomousRegistry;
+			_recipientRegistry = recipientRegistry;
 		}
 		public void Dispatch(GameMessage message)
 		{
-			if (_autonomousRegistry.Contains(message.ToEntityId))
+			if (_recipientRegistry.Contains(message.ToEntityId))
 			{
-				var receiver = _autonomousRegistry.Get(message.ToEntityId);
+				var receiver = _recipientRegistry.Get(message.ToEntityId);
 				receiver.Receive(message);
 			}
 		}

@@ -1,6 +1,6 @@
 namespace GameLib.Messaging
 {
-	public interface IMessageReceiver
+	public interface IMessageRecipient : IIdentifiable
 	{
 		void Receive(GameMessage message);
 	}

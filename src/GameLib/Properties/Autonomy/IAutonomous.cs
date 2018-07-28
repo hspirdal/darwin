@@ -2,9 +2,8 @@ using GameLib.Messaging;
 
 namespace GameLib.Properties.Autonomy
 {
-	public interface IAutonomous : IMessageReceiver
+	public interface IAutonomous : IMessageRecipient
 	{
 		void Act();
-		string Id { get; }
 	}
 }
