@@ -12,9 +12,9 @@ namespace GameLib.Entities
 	public class CreatureFactory : ICreatureFactory
 	{
 		private readonly List<Creature> _creatureTemplates;
-		private readonly IRandomGenerator _randomGenerator;
+		private readonly IRandomNumberGenerator _randomGenerator;
 
-		public CreatureFactory(List<Creature> creatureTemplates, IRandomGenerator randomGenerator)
+		public CreatureFactory(List<Creature> creatureTemplates, IRandomNumberGenerator randomGenerator)
 		{
 			_creatureTemplates = creatureTemplates;
 			_randomGenerator = randomGenerator;

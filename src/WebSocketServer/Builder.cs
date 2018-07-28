@@ -18,6 +18,7 @@ using GameLib.Combat;
 using GameLib.Properties.Autonomy;
 using GameLib.Messaging;
 using GameLib;
+using GameLib.Dice;
 
 namespace WebSocketServer
 {
@@ -50,7 +51,8 @@ namespace WebSocketServer
 			builder.RegisterType<GameRouter>().As<IGameRouter>();
 			builder.RegisterType<StateRequestRouter>().As<IStateRequestRouter>();
 			builder.RegisterType<ActionInserter>().As<IActionInserter>();
-			builder.RegisterType<RandomGenerator>().As<IRandomGenerator>();
+			builder.RegisterType<IRandomNumberGenerator>().As<IRandomNumberGenerator>();
+			builder.RegisterType<DiceRoller>().As<IDiceRoller>();
 			builder.RegisterType<CreatureRegistry>().As<ICreatureRegistry>().SingleInstance();
 			builder.RegisterType<CombatRegistry>().As<ICombatRegistry>().SingleInstance();
 			builder.RegisterType<CooldownRegistry>().As<ICooldownRegistry>().SingleInstance();
@@ -139,7 +141,7 @@ namespace WebSocketServer
 
 		private static void RegisterCreatureFactory(ContainerBuilder builder)
 		{
-			builder.Register<CreatureFactory>(c =>
+			builder.Register((Func<IComponentContext, CreatureFactory>)(c =>
 			{
 				var weaponFactory = c.Resolve<IWeaponFactory>();
 
@@ -167,8 +169,8 @@ namespace WebSocketServer
 					}),
 				};
 
-				return new CreatureFactory(templates, c.Resolve<IRandomGenerator>());
-			}).As<ICreatureFactory>().SingleInstance();
+				return new CreatureFactory((List<Creature>)templates, (IRandomNumberGenerator)c.Resolve<GameLib.Utility.IRandomNumberGenerator>());
+			})).As<ICreatureFactory>().SingleInstance();
 		}
 
 		private static void RegisterWeaponFactory(ContainerBuilder builder)

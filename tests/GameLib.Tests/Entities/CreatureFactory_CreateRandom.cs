@@ -15,7 +15,7 @@ namespace GameLib.Tests.Entities
 	public class CreatureFactory_CreateRandom
 	{
 		private List<Creature> _templates;
-		private Mock<IRandomGenerator> _randomGenerator;
+		private Mock<IRandomNumberGenerator> _randomGenerator;
 		private ICreatureFactory _factory;
 
 		[TestInitialize]
@@ -29,7 +29,7 @@ namespace GameLib.Tests.Entities
 				CreateMockCreature("Wolf"),
 			};
 
-			_randomGenerator = new Mock<IRandomGenerator>();
+			_randomGenerator = new Mock<IRandomNumberGenerator>();
 
 			_factory = new CreatureFactory(_templates, _randomGenerator.Object);
 		}

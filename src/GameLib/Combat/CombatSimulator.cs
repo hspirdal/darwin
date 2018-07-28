@@ -1,5 +1,6 @@
 using System;
 using GameLib.Area;
+using GameLib.Dice;
 using GameLib.Entities;
 using GameLib.Logging;
 using GameLib.Messaging;
@@ -17,18 +18,18 @@ namespace GameLib.Combat
 		private readonly IFeedbackWriter _feedbackWriter;
 		private readonly ICombatRegistry _combatRegistry;
 		private readonly ICreatureRegistry _creatureRegistry;
-		private readonly IRandomGenerator _randomGenerator;
+		private readonly IDiceRoller _diceRoller;
 		private readonly IPlayArea _playArea;
 		private readonly IMessageDispatcher _messageDispatcher;
 
 		public CombatSimulator(ILogger logger, IFeedbackWriter feedbackWriter, ICombatRegistry combatRegistry,
-		ICreatureRegistry creatureRegistry, IRandomGenerator randomGenerator, IPlayArea playArea, IMessageDispatcher messageDispatcher)
+		ICreatureRegistry creatureRegistry, IDiceRoller diceRoller, IPlayArea playArea, IMessageDispatcher messageDispatcher)
 		{
 			_logger = logger;
 			_feedbackWriter = feedbackWriter;
 			_combatRegistry = combatRegistry;
 			_creatureRegistry = creatureRegistry;
-			_randomGenerator = randomGenerator;
+			_diceRoller = diceRoller;
 			_playArea = playArea;
 			_messageDispatcher = messageDispatcher;
 		}
@@ -52,10 +53,10 @@ namespace GameLib.Combat
 			var armorClass = defender.Statistics.DefenseScores.ArmorClass;
 			var hitPoints = defender.Statistics.DefenseScores.HitPoints;
 
-			var toHit = _randomGenerator.D20() + attackRoll.ToHitModifier;
+			var toHit = _diceRoller.D20() + attackRoll.ToHitModifier;
 			if (toHit >= armorClass.Total)
 			{
-				var totalDamage = _randomGenerator.Roll(attackRoll.DiceType, attackRoll.TimesApplied) + attackRoll.DamageModifier;
+				var totalDamage = _diceRoller.Roll(attackRoll.DiceType, attackRoll.TimesApplied) + attackRoll.DamageModifier;
 				hitPoints.Current -= totalDamage;
 				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {toHit} against AC {armorClass.Total}. Damage: {totalDamage}.");
 				if (hitPoints.Current <= 0)

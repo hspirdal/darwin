@@ -1,4 +1,5 @@
 using GameLib.Combat;
+using GameLib.Dice;
 using GameLib.Utility;
 
 namespace GameLib.Entities
