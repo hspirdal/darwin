@@ -53,10 +53,10 @@ namespace GameLib.Combat
 			var armorClass = defender.Statistics.DefenseScores.ArmorClass;
 			var hitPoints = defender.Statistics.DefenseScores.HitPoints;
 
-			var toHit = _diceRoller.D20() + attackRoll.ToHitModifier;
+			var toHit = _diceRoller.D20().Result + attackRoll.ToHitModifier;
 			if (toHit >= armorClass.Total)
 			{
-				var totalDamage = _diceRoller.Roll(attackRoll.DiceType, attackRoll.TimesApplied) + attackRoll.DamageModifier;
+				var totalDamage = _diceRoller.Roll(attackRoll.DiceType, attackRoll.TimesApplied).Total + attackRoll.DamageModifier;
 				hitPoints.Current -= totalDamage;
 				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {toHit} against AC {armorClass.Total}. Damage: {totalDamage}.");
 				if (hitPoints.Current <= 0)
