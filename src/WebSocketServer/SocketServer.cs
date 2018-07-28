@@ -9,6 +9,7 @@ using GameLib.Logging;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Client.Contracts;
+using GameLib;
 
 namespace WebSocketServer
 {
@@ -25,7 +26,7 @@ namespace WebSocketServer
 		List<Connection> ActiveConnections { get; }
 	}
 
-	public class SocketServer : ISocketServer, IClientRegistry
+	public class SocketServer : ISocketServer, IClientRegistry, IClientSender
 	{
 		private readonly ILogger _logger;
 		private readonly IStateRequestRouter _stateRequestRouter;
@@ -59,6 +60,26 @@ namespace WebSocketServer
 				_logger.Error(e);
 			}
 			return Task.CompletedTask;
+		}
+
+		public async Task SendAsync(string userId, string channel, ServerResponse serverResponse)
+		{
+			try
+			{
+				var connection = _connectionStore.ActiveConnections.SingleOrDefault(i => i.Id == userId);
+				if (connection != null)
+				{
+					var json = JsonConvert.SerializeObject(serverResponse);
+					await connection.Client.SendAsync(channel, json).ConfigureAwait(false);
+					return;
+				}
+
+				_logger.Warn($"user id '{userId}' was not found in active connections");
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e);
+			}
 		}
 
 		public async Task<bool> CheckValidConnectionAsync(string connectionId, Guid sessionId, IClientProxy clientProxy)
