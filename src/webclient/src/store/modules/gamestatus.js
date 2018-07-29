@@ -5,7 +5,6 @@ import Moment from "moment";
 const state = {
 	map: null,
 	player: { Name: "", Inventory: { Items: [] } },
-	feedback: [{}],
 	gameStarted: false,
 	activeCellCreatures: [{}],
 	activeCellItems: [{}],
@@ -28,9 +27,6 @@ const getters = {
 	},
 	y(state) {
 		return state.y;
-	},
-	feedback(state) {
-		return state.feedback;
 	},
 	activecellcreatures(state) {
 		return state.activeCellCreatures;
@@ -59,7 +55,6 @@ const mutations = {
 		state.x = status.X;
 		state.y = status.Y;
 		state.isInCombat = status.IsInCombat;
-		state.feedback = status.Feedback;
 		state.nextActionAvailableUtc = Moment.utc(status.NextActionAvailableUtc);
 		state.isCooldown = Moment.utc() < state.nextActionAvailableUtc;
 

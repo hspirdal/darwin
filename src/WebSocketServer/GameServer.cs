@@ -30,7 +30,6 @@ namespace WebSocketServer
 		private readonly IActionRepository _actionRepository;
 		private readonly IActionResolver _actionResolver;
 		private readonly IPlayArea _playArea;
-		private readonly IFeedbackRepository _feedbackRepository;
 		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly GameConfiguration _gameConfiguration;
 		private readonly IMapper _mapper;
@@ -39,7 +38,7 @@ namespace WebSocketServer
 		private readonly IAutonomousRegistry _autonomousRegistry;
 
 		public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
-				IPlayArea playArea, IFeedbackRepository feedbackRepository, ICreatureRegistry creatureRegistry,
+				IPlayArea playArea, ICreatureRegistry creatureRegistry,
 				GameConfiguration gameConfiguration, IMapper mapper, ICooldownRegistry cooldownRegistry, ICombatRegistry combatRegistry,
 				IAutonomousRegistry autonomousRegistry)
 		{
@@ -48,7 +47,6 @@ namespace WebSocketServer
 			_actionRepository = actionRepository;
 			_actionResolver = actionResolver;
 			_playArea = playArea;
-			_feedbackRepository = feedbackRepository;
 			_creatureRegistry = creatureRegistry;
 			_gameConfiguration = gameConfiguration;
 			_mapper = mapper;
@@ -79,7 +77,6 @@ namespace WebSocketServer
 						var response = TempCreateStatusResponse(connection, player);
 						await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
 					}
-					_feedbackRepository.Clear();
 				}
 			}
 		}
@@ -100,7 +97,6 @@ namespace WebSocketServer
 			map.ComputeFov(pos.X, pos.Y, lightRadius);
 			var visibleCells = _mapper.Map<List<GameLib.Area.Cell>, List<Client.Contracts.Area.Cell>>(_playArea.GameMap.GetVisibleCells());
 			var p = _mapper.Map<GameLib.Entities.Player, Client.Contracts.Entities.Player>(player);
-			var feedback = _mapper.Map<List<GameLib.Logging.Feedback>, List<Client.Contracts.Logging.Feedback>>(_feedbackRepository.GetById(player.Id));
 			var status = new GameStatus
 			{
 				Player = p,
@@ -108,7 +104,6 @@ namespace WebSocketServer
 				Y = pos.Y,
 				IsInCombat = _combatRegistry.IsInCombat(player.Id),
 				Map = new Client.Contracts.Area.Map { Width = map.Width, Height = map.Height, VisibleCells = visibleCells },
-				Feedback = feedback,
 				NextActionAvailableUtc = _cooldownRegistry.TimeUntilCooldownIsDone(player.Id)
 			};
 

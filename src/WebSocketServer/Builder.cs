@@ -61,7 +61,6 @@ namespace WebSocketServer
 			builder.RegisterType<CombatSimulator>().As<ICombatSimulator>();
 			builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 			builder.RegisterType<AutonomousFactory>().As<IAutonomousFactory>();
-			builder.RegisterType<FeedbackRepository>().As<IFeedbackRepository>().As<IFeedbackWriter>().SingleInstance();
 
 			return builder.Build();
 		}
@@ -102,10 +101,10 @@ namespace WebSocketServer
 		{
 			builder.Register<ActionResolver>(c =>
 			{
-				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatRegistry>());
-				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
-				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
-				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<IFeedbackWriter>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatSimulator>());
+				var movementResolver = new MovementResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatRegistry>(), c.Resolve<IMessageDispatcher>());
+				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
+				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
+				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatSimulator>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },

@@ -15,18 +15,16 @@ namespace GameLib.Combat
 	public class CombatSimulator : ICombatSimulator
 	{
 		private readonly ILogger _logger;
-		private readonly IFeedbackWriter _feedbackWriter;
 		private readonly ICombatRegistry _combatRegistry;
 		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IDiceRoller _diceRoller;
 		private readonly IPlayArea _playArea;
 		private readonly IMessageDispatcher _messageDispatcher;
 
-		public CombatSimulator(ILogger logger, IFeedbackWriter feedbackWriter, ICombatRegistry combatRegistry,
+		public CombatSimulator(ILogger logger, ICombatRegistry combatRegistry,
 		ICreatureRegistry creatureRegistry, IDiceRoller diceRoller, IPlayArea playArea, IMessageDispatcher messageDispatcher)
 		{
 			_logger = logger;
-			_feedbackWriter = feedbackWriter;
 			_combatRegistry = combatRegistry;
 			_creatureRegistry = creatureRegistry;
 			_diceRoller = diceRoller;
@@ -40,7 +38,6 @@ namespace GameLib.Combat
 				if (!_combatRegistry.IsInCombat(attacker.Id))
 				{
 					_combatRegistry.Register(attacker.Id, defender.Id);
-					_feedbackWriter.Write(attacker.Id, "Combat", $"Attacking {defender.Name}");
 				}
 
 				ResolveAttack(attacker, defender);
@@ -66,11 +63,6 @@ namespace GameLib.Combat
 
 				hitPoints.Current -= attackResult.DamageTotal;
 				hitResult = MessageTopic.SuccessfulHitBy;
-				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {attackResult.ToHitTotal} against AC {armorClass.Total}. Damage: {attackResult.DamageTotal}.");
-			}
-			else
-			{
-				_feedbackWriter.WriteFailure(attacker.Id, "Combat", $"Missed attack! ToHit {attackResult.ToHitTotal} against AC {armorClass.Total}.");
 			}
 
 			var messageToDefender = new GameMessage(attacker.Id, defender.Id, hitResult, attackResult);
@@ -91,8 +83,6 @@ namespace GameLib.Combat
 				{
 					_messageDispatcher.Dispatch(new GameMessage(string.Empty, attacker.Id, MessageTopic.ExperienceGain));
 				}
-
-				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"{defender.Name} dies of combat damage!");
 			}
 		}
 	}

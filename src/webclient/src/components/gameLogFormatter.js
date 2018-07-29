@@ -12,6 +12,10 @@ export default {
 		return name + ": Fail to attack " + attackResult.DefenderName + " " + toHit;
 	},
 
+	formatAttacking() {
+		return "Attacking target creature";
+	},
+
 	formatKilledBy(player, attackResult) {
 		return '<span style="color: red">' + attackResult.AttackerName + " kills " + player.Name + " </span> - Game over, buddy!";
 	},
@@ -22,6 +26,10 @@ export default {
 
 	formatExperienceGain(amount) {
 		return '<span style="color: purple">Received ' + amount + " experience points</span> (in a future build).";
+	},
+
+	formatMovementFailed(message) {
+		return '<span style="color: blue">' + message + "</span>";
 	},
 
 	formatName(player, attackResult) {

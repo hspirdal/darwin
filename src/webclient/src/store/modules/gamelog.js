@@ -1,6 +1,6 @@
 /*eslint no-console: [off] */
 const state = {
-	gameMessages: [{}],
+	gameMessages: [],
 	lastMessageAdded: []
 };
 

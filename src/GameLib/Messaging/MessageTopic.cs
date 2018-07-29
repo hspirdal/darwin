@@ -4,6 +4,7 @@ namespace GameLib.Messaging
 	{
 		Nothing,
 		AttackedBy,
+		Attacking,
 		KilledBy,
 		SuccessfulHitBy,
 		FailedHitBy,
@@ -11,5 +12,6 @@ namespace GameLib.Messaging
 		CombatantDissapears,
 		CombatantDies,
 		ExperienceGain,
+		MovementFailed,
 	}
 }
