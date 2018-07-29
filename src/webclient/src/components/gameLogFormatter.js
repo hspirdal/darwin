@@ -12,6 +12,18 @@ export default {
 		return name + ": Fail to attack " + attackResult.DefenderName + " " + toHit;
 	},
 
+	formatKilledBy(player, attackResult) {
+		return '<span style="color: red">' + attackResult.AttackerName + " kills " + player.Name + " </span> - Game over, buddy!";
+	},
+
+	formatKilledOther(attackResult) {
+		return attackResult.DefenderName + " dies of combat damage!";
+	},
+
+	formatExperienceGain(amount) {
+		return '<span style="color: purple">Received ' + amount + " experience points</span> (in a future build).";
+	},
+
 	formatName(player, attackResult) {
 		if (player.Name === attackResult.AttackerName) {
 			return '<span style="color: green" id="self">' + player.Name + "</span>";

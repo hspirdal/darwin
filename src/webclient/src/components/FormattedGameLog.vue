@@ -22,7 +22,8 @@ const MessageTopic = {
 	FailedHitBy: 4,
 	CombatantFlees: 5,
 	CombatantDissapears: 6,
-	CombatantDies: 7
+	CombatantDies: 7,
+	ExperienceGain: 8
 };
 
 import GameLogFormatter from "./gameLogFormatter.js";
@@ -49,6 +50,12 @@ export default {
 				formattedMessage = GameLogFormatter.formatSuccessfulHit(this.player, message.Payload);
 			} else if (message.Topic === MessageTopic.FailedHitBy) {
 				formattedMessage = GameLogFormatter.formatFailedHit(this.player, message.Payload);
+			} else if (message.Topic === MessageTopic.CombatantDies) {
+				formattedMessage = GameLogFormatter.formatKilledOther(message.Payload);
+			} else if (message.Topic === MessageTopic.KilledBy) {
+				formattedMessage = GameLogFormatter.formatKilledBy(this.player, message.Payload);
+			} else if (message.Topic === MessageTopic.ExperienceGain) {
+				formattedMessage = GameLogFormatter.formatExperienceGain(200);
 			}
 
 			if (formattedMessage.length > 0) {

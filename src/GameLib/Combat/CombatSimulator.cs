@@ -35,7 +35,7 @@ namespace GameLib.Combat
 		}
 		public void PerformAttack(Creature attacker, Creature defender)
 		{
-			if (attacker.IsAlive)
+			if (attacker.IsAlive && defender.IsAlive)
 			{
 				if (!_combatRegistry.IsInCombat(attacker.Id))
 				{
@@ -67,16 +67,6 @@ namespace GameLib.Combat
 				hitPoints.Current -= attackResult.DamageTotal;
 				hitResult = MessageTopic.SuccessfulHitBy;
 				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"Successfull attack! ToHit {attackResult.ToHitTotal} against AC {armorClass.Total}. Damage: {attackResult.DamageTotal}.");
-				if (hitPoints.Current <= 0)
-				{
-					_combatRegistry.Remove(attacker.Id);
-					_combatRegistry.Remove(defender.Id);
-					_playArea.GameMap.Remove(defender.Position.X, defender.Position.Y, defender);
-					_messageDispatcher.Dispatch(new GameMessage(attacker.Id, defender.Id, MessageTopic.KilledBy));
-					_messageDispatcher.Dispatch(new GameMessage(defender.Id, attacker.Id, MessageTopic.CombatantDies));
-
-					_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"{defender.Name} dies of combat damage!");
-				}
 			}
 			else
 			{
@@ -87,6 +77,23 @@ namespace GameLib.Combat
 			var messageToAttacker = new GameMessage(defender.Id, attacker.Id, hitResult, attackResult);
 			_messageDispatcher.Dispatch(messageToDefender);
 			_messageDispatcher.Dispatch(messageToAttacker);
+
+			if (hitPoints.Current <= 0)
+			{
+				_combatRegistry.Remove(attacker.Id);
+				_combatRegistry.Remove(defender.Id);
+				_playArea.GameMap.Remove(defender.Position.X, defender.Position.Y, defender);
+				_messageDispatcher.Dispatch(new GameMessage(attacker.Id, defender.Id, MessageTopic.KilledBy, attackResult));
+				_messageDispatcher.Dispatch(new GameMessage(defender.Id, attacker.Id, MessageTopic.CombatantDies, attackResult));
+
+				// Temp for mockup reasons..
+				if (attacker.Type == "Player")
+				{
+					_messageDispatcher.Dispatch(new GameMessage(string.Empty, attacker.Id, MessageTopic.ExperienceGain));
+				}
+
+				_feedbackWriter.WriteSuccess(attacker.Id, "Combat", $"{defender.Name} dies of combat damage!");
+			}
 		}
 	}
 }

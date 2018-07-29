@@ -51,7 +51,7 @@ namespace WebSocketServer
 			{
 				AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
 				AttackScores = new AttackScores(shortSword, 1),
-				DefenseScores = new DefenseScores(8, 112)
+				DefenseScores = new DefenseScores(14, 112)
 			};
 
 			var jools = new Player(id: "1", "Jools", "Human", "Fighter", level: 1, fighterStats)

@@ -10,5 +10,6 @@ namespace GameLib.Messaging
 		CombatantFlees,
 		CombatantDissapears,
 		CombatantDies,
+		ExperienceGain,
 	}
 }
