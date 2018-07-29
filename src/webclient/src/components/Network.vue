@@ -37,7 +37,8 @@ export default {
 
 		this.connection.on("gamemessage", data => {
 			var response = JSON.parse(data);
-			console.log(response.Message);
+			var gameMessage = JSON.parse(response.Payload);
+			this.$store.commit("gamelog/appendMessage", gameMessage);
 		});
 
 		this.connection.start().then(() => {

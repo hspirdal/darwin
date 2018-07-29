@@ -53,7 +53,9 @@ namespace GameLib.Combat
 			var armorClass = defender.Statistics.DefenseScores.ArmorClass;
 			var hitPoints = defender.Statistics.DefenseScores.HitPoints;
 
-			var attackResult = new AttackResult(attackRoll.ToHitModifier, attackRoll.DamageModifier);
+			var attackResult = new AttackResult(attacker.Id, defender.Id, attackRoll.ToHitModifier, attackRoll.DamageModifier);
+			attackResult.AttackerName = attacker.Name;
+			attackResult.DefenderName = defender.Name;
 			attackResult.ToHitRoll = _diceRoller.D20().Result;
 
 			var hitResult = MessageTopic.FailedHitBy;
