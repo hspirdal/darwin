@@ -1,7 +1,7 @@
 <template>
 	<div id="gamelog" v-if="gameStarted">
 	<ul v-if="formattedMessages.length > 0">
-		<li v-html="log" v-for="log in formattedMessages">
+		<li v-html="log" v-for="log in formattedMessages" v-bind:key="log">
 			{{ log }}
 		</li>
 	</ul>
@@ -9,7 +9,6 @@
 </template>
 
 <script>
-/*eslint vue/require-v-for-key: [off] */
 /*eslint no-console: [off] */
 /*eslint vue/no-side-effects-in-computed-properties: [off] */
 // ^-- Turn off temporary until I find a better way than rendering using Computed.
