@@ -6,6 +6,6 @@ namespace Client.Contracts.Entities
 	{
 		public string Race { get; set; }
 		public string Class { get; set; }
-		public Statistics Statistics { get; set; }
+		public string Healthiness { get; set; }
 	}
 }

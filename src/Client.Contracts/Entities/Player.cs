@@ -7,5 +7,6 @@ namespace Client.Contracts.Entities
 	{
 		public int Level { get; set; }
 		public Inventory Inventory { get; set; }
+		public Statistics Statistics { get; set; }
 	}
 }

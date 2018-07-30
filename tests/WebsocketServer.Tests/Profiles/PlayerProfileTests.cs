@@ -16,6 +16,7 @@ namespace WebsocketServer.Tests.Profiles
 		{
 			_mapperConfiguration = new MapperConfiguration(cfg =>
 			{
+				cfg.AddProfile(typeof(CreatureProfile));
 				cfg.AddProfile(typeof(PlayerProfile));
 			});
 		}

@@ -8,15 +8,32 @@ namespace WebsocketServer.Tests.Profiles
 	[TestClass]
 	public class CreatureProfileTests
 	{
-		[TestMethod]
-		public void WhenMappingPlayer_ThenMappingIsSuccessfull()
+		private MapperConfiguration _mapperConfiguration;
+
+		[TestInitialize]
+		public void GivenAValidCreatureProfile()
 		{
-			var mapperConfiguration = new MapperConfiguration(cfg =>
+			_mapperConfiguration = new MapperConfiguration(cfg =>
 			{
 				cfg.AddProfile(typeof(CreatureProfile));
 			});
+		}
 
-			mapperConfiguration.AssertConfigurationIsValid();
+		[TestMethod]
+		public void WhenMappingCreature_ThenMappingIsSuccessfull()
+		{
+			_mapperConfiguration.AssertConfigurationIsValid();
+		}
+
+		[TestMethod]
+		public void WhenMappingCreature_ThenLevelFieldIsMappedCorrectly()
+		{
+			var creature = new GameLib.Entities.Creature() { Race = "Elf" };
+			var mapper = _mapperConfiguration.CreateMapper();
+
+			var mappedPlayer = mapper.Map<GameLib.Entities.Creature, Client.Contracts.Entities.Creature>(creature);
+
+			Assert.AreEqual("Elf", mappedPlayer.Race);
 		}
 	}
 }

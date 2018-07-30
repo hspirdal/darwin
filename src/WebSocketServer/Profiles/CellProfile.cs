@@ -8,7 +8,7 @@ namespace WebSocketServer.Profiles
 		public CellProfile()
 		{
 			CreateMap<GameLib.Area.Cell, Client.Contracts.Area.Cell>()
-			.ForMember(i => i.Creatures, opt => opt.MapFrom(x => x.Content.Entities.Where(i => i.Type == "Player" || i.Type == "Creature")))
+			.ForMember(i => i.Creatures, opt => opt.MapFrom(x => x.Content.Entities.Where(i => i.Type == "Player" || i.Type == "Creature").Cast<GameLib.Entities.Creature>()))
 			.ForMember(i => i.Items, opt => opt.MapFrom(x => x.Content.Entities.Where(i => i.Type == "Item")));
 		}
 	}
