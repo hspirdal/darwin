@@ -91,16 +91,25 @@ export default {
 	margin: 0;
 	padding: 0;
 }
-#success {
+#gamelog >>> #success {
 	color: green;
 }
-#failure {
+#gamelog >>> #failure {
 	color: red;
 }
-#self {
+#gamelog >>> #self {
 	color: green;
 }
-#other {
+#gamelog >>> #other {
 	color: red;
+}
+#gamelog >>> #damage {
+	color: red;
+}
+#gamelog >>> #xpgain {
+	color: purple;
+}
+#gamelog >>> #failedaction {
+	color: blue;
 }
 </style>

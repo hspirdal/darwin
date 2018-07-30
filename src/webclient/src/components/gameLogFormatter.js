@@ -17,7 +17,7 @@ export default {
 	},
 
 	formatKilledBy(player, attackResult) {
-		return '<span style="color: red">' + attackResult.AttackerName + " kills " + player.Name + " </span> - Game over, buddy!";
+		return '<span id="other">' + attackResult.AttackerName + " kills " + player.Name + " </span> - Game over, buddy!";
 	},
 
 	formatKilledOther(attackResult) {
@@ -25,7 +25,7 @@ export default {
 	},
 
 	formatExperienceGain(amount) {
-		return '<span style="color: purple">Received ' + amount + " experience points</span> (in a future build).";
+		return '<span id="xpgain">Received ' + amount + " experience points</span> (in a future build).";
 	},
 
 	formatMovementFailed(message) {
@@ -34,14 +34,14 @@ export default {
 
 	formatName(player, attackResult) {
 		if (player.Name === attackResult.AttackerName) {
-			return '<span style="color: green" id="self">' + player.Name + "</span>";
+			return '<span id="self">' + player.Name + "</span>";
 		}
 
-		return '<span style="color: red" id="other">' + attackResult.AttackerName + "</span>";
+		return '<span id="other">' + attackResult.AttackerName + "</span>";
 	},
 
 	formatDamage(attackResult) {
-		return '<span style="color: red">' + attackResult.DamageTotal + "</span> damage!";
+		return '<span id="damage">' + attackResult.DamageTotal + "</span> damage!";
 	},
 
 	formatToHit(attackResult) {
