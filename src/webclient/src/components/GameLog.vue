@@ -1,7 +1,7 @@
 <template>
 	<div id="gamelog" v-if="gameStarted">
 	<ul v-if="formattedMessages.length > 0">
-		<li v-html="log" v-for="log in formattedMessages" v-bind:key="log">
+		<li v-html="log" v-for="(log, index) in formattedMessages" v-bind:key="index">
 			{{ log }}
 		</li>
 	</ul>
