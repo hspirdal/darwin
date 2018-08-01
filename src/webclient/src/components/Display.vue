@@ -16,9 +16,9 @@ import GameLog from "./GameLog";
 import ROT from "rot-js";
 
 function Create2DArray(rows) {
-	var arr = [];
+	let arr = [];
 
-	for (var i = 0; i < rows; i++) {
+	for (let i = 0; i < rows; i++) {
 		arr[i] = [];
 	}
 
@@ -55,9 +55,9 @@ export default {
 	},
 	computed: {
 		renderMap: function() {
-			var map = this.$store.getters["gamestatus/map"];
-			var posx = this.$store.getters["gamestatus/x"];
-			var posy = this.$store.getters["gamestatus/y"];
+			let map = this.$store.getters["gamestatus/map"];
+			let posx = this.$store.getters["gamestatus/x"];
+			let posy = this.$store.getters["gamestatus/y"];
 
 			if (!map) {
 				return;
@@ -70,20 +70,20 @@ export default {
 			}
 
 			this.centerPlayer(posx, posy, map.Width, map.Height);
-			var cellsToRender = new Array();
-			var pre_clear = performance.now();
+			let cellsToRender = new Array();
+			let pre_clear = performance.now();
 			this.lastVisibleCells.forEach(cell => {
 				this.map[cell.Y][cell.X].IsVisible = false;
 				cellsToRender.push({ X: cell.X, Y: cell.Y });
 			});
 
 			this.lastVisibleCells = new Array();
-			var post_clear = performance.now();
+			let post_clear = performance.now();
 
-			var pre_update = performance.now();
+			let pre_update = performance.now();
 
 			map.VisibleCells.forEach(c => {
-				var cell = this.map[c.Y][c.X];
+				let cell = this.map[c.Y][c.X];
 				cell.IsVisible = true;
 				cell.IsExplored = true;
 				cell.IsWalkable = c.IsWalkable;
@@ -92,14 +92,14 @@ export default {
 				cellsToRender.push({ X: cell.X, Y: cell.Y });
 				this.lastVisibleCells.push({ X: cell.X, Y: cell.Y });
 			});
-			var post_update = performance.now();
+			let post_update = performance.now();
 
-			var pre_render = performance.now();
+			let pre_render = performance.now();
 			cellsToRender.forEach(c => {
-				var cell = this.map[c.Y][c.X];
-				var cellSymbol = cell.IsWalkable ? " " : "#";
-				var color = "rgb(127, 127, 127)";
-				var backgroundColor = cell.IsVisible ? "rgb(255, 255, 140)" : "rgb(65, 65, 65)";
+				let cell = this.map[c.Y][c.X];
+				let cellSymbol = cell.IsWalkable ? " " : "#";
+				let color = "rgb(127, 127, 127)";
+				let backgroundColor = cell.IsVisible ? "rgb(255, 255, 140)" : "rgb(65, 65, 65)";
 				if (cell.Items != null && cell.Items.length > 0) {
 					cellSymbol = "I";
 					color = "green";
@@ -112,7 +112,7 @@ export default {
 						cellSymbol = "@";
 						color = "rgb(255, 0, 0)";
 					} else {
-						var creature = cell.Creatures[0];
+						let creature = cell.Creatures[0];
 						switch (creature.Name) {
 							case "Dire Bat":
 								cellSymbol = "b";
@@ -139,7 +139,7 @@ export default {
 				this.display.draw(cell.X, cell.Y, cellSymbol, color, backgroundColor);
 			});
 
-			var post_render = performance.now();
+			let post_render = performance.now();
 			this.ticksRunning++;
 			this.averageClear = this.averageClear + (post_clear - pre_clear);
 			this.averageUpdate = this.averageUpdate + (post_update - pre_update);
@@ -160,8 +160,8 @@ export default {
 	methods: {
 		initMap(width, height) {
 			this.map = Create2DArray(width);
-			for (var y = 0; y < height; ++y) {
-				for (var x = 0; x < width; ++x) {
+			for (let y = 0; y < height; ++y) {
+				for (let x = 0; x < width; ++x) {
 					this.map[y][x] = {
 						IsExplored: false,
 						IsWalkable: false,
@@ -178,7 +178,7 @@ export default {
 				width: width,
 				height: height
 			});
-			var container = document.getElementById("container");
+			let container = document.getElementById("container");
 			container.appendChild(this.display.getContainer());
 			this.display.getContainer().style.cssText =
 				"padding-left: 0;padding-right: 0;margin-left: auto;margin-right: auto;display: block; width: " +
@@ -188,9 +188,9 @@ export default {
 				"px";
 		},
 		centerPlayer(posx, posy, mapWidth, mapHeight) {
-			var container = document.getElementById("container");
-			var normx = posx / mapWidth;
-			var normy = posy / mapHeight;
+			let container = document.getElementById("container");
+			let normx = posx / mapWidth;
+			let normy = posy / mapHeight;
 			container.scrollTo(
 				normx * this.container.gameResolution.width - this.container.halfWidth,
 				normy * this.container.gameResolution.width - this.container.halfHeight
