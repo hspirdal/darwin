@@ -1,6 +1,7 @@
 /*eslint no-console: [off] */
 
 import Moment from "moment";
+import entities from "./entities";
 
 const state = {
 	map: null,
@@ -71,6 +72,7 @@ const mutations = {
 		let creatures = new Array();
 		cell.Creatures.forEach(c => {
 			creatures.push(c);
+			this.commit("gamestatus/entities/addOrUpdateKnownCreature", c);
 		});
 
 		let items = new Array();
@@ -112,5 +114,8 @@ export default {
 	namespaced: true,
 	state,
 	mutations,
-	getters
+	getters,
+	modules: {
+		entities
+	}
 };

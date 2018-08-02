@@ -27,7 +27,7 @@
 		<div id="activecell_entities" v-if="activeCellCreatures.length > 0 || activeCellItems.length > 0">
 			<b-form-select v-model="selectedItem" class="mb-3" :select-size="activeCellRowCount" v-on:change="selectEntity">
 				<optgroup label="Creatures" v-if="activeCellCreatures.length > 0">
-					<option v-for="(entity) in activeCellCreatures" v-bind:value="entity.Id" v-bind:key="entity.Name">{{ entity.Name }}</option>
+					<option v-for="(entity) in activeCellCreatures" v-bind:value="entity.Id" v-bind:key="entity.Name">{{ entity.Name }} ({{ inspectHealth(entity.Id) }})</option>
 				</optgroup>
 				<optgroup label="Items" v-if="activeCellItems.length > 0">
 					<option v-for="(entity) in activeCellItems" v-bind:value="entity.Id" v-bind:key="entity.Name">{{ entity.Name }}</option>
@@ -126,6 +126,13 @@ export default {
 			} else {
 				this.$store.commit("selection/setSelectedItemId", id);
 			}
+		},
+		inspectHealth: function(creatureId) {
+			var creature = this.$store.getters["gamestatus/entities/knownCreatureById"](creatureId);
+			if (creature != null) {
+				return creature.Healthiness;
+			}
+			return "Unknown";
 		}
 	}
 };
