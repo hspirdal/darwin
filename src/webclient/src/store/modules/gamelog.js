@@ -17,6 +17,7 @@ const mutations = {
 	appendMessage(state, message) {
 		state.gameMessages.push(message);
 		state.lastMessageAdded = message;
+		console.log(`${message.SequenceNumber}: ${message.Topic}`);
 	}
 };
 

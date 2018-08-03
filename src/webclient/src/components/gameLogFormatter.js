@@ -18,6 +18,10 @@ export default {
 		return "Attacking target creature";
 	},
 
+	formatAttackedBy() {
+		return "Attacked by target creature";
+	},
+
 	formatKilledBy(player, attackResult) {
 		return `<span id="other"> ${attackResult.AttackerName} kills ${player.Name}</span> - Game over, buddy!`;
 	},

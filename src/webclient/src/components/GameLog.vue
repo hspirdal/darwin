@@ -1,8 +1,8 @@
 <template>
 	<div id="gamelog" v-if="gameStarted">
-	<ul v-if="formattedMessages.length > 0">
-		<li v-html="log" v-for="(log, index) in formattedMessages" v-bind:key="index">
-			{{ log }}
+	<ul v-if="formattedMessagesHistory.length > 0">
+		<li v-html="log.text" v-for="(log, index) in formattedMessagesHistory" v-bind:key="index">
+			{{ log.text }}
 		</li>
 	</ul>
 	</div>
@@ -10,8 +10,6 @@
 
 <script>
 /*eslint no-console: [off] */
-/*eslint vue/no-side-effects-in-computed-properties: [off] */
-// ^-- Turn off temporary until I find a better way than rendering using Computed.
 
 const MessageTopic = {
 	Nothing: 0,
@@ -53,6 +51,8 @@ export default {
 				formattedMessage = GameLogFormatter.formatFailedHit(this.player, message.Payload);
 			} else if (message.Topic === MessageTopic.Attacking) {
 				formattedMessage = GameLogFormatter.formatAttacking();
+			} else if (message.Topic === MessageTopic.AttackedBy) {
+				formattedMessage = GameLogFormatter.formatAttackedBy();
 			} else if (message.Topic === MessageTopic.CombatantDies) {
 				formattedMessage = GameLogFormatter.formatKilledOther(message.Payload);
 			} else if (message.Topic === MessageTopic.KilledBy) {
@@ -63,16 +63,29 @@ export default {
 				formattedMessage = GameLogFormatter.formatMovementFailed(message.Payload);
 			}
 
-			if (formattedMessage.length > 0) {
-				this.formattedMessagesHistory.push(formattedMessage);
-			}
-
-			return this.formattedMessagesHistory.slice().reverse();
+			return { text: formattedMessage, sequenceNumber: message.SequenceNumber };
 		}
 	},
 	watch: {
 		gameStarted() {
 			this.player = this.$store.getters["gamestatus/player"];
+		},
+		formattedMessages(formattedMessage) {
+			if (formattedMessage.text.length > 0) {
+				formattedMessage.text += " seq: " + formattedMessage.sequenceNumber;
+				this.formattedMessagesHistory.push(formattedMessage);
+				this.formattedMessagesHistory.sort((a, b) => a.sequenceNumber - b.sequenceNumber);
+
+				this.$nextTick(function() {
+					this.scrollToEnd();
+				});
+			}
+		}
+	},
+	methods: {
+		scrollToEnd: function() {
+			var container = document.getElementById("gamelog");
+			container.scrollTop = container.scrollHeight;
 		}
 	}
 };
