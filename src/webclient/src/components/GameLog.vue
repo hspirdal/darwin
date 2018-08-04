@@ -74,7 +74,8 @@ export default {
 			if (formattedMessage.text.length > 0) {
 				formattedMessage.text += " seq: " + formattedMessage.sequenceNumber;
 				this.formattedMessagesHistory.push(formattedMessage);
-				this.formattedMessagesHistory.sort((a, b) => a.sequenceNumber - b.sequenceNumber);
+
+				this.ensureSortingOrder(formattedMessage);
 
 				this.$nextTick(function() {
 					this.scrollToEnd();
@@ -86,6 +87,15 @@ export default {
 		scrollToEnd: function() {
 			var container = document.getElementById("gamelog");
 			container.scrollTop = container.scrollHeight;
+		},
+		ensureSortingOrder(lastAddedMessage) {
+			let currentLength = this.formattedMessagesHistory.length;
+			if (currentLength > 1) {
+				let previousElement = this.formattedMessagesHistory[currentLength - 2];
+				if (previousElement.sequenceNumber > lastAddedMessage.sequenceNumber) {
+					this.formattedMessagesHistory.sort((a, b) => a.sequenceNumber - b.sequenceNumber);
+				}
+			}
 		}
 	}
 };
