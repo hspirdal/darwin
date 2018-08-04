@@ -11,7 +11,7 @@
 		<div id="inventory" v-if="gameStarted">
 		<h1>Inventory</h1>
 		<ul v-if="inventoryItems.length > 0">
-			<li v-for="item in inventoryItems" v-bind:key="item">
+			<li v-for="(item, index) in inventoryItems" v-bind:key="index">
 				{{ item }}
 				</li>
 		</ul>
@@ -24,13 +24,13 @@
 		</div>
 		<h1>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h1>
 		<p>A dark stone cave.</p>
-		<div id="activecell_entities" v-if="activeCellCreatures.length > 0 || activeCellItems.length > 0">
+		<div id="activecell_entities" v-if="creaturesInCell.length > 0 || itemsInCell.length > 0">
 			<b-form-select v-model="selectedItem" class="mb-3" :select-size="activeCellRowCount" v-on:change="selectEntity">
-				<optgroup label="Creatures" v-if="activeCellCreatures.length > 0">
-					<option v-for="(entity) in activeCellCreatures" v-bind:value="entity.Id" v-bind:key="entity.Name">{{ entity.Name }} ({{ inspectHealth(entity.Id) }})</option>
+				<optgroup label="Creatures" v-if="creaturesInCell.length > 0">
+					<option v-for="(entity, index) in creaturesInCell" v-bind:value="entity.Id" v-bind:key="index">{{ entity.Name }} ({{ inspectHealth(entity.Id) }})</option>
 				</optgroup>
-				<optgroup label="Items" v-if="activeCellItems.length > 0">
-					<option v-for="(entity) in activeCellItems" v-bind:value="entity.Id" v-bind:key="entity.Name">{{ entity.Name }}</option>
+				<optgroup label="Items" v-if="itemsInCell.length > 0">
+					<option v-for="(entity, index) in itemsInCell" v-bind:value="entity.Id" v-bind:key="index">{{ entity.Name }}</option>
 				</optgroup>
 			</b-form-select>
 		</div>
@@ -46,7 +46,9 @@ export default {
 	name: "charstatus",
 	data() {
 		return {
-			selectedItem: null
+			selectedItem: null,
+			creaturesInCell: [],
+			itemsInCell: []
 		};
 	},
 	computed: {
@@ -63,21 +65,19 @@ export default {
 			return this.$store.getters["gamestatus/player"].Inventory.Items;
 		},
 		activeCellItems: function() {
-			console.log("Active cell item refresh");
 			return this.$store.getters["gamestatus/activecellitems"];
 		},
 		activeCellCreatures: function() {
-			console.log("Active cell creature refresh");
 			return this.$store.getters["gamestatus/activecellcreatures"];
 		},
 		activeCellRowCount: function() {
 			var totalCount = 0;
 			var categoryGroupSize = 1;
-			if (this.activeCellCreatures.length > 0) {
-				totalCount += this.activeCellCreatures.length + categoryGroupSize;
+			if (this.creaturesInCell.length > 0) {
+				totalCount += this.creaturesInCell.length + categoryGroupSize;
 			}
-			if (this.activeCellItems.length > 0) {
-				totalCount += this.activeCellItems.length + categoryGroupSize;
+			if (this.itemsInCell.length > 0) {
+				totalCount += this.itemsInCell.length + categoryGroupSize;
 			}
 			return totalCount;
 		},
@@ -118,6 +118,26 @@ export default {
 			return this.$store.getters["gamestatus/player"].Statistics.AbilityScores.Charisma;
 		}
 	},
+	watch: {
+		activeCellCreatures(creatures) {
+			this.selectedItem = "";
+			this.$nextTick(function() {
+				this.creaturesInCell = creatures;
+				if (creatures.length > 0) {
+					this.preSelect(creatures[0].Id);
+				}
+			});
+		},
+		activeCellItems(items) {
+			this.selectedItem = "";
+			this.$nextTick(function() {
+				this.itemsInCell = items;
+				if (this.creaturesInCell.length == 0 && items.length > 0) {
+					this.preSelect(items[0].Id);
+				}
+			});
+		}
+	},
 	methods: {
 		selectEntity: function(id) {
 			var creature = this.$store.getters["gamestatus/activecellcreatures"].find(x => x.Id == id);
@@ -127,6 +147,13 @@ export default {
 				this.$store.commit("selection/setSelectedItemId", id);
 			}
 		},
+		preSelect: function(entityId) {
+			if (entityId) {
+				this.selectedItem = entityId;
+				this.selectEntity(entityId);
+			}
+		},
+
 		inspectHealth: function(creatureId) {
 			var creature = this.$store.getters["gamestatus/entities/knownCreatureById"](creatureId);
 			if (creature != null) {

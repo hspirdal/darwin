@@ -22,9 +22,11 @@ const getters = {
 const mutations = {
 	setSelectedCreatureId(state, selectedCreatureId) {
 		state.selectedCreatureId = selectedCreatureId;
+		state.selectedItemId = "";
 	},
 	setSelectedItemId(state, selectedItemId) {
 		state.selectedItemId = selectedItemId;
+		state.selectedCreatureId = "";
 	}
 };
 
