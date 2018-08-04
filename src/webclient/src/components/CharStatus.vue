@@ -17,10 +17,10 @@
 		</ul>
 		</div>
 		<div id="gamestate">
-			<p>Game state: <span id="gamestateCombat" v-if="isInCombat">COMBAT</span><span id="gamestateExplore" v-else>Exploring</span></p>
+		Game state: <span id="gamestateCombat" v-if="isInCombat">COMBAT</span><span id="gamestateExplore" v-else>Exploring</span>
 		</div>
 		<div id="actionCooldown">
-		<p>Actions: <span id="actionUnavailable" v-if="isCooldown">Unavailable</span><span id="actionReady" v-else>Ready</span></p>
+		Actions: <span id="actionUnavailable" v-if="isCooldown">Unavailable</span><span id="actionReady" v-else>Ready</span>
 		</div>
 		<h1>Active Cell [{{ this.$store.getters['gamestatus/x'] }}, {{ this.$store.getters['gamestatus/y'] }}]</h1>
 		<p>A dark stone cave.</p>
@@ -180,6 +180,10 @@ export default {
 }
 #status h1 {
 	font-size: 24px;
+}
+#inventory ul {
+	height: 80px;
+	overflow: auto;
 }
 #actionUnavailable {
 	color: red;
