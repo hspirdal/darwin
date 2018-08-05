@@ -9,6 +9,5 @@ namespace GameLib.Identities
 		public string UserName { get; set; }
 		public string Password { get; set; }
 		public Guid SessionId { get; set; }
-		public GameState GameState { get; set; } //  TODO: Move out.
 	}
 }

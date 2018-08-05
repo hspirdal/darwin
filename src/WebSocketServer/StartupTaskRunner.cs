@@ -10,6 +10,7 @@ using GameLib.Identities;
 using GameLib.Properties.Stats;
 using GameLib;
 using GameLib.Messaging;
+using GameLib.Users;
 
 namespace WebSocketServer
 {
@@ -26,9 +27,10 @@ namespace WebSocketServer
 		private readonly IPlayArea _playArea;
 		private readonly IClientSender _clientSender;
 		private readonly IRecipientRegistry _recipientRegistry;
+		private readonly IUserRepository _userRepository;
 
-		public StartupTaskRunner(IIdentityRepository identityRepository, IWeaponFactory weaponFactory,
-		ICreatureRegistry creatureRegistry, IPlayArea playArea, IClientSender clientSender, IRecipientRegistry recipientRegistry)
+		public StartupTaskRunner(IIdentityRepository identityRepository, IWeaponFactory weaponFactory, ICreatureRegistry creatureRegistry,
+		IPlayArea playArea, IClientSender clientSender, IRecipientRegistry recipientRegistry, IUserRepository userRepository)
 		{
 			_identityRepository = identityRepository;
 			_weaponFactory = weaponFactory;
@@ -36,6 +38,7 @@ namespace WebSocketServer
 			_playArea = playArea;
 			_clientSender = clientSender;
 			_recipientRegistry = recipientRegistry;
+			_userRepository = userRepository;
 		}
 
 		public async Task ExecuteAsync()
@@ -104,6 +107,8 @@ namespace WebSocketServer
 		{
 			await _identityRepository.AddOrUpdateAsync(new Identity { Id = "1", UserName = "arch", Password = "1234" }).ConfigureAwait(false);
 			await _identityRepository.AddOrUpdateAsync(new Identity { Id = "2", UserName = "clip", Password = "1234" }).ConfigureAwait(false);
+			await _userRepository.AddOrUpdateAsync(new User { Id = "1", GameState = GameState.lobby }).ConfigureAwait(false);
+			await _userRepository.AddOrUpdateAsync(new User { Id = "2", GameState = GameState.lobby }).ConfigureAwait(false);
 		}
 	}
 }

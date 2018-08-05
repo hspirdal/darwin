@@ -19,6 +19,7 @@ using GameLib.Properties.Autonomy;
 using GameLib.Messaging;
 using GameLib;
 using GameLib.Dice;
+using GameLib.Users;
 
 namespace WebSocketServer
 {
@@ -61,6 +62,8 @@ namespace WebSocketServer
 			builder.RegisterType<CombatSimulator>().As<ICombatSimulator>();
 			builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 			builder.RegisterType<AutonomousFactory>().As<IAutonomousFactory>();
+
+			builder.Register<UserRepository>(c => new UserRepository(c.Resolve<IConnectionMultiplexer>(), "_users")).As<IUserRepository>().SingleInstance();
 
 			return builder.Build();
 		}

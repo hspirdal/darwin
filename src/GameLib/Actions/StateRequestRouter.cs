@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Client.Contracts;
 using GameLib.Identities;
+using GameLib.Users;
 
 namespace GameLib.Actions
 {
@@ -13,25 +14,25 @@ namespace GameLib.Actions
 	{
 		private readonly ILobbyRouter _lobbyRouter;
 		private readonly IGameRouter _gameRouter;
-		private readonly IIdentityRepository _identityRepository;
+		private readonly IUserRepository _userRepository;
 
-		public StateRequestRouter(ILobbyRouter lobbyRouter, IGameRouter gameRouter, IIdentityRepository identityRepository)
+		public StateRequestRouter(ILobbyRouter lobbyRouter, IGameRouter gameRouter, IUserRepository userRepository)
 		{
 			_lobbyRouter = lobbyRouter;
 			_gameRouter = gameRouter;
-			_identityRepository = identityRepository;
+			_userRepository = userRepository;
 		}
 
-		public async Task RouteAsync(string clientId, ClientRequest clientRequest)
+		public async Task RouteAsync(string userId, ClientRequest clientRequest)
 		{
-			var player = await _identityRepository.GetByIdAsync(clientId).ConfigureAwait(false);
-			if (player.GameState == GameState.lobby)
+			var user = await _userRepository.GetByIdAsync(userId).ConfigureAwait(false);
+			if (user.GameState == GameState.lobby)
 			{
-				await _lobbyRouter.RouteAsync(clientId, clientRequest);
+				await _lobbyRouter.RouteAsync(userId, clientRequest);
 			}
 			else
 			{
-				await _gameRouter.RouteAsync(clientId, clientRequest);
+				await _gameRouter.RouteAsync(userId, clientRequest);
 			}
 		}
 	}
