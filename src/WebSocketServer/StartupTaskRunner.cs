@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
+
+
 using System.Threading.Tasks;
-using GameLib.Actions;
-using GameLib.Actions.Movement;
-using GameLib.Area;
-using GameLib.Entities;
-using GameLib.Properties;
-using GameLib.Identities;
-using GameLib.Properties.Stats;
 using GameLib;
+using GameLib.Identities;
 using GameLib.Messaging;
-using GameLib.Users;
 
 namespace WebSocketServer
 {
@@ -22,93 +15,29 @@ namespace WebSocketServer
 	public class StartupTaskRunner : IStartupTaskRunner
 	{
 		private readonly IIdentityRepository _identityRepository;
-		private readonly IWeaponFactory _weaponFactory;
-		private readonly ICreatureRegistry _creatureRegistry;
-		private readonly IPlayArea _playArea;
-		private readonly IClientSender _clientSender;
 		private readonly IRecipientRegistry _recipientRegistry;
-		private readonly IUserRepository _userRepository;
+		private readonly IClientSender _clientSender;
 
-		public StartupTaskRunner(IIdentityRepository identityRepository, IWeaponFactory weaponFactory, ICreatureRegistry creatureRegistry,
-		IPlayArea playArea, IClientSender clientSender, IRecipientRegistry recipientRegistry, IUserRepository userRepository)
+		public StartupTaskRunner(IIdentityRepository identityRepository, IRecipientRegistry recipientRegistry, IClientSender clientSender)
 		{
 			_identityRepository = identityRepository;
-			_weaponFactory = weaponFactory;
-			_creatureRegistry = creatureRegistry;
-			_playArea = playArea;
-			_clientSender = clientSender;
 			_recipientRegistry = recipientRegistry;
-			_userRepository = userRepository;
+			_clientSender = clientSender;
 		}
 
 		public async Task ExecuteAsync()
 		{
 			await CreateInitialIndentitiesAsync().ConfigureAwait(false);
-			CreateInitialPlayers();
-		}
-
-		private void CreateInitialPlayers()
-		{
-			var shortSword = _weaponFactory.Create("Short Sword");
-			var fighterStats = new Statistics()
-			{
-				AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
-				AttackScores = new AttackScores(shortSword, 1),
-				DefenseScores = new DefenseScores(14, 11002)
-			};
-
-			var jools = new Player(id: "1", "Jools", "Human", "Fighter", level: 1, fighterStats)
-			{
-				Inventory = new Inventory
-				{
-					Items = new List<Item>
-					{
-						shortSword,
-						new Item { Name = "Studded Leather", Id = Guid.NewGuid().ToString() }
-					}
-				}
-			};
-			SpawnInRandomOpenCell(jools);
-			_creatureRegistry.Register(jools);
-			_recipientRegistry.Register(new ClientMessageProxy(_clientSender, jools.Id));
-
-			var quarterStaff = _weaponFactory.Create("Quarterstaff");
-			var wizardStats = new Statistics()
-			{
-				AbilityScores = new AbilityScores(8, 16, 12, 18, 9, 9),
-				AttackScores = new AttackScores(quarterStaff, 0),
-				DefenseScores = new DefenseScores(10, 6)
-			};
-
-			var jops = new Player(id: "2", "Jops", "Human", "Wizard", level: 1, wizardStats)
-			{
-				Inventory = new Inventory
-				{
-					Items = new List<Item>
-					{
-						quarterStaff,
-						new Item { Name = "Wizard Robes", Id = Guid.NewGuid().ToString() }
-					}
-				}
-			};
-			SpawnInRandomOpenCell(jops);
-			_creatureRegistry.Register(jops);
-			_recipientRegistry.Register(new ClientMessageProxy(_clientSender, jops.Id));
-		}
-
-		private void SpawnInRandomOpenCell(Player player)
-		{
-			var cell = _playArea.GameMap.GetRandomOpenCell();
-			player.Position.SetPosition(cell.X, cell.Y);
-			_playArea.GameMap.Add(cell.X, cell.Y, player);
 		}
 
 		private async Task CreateInitialIndentitiesAsync()
 		{
 			await _identityRepository.AddOrUpdateAsync(new Identity { Id = "1", UserName = "arch", Password = "1234" }).ConfigureAwait(false);
 			await _identityRepository.AddOrUpdateAsync(new Identity { Id = "2", UserName = "clip", Password = "1234" }).ConfigureAwait(false);
-			await _userRepository.AddOrUpdateAsync(new User { Id = "1", GameState = GameState.lobby }).ConfigureAwait(false);
-			await _userRepository.AddOrUpdateAsync(new User { Id = "2", GameState = GameState.lobby }).ConfigureAwait(false);
+
+			// Temp until CRC design issue is resolved bwtween LobbyRouter and SocketServer (IClientSender)
+			_recipientRegistry.Register(new ClientMessageProxy(_clientSender, "1"));
+			_recipientRegistry.Register(new ClientMessageProxy(_clientSender, "2"));
 		}
 	}
 }

@@ -14,12 +14,12 @@ namespace GameLib.Actions
 	public class LobbyRouter : ILobbyRouter
 	{
 		private readonly IUserRepository _userRepository;
-		private readonly IPlayArea _playArea;
+		private readonly IPremadeCharacterSpawner _premadeCharacterSpawner;
 
-		public LobbyRouter(IUserRepository userRepository, IPlayArea playArea)
+		public LobbyRouter(IUserRepository userRepository, IPremadeCharacterSpawner premadeCharacterSpawner)
 		{
 			_userRepository = userRepository;
-			_playArea = playArea;
+			_premadeCharacterSpawner = premadeCharacterSpawner;
 		}
 
 		public async Task RouteAsync(string userId, ClientRequest clientRequest)
@@ -28,9 +28,8 @@ namespace GameLib.Actions
 			if (clientRequest.RequestName == "lobby.newgame")
 			{
 				Console.WriteLine("Spawning player..");
-				var user = await _userRepository.GetByIdAsync(userId).ConfigureAwait(false);
-				user.GameState = GameState.InGame;
-				await _userRepository.AddOrUpdateAsync(user).ConfigureAwait(false);
+				_premadeCharacterSpawner.Spawn(userId, clientRequest.Payload);
+				await _userRepository.AddOrUpdateAsync(new User { Id = userId, GameState = GameState.InGame }).ConfigureAwait(false);
 			}
 		}
 	}

@@ -62,6 +62,7 @@ namespace WebSocketServer
 			builder.RegisterType<CombatSimulator>().As<ICombatSimulator>();
 			builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 			builder.RegisterType<AutonomousFactory>().As<IAutonomousFactory>();
+			builder.RegisterType<PremadeCharacterSpawner>().As<IPremadeCharacterSpawner>();
 
 			builder.Register<UserRepository>(c => new UserRepository(c.Resolve<IConnectionMultiplexer>(), "_users")).As<IUserRepository>().SingleInstance();
 

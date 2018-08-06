@@ -15,6 +15,7 @@ using Client.Contracts.Properties;
 using GameLib.Logging;
 using GameLib.Combat;
 using GameLib.Properties.Autonomy;
+using GameLib.Users;
 
 namespace WebSocketServer
 {
@@ -36,11 +37,12 @@ namespace WebSocketServer
 		private readonly ICooldownRegistry _cooldownRegistry;
 		private readonly ICombatRegistry _combatRegistry;
 		private readonly IAutonomousRegistry _autonomousRegistry;
+		private readonly IUserRepository _userRepository;
 
 		public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
 				IPlayArea playArea, ICreatureRegistry creatureRegistry,
 				GameConfiguration gameConfiguration, IMapper mapper, ICooldownRegistry cooldownRegistry, ICombatRegistry combatRegistry,
-				IAutonomousRegistry autonomousRegistry)
+				IAutonomousRegistry autonomousRegistry, IUserRepository userRepository)
 		{
 			_logger = logger;
 			_socketServer = socketServer;
@@ -53,6 +55,7 @@ namespace WebSocketServer
 			_cooldownRegistry = cooldownRegistry;
 			_combatRegistry = combatRegistry;
 			_autonomousRegistry = autonomousRegistry;
+			_userRepository = userRepository;
 		}
 
 		public async Task StartAsync()
@@ -70,10 +73,15 @@ namespace WebSocketServer
 					ResolveActionsForAutonomousEntities();
 
 					await _actionResolver.ResolveAsync().ConfigureAwait(false);
-					var connections = _socketServer.ActiveConnections;
-					foreach (var connection in connections)
+
+					// TODO: Add user as part of the Connection class or the other way around..
+					var activeUsers = await _userRepository.GetActiveAsync().ConfigureAwait(false);
+					var connectionMap = _socketServer.ActiveConnections.ToDictionary(i => i.Id);
+
+					foreach (var activeUser in activeUsers)
 					{
-						var player = _creatureRegistry.GetById(connection.Id) as Player;
+						var connection = connectionMap[activeUser.Id];
+						var player = _creatureRegistry.GetById(activeUser.Id) as Player;
 						var response = TempCreateStatusResponse(connection, player);
 						await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
 					}

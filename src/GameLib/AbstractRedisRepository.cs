@@ -43,6 +43,13 @@ namespace GameLib
 			return objects;
 		}
 
+		public Task<bool> ContainsAsync(string id)
+		{
+			ValidateId(id);
+
+			return _database.HashExistsAsync(_partitionKey, id);
+		}
+
 		public Task AddOrUpdateAsync(T obj)
 		{
 			ValidateId(obj.Id);

@@ -25,6 +25,13 @@ namespace GameLib.Actions
 
 		public async Task RouteAsync(string userId, ClientRequest clientRequest)
 		{
+			// TODO: Create user object at successful login instead..
+			var userCreated = await _userRepository.ContainsAsync(userId).ConfigureAwait(false);
+			if (!userCreated)
+			{
+				await _userRepository.AddOrUpdateAsync(new User { Id = userId, GameState = GameState.lobby }).ConfigureAwait(false);
+			}
+
 			var user = await _userRepository.GetByIdAsync(userId).ConfigureAwait(false);
 			if (user.GameState == GameState.lobby)
 			{

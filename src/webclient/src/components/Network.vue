@@ -45,7 +45,8 @@ export default {
 			var sessionId = sessionStorage.getItem("sessionId");
 			var o = {
 				RequestName: "lobby.newgame",
-				SessionId: sessionId
+				SessionId: sessionId,
+				Payload: "Jools"
 			};
 			this.connection.invoke("SendAsync", JSON.stringify(o));
 		});
