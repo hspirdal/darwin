@@ -6,22 +6,22 @@ import GameClient from "./components/GameClient.vue";
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
-      path: "/",
-      redirect: {
-        name: "login"
-      }
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: LoginComponent
-    },
-    {
-      path: "/game",
-      name: "game",
-      component: GameClient
-    }
-  ]
+	routes: [
+		{
+			path: "/",
+			redirect: {
+				name: "login"
+			}
+		},
+		{
+			path: "/login",
+			name: "login",
+			component: LoginComponent
+		},
+		{
+			path: "/game",
+			name: "game",
+			component: GameClient
+		}
+	]
 });

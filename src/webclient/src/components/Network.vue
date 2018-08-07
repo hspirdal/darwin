@@ -19,31 +19,31 @@ export default {
 	},
 	mounted: function() {
 		this.connection.on("direct", data => {
-			var response = JSON.parse(data);
+			let response = JSON.parse(data);
 			if (response.Type === "gamestatus") {
-				var status = JSON.parse(response.Payload);
+				let status = JSON.parse(response.Payload);
 				if (status) {
 					this.$store.commit("gamestatus/setStatus", status);
 				}
 			} else if (response.Type === "NotAuthenticated") {
 				// Server might have restarted and purged active session list.
-				console.log(response.Message + "\nPayload: " + response.Payload);
+				console.log(`${response.Message}\nPayload: ${response.Payload}`);
 				sessionStorage.removeItem("sessionId");
 				location.reload();
 			} else {
-				console.log(response.Message + "\nPayload: " + response.Payload);
+				console.log(`${response.Message}\nPayload: ${response.Payload}`);
 			}
 		});
 
 		this.connection.on("gamemessage", data => {
-			var response = JSON.parse(data);
-			var gameMessage = JSON.parse(response.Payload);
+			let response = JSON.parse(data);
+			let gameMessage = JSON.parse(response.Payload);
 			this.$store.commit("gamelog/appendMessage", gameMessage);
 		});
 
 		this.connection.start().then(() => {
-			var sessionId = sessionStorage.getItem("sessionId");
-			var o = {
+			let sessionId = sessionStorage.getItem("sessionId");
+			let o = {
 				RequestName: "lobby.newgame",
 				SessionId: sessionId,
 				Payload: "Jools"
@@ -53,8 +53,8 @@ export default {
 	},
 	methods: {
 		move(movementDirection) {
-			var sessionId = sessionStorage.getItem("sessionId");
-			var o = {
+			let sessionId = sessionStorage.getItem("sessionId");
+			let o = {
 				RequestName: "Action.Movement",
 				SessionId: sessionId,
 				Payload: JSON.stringify({ MovementDirection: movementDirection })
@@ -62,8 +62,8 @@ export default {
 			this.connection.invoke("SendAsync", JSON.stringify(o));
 		},
 		lootAll() {
-			var sessionId = sessionStorage.getItem("sessionId");
-			var o = {
+			let sessionId = sessionStorage.getItem("sessionId");
+			let o = {
 				RequestName: "Action.LootAll",
 				SessionId: sessionId,
 				Payload: JSON.stringify({
@@ -74,8 +74,8 @@ export default {
 			this.connection.invoke("SendAsync", JSON.stringify(o));
 		},
 		loot(itemId) {
-			var sessionId = sessionStorage.getItem("sessionId");
-			var o = {
+			let sessionId = sessionStorage.getItem("sessionId");
+			let o = {
 				RequestName: "Action.Loot",
 				SessionId: sessionId,
 				Payload: JSON.stringify({
@@ -87,8 +87,8 @@ export default {
 			this.connection.invoke("SendAsync", JSON.stringify(o));
 		},
 		attack(targetId) {
-			var sessionId = sessionStorage.getItem("sessionId");
-			var o = {
+			let sessionId = sessionStorage.getItem("sessionId");
+			let o = {
 				RequestName: "Action.Attack",
 				SessionId: sessionId,
 				Payload: JSON.stringify({

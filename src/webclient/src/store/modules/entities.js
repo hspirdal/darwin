@@ -4,8 +4,7 @@ const state = {
 
 const getters = {
 	knownCreatureById: state => id => {
-		var c = state.knownCreatures.get(id);
-		return c;
+		return state.knownCreatures.get(id);
 	}
 };
 

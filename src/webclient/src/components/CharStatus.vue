@@ -71,8 +71,8 @@ export default {
 			return this.$store.getters["gamestatus/activecellcreatures"];
 		},
 		activeCellRowCount: function() {
-			var totalCount = 0;
-			var categoryGroupSize = 1;
+			let totalCount = 0;
+			let categoryGroupSize = 1;
 			if (this.creaturesInCell.length > 0) {
 				totalCount += this.creaturesInCell.length + categoryGroupSize;
 			}
@@ -140,7 +140,7 @@ export default {
 	},
 	methods: {
 		selectEntity: function(id) {
-			var creature = this.$store.getters["gamestatus/activecellcreatures"].find(x => x.Id == id);
+			let creature = this.$store.getters["gamestatus/activecellcreatures"].find(x => x.Id == id);
 			if (creature != null) {
 				this.$store.commit("selection/setSelectedCreatureId", id);
 			} else {
@@ -155,7 +155,7 @@ export default {
 		},
 
 		inspectHealth: function(creatureId) {
-			var creature = this.$store.getters["gamestatus/entities/knownCreatureById"](creatureId);
+			let creature = this.$store.getters["gamestatus/entities/knownCreatureById"](creatureId);
 			if (creature != null) {
 				return creature.Healthiness;
 			}

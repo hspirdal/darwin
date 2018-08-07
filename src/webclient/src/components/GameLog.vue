@@ -43,8 +43,8 @@ export default {
 			return this.$store.getters["gamestatus/gamestarted"];
 		},
 		formattedMessages: function() {
-			var message = this.$store.getters["gamelog/lastMessageAdded"];
-			var formattedMessage = "";
+			let message = this.$store.getters["gamelog/lastMessageAdded"];
+			let formattedMessage = "";
 			if (message.Topic === MessageTopic.SuccessfulHitBy) {
 				formattedMessage = GameLogFormatter.formatSuccessfulHit(this.player, message.Payload);
 			} else if (message.Topic === MessageTopic.FailedHitBy) {
@@ -85,7 +85,7 @@ export default {
 	},
 	methods: {
 		scrollToEnd: function() {
-			var container = document.getElementById("gamelog");
+			let container = document.getElementById("gamelog");
 			container.scrollTop = container.scrollHeight;
 		},
 		ensureSortingOrder(lastAddedMessage) {

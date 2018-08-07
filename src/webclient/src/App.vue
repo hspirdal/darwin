@@ -9,51 +9,51 @@
 
 <script>
 export default {
-  /*eslint no-console: [off] */
-  name: "App",
-  data() {
-    return {
-      authenticated: false
-    };
-  },
-  mounted() {
-    this.checkAuthentication();
-    if (!this.authenticated) {
-      this.$router.replace({ name: "login" });
-    }
-  },
-  methods: {
-    setAuthenticated(status) {
-      this.authenticated = status;
-      console.log("setting session to " + status);
-    },
-    logout() {
-      sessionStorage.removeItem("sessionId");
-      this.setAuthenticated(false);
-    },
-    checkAuthentication() {
-      var sessionId = sessionStorage.getItem("sessionId");
-      console.log("session contents: " + sessionId);
-      if (sessionId === null || Object.keys(sessionId) === 0) {
-        this.authenticated = false;
-      } else {
-        this.authenticated = true;
-      }
-    }
-  }
+	/*eslint no-console: [off] */
+	name: "App",
+	data() {
+		return {
+			authenticated: false
+		};
+	},
+	mounted() {
+		this.checkAuthentication();
+		if (!this.authenticated) {
+			this.$router.replace({ name: "login" });
+		}
+	},
+	methods: {
+		setAuthenticated(status) {
+			this.authenticated = status;
+			console.log("setting session to " + status);
+		},
+		logout() {
+			sessionStorage.removeItem("sessionId");
+			this.setAuthenticated(false);
+		},
+		checkAuthentication() {
+			let sessionId = sessionStorage.getItem("sessionId");
+			console.log("session contents: " + sessionId);
+			if (sessionId === null || Object.keys(sessionId) === 0) {
+				this.authenticated = false;
+			} else {
+				this.authenticated = true;
+			}
+		}
+	}
 };
 </script>
 
 <style>
 body {
-  background-color: #f0f0f0;
+	background-color: #f0f0f0;
 }
 h1 {
-  padding: 0;
-  margin-top: 0;
+	padding: 0;
+	margin-top: 0;
 }
 #app {
-  width: 1024px;
-  margin: auto;
+	width: 1024px;
+	margin: auto;
 }
 </style>

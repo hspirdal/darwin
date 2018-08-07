@@ -37,7 +37,7 @@ export default {
 				}
 			}
 
-			var movementDirection = 0;
+			let movementDirection = 0;
 			if (key === "w") {
 				movementDirection = 2;
 			} else if (key === "s") {
