@@ -4,6 +4,7 @@
         <input type="text" name="username" v-model="input.username" placeholder="Username" />
         <input type="password" name="password" v-model="input.password" placeholder="Password" />
         <button type="button" v-on:click="login()">Login</button>
+				<p v-if="loginFailed">Username or password is incorrect.</p>
     </div>
 </template>
 
@@ -16,7 +17,8 @@ export default {
 			input: {
 				username: "",
 				password: ""
-			}
+			},
+			loginFailed: false
 		};
 	},
 	methods: {
@@ -30,17 +32,17 @@ export default {
 					.post("/api/account", formData)
 					.then(response => {
 						if (response.data.success) {
+							this.loginFailed = false;
 							console.log("Successfully logged on. Session id: " + response.data.sessionId);
 							sessionStorage.setItem("sessionId", response.data.sessionId);
 							this.$emit("authenticated", true);
 							this.$router.replace({ name: "game" });
 						} else {
-							console.log("Failed to log in!");
+							this.loginFailed = true;
 						}
 					})
 					.catch(e => {
-						this.errors.push(e);
-						console.log(this.errors);
+						console.log(e);
 					});
 			} else {
 				console.log("A username and password must be present");
