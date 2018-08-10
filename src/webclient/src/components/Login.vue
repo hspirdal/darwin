@@ -32,7 +32,6 @@ export default {
 					.post("/api/account", formData)
 					.then(response => {
 						if (response.data.success) {
-							this.loginFailed = false;
 							console.log("Successfully logged on. Session id: " + response.data.sessionId);
 							sessionStorage.setItem("sessionId", response.data.sessionId);
 							this.$emit("authenticated", true);
@@ -45,7 +44,7 @@ export default {
 						console.log(e);
 					});
 			} else {
-				console.log("A username and password must be present");
+				this.loginFailed = false;
 			}
 		}
 	}
