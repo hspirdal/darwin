@@ -12,7 +12,7 @@
 // ^-- Turn off temporary until I find a better way than rendering using Computed.
 
 import CharStatus from "./CharStatus";
-import GameLog from "./GameLog";
+import GameLog from "./gamelog/GameLog";
 import ROT from "rot-js";
 
 function Create2DArray(rows) {
