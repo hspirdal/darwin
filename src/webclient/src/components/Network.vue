@@ -41,15 +41,7 @@ export default {
 			this.$store.commit("gamelog/appendMessage", gameMessage);
 		});
 
-		this.connection.start().then(() => {
-			let sessionId = sessionStorage.getItem("sessionId");
-			let o = {
-				RequestName: "lobby.newgame",
-				SessionId: sessionId,
-				Payload: "Jools"
-			};
-			this.connection.invoke("SendAsync", JSON.stringify(o));
-		});
+		this.connection.start();
 	},
 	methods: {
 		move(movementDirection) {
@@ -96,6 +88,15 @@ export default {
 					Name: "Action.Attack",
 					TargetId: targetId
 				})
+			};
+			this.connection.invoke("SendAsync", JSON.stringify(o));
+		},
+		newGame(templateName) {
+			let sessionId = sessionStorage.getItem("sessionId");
+			let o = {
+				RequestName: "lobby.newgame",
+				SessionId: sessionId,
+				Payload: templateName
 			};
 			this.connection.invoke("SendAsync", JSON.stringify(o));
 		}

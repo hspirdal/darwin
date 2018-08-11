@@ -1,8 +1,9 @@
 <template>
     <div id="game" v-if="this.$parent.authenticated">
         <Network ref="network"/>
-        <Input v-on:key-pressed="onKeyPressed"/>
-        <Display/>
+        <Input v-on:key-pressed="onKeyPressed" v-if="gameStarted"/>
+        <Display v-if="gameStarted"/>
+				<NewGame ref="newgame" v-on:characterSelected="onCharacterSelected" v-if="!gameStarted"/>
     </div>
 </template>
 
@@ -10,13 +11,20 @@
 import Network from "./Network";
 import Input from "./Input";
 import Display from "./Display";
+import NewGame from "./NewGame";
 
 export default {
 	name: "Game",
 	components: {
 		Network,
 		Input,
-		Display
+		Display,
+		NewGame
+	},
+	data() {
+		return {
+			gameStarted: false
+		};
 	},
 	methods: {
 		onKeyPressed: function(key) {
@@ -50,6 +58,10 @@ export default {
 				return;
 			}
 			this.$refs.network.move(movementDirection);
+		},
+		onCharacterSelected(templateName) {
+			this.gameStarted = true;
+			this.$refs.network.newGame(templateName);
 		}
 	}
 };

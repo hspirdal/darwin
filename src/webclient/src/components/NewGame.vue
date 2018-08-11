@@ -18,13 +18,14 @@ export default {
 	name: "newgame",
 	data() {
 		return {
-			selectedTemplate: "jools",
-			characterTemplates: [{ value: "jools", text: "Jools - Level 1 Human Fighter" }, { value: "jops", text: "Jops - Level 1 Human Wizard" }]
+			selectedTemplate: "Jools",
+			characterTemplates: [{ value: "Jools", text: "Jools - Level 1 Human Fighter" }, { value: "Jops", text: "Jops - Level 1 Human Wizard" }]
 		};
 	},
 	methods: {
 		startGame() {
 			console.log(`Starting game with ${this.selectedTemplate} `);
+			this.$emit("characterSelected", this.selectedTemplate);
 		},
 		selectTemplate: function(templateName) {
 			console.log(`Selecting ${templateName}..`);
