@@ -38,6 +38,7 @@ namespace Darwin.Api.Identity
 				return new LoginResponse
 				{
 					Success = true,
+					UserId = identity.Id,
 					SessionId = sessionId
 				};
 			}

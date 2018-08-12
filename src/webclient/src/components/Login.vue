@@ -33,7 +33,11 @@ export default {
 					.then(response => {
 						if (response.data.success) {
 							console.log("Successfully logged on. Session id: " + response.data.sessionId);
-							sessionStorage.setItem("sessionId", response.data.sessionId);
+							let credentials = {
+								userId: response.data.userId,
+								sessionId: response.data.sessionId
+							};
+							sessionStorage.setItem("credentials", JSON.stringify(credentials));
 							this.$emit("authenticated", true);
 							this.$router.replace({ name: "game" });
 						} else {

@@ -92,6 +92,7 @@ namespace WebSocketServer
 				var connection = _connectionStore.GetById(clientRequest.SessionId);
 				if (connection != null)
 				{
+					// TODO: pass on id from client request once validation step ensures that user id matches session id when improving ConnectionStore.
 					var clientId = connection.Id;
 					await _stateRequestRouter.RouteAsync(clientId, clientRequest).ConfigureAwait(false);
 				}

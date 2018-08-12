@@ -3,6 +3,17 @@
 </div>
 </template>
 <script>
+function createRequest(name, payload) {
+	let credentials = JSON.parse(sessionStorage.getItem("credentials"));
+	console.log("Creating request: " + credentials.userId + " " + credentials.sessionId);
+	return JSON.stringify({
+		RequestName: name,
+		UserId: credentials.userId,
+		SessionId: credentials.sessionId,
+		Payload: payload
+	});
+}
+
 export default {
 	/*eslint no-console: [off] */
 	data() {
@@ -28,7 +39,7 @@ export default {
 			} else if (response.Type === "NotAuthenticated") {
 				// Server might have restarted and purged active session list.
 				console.log(`${response.Message}\nPayload: ${response.Payload}`);
-				sessionStorage.removeItem("sessionId");
+				sessionStorage.removeItem("credentials");
 				location.reload();
 			} else {
 				console.log(`${response.Message}\nPayload: ${response.Payload}`);
@@ -45,60 +56,24 @@ export default {
 	},
 	methods: {
 		move(movementDirection) {
-			let sessionId = sessionStorage.getItem("sessionId");
-			let o = {
-				RequestName: "Action.Movement",
-				SessionId: sessionId,
-				Payload: JSON.stringify({ MovementDirection: movementDirection })
-			};
-			this.connection.invoke("SendAsync", JSON.stringify(o));
+			let request = createRequest("Action.Movement", JSON.stringify({ MovementDirection: movementDirection }));
+			this.connection.invoke("SendAsync", request);
 		},
 		lootAll() {
-			let sessionId = sessionStorage.getItem("sessionId");
-			let o = {
-				RequestName: "Action.LootAll",
-				SessionId: sessionId,
-				Payload: JSON.stringify({
-					OwnerId: 1,
-					Name: "Action.LootAll"
-				})
-			};
-			this.connection.invoke("SendAsync", JSON.stringify(o));
+			let request = createRequest("Action.LootAll", "");
+			this.connection.invoke("SendAsync", request);
 		},
 		loot(itemId) {
-			let sessionId = sessionStorage.getItem("sessionId");
-			let o = {
-				RequestName: "Action.Loot",
-				SessionId: sessionId,
-				Payload: JSON.stringify({
-					OwnerId: 1,
-					Name: "Action.Loot",
-					ItemId: itemId
-				})
-			};
-			this.connection.invoke("SendAsync", JSON.stringify(o));
+			let request = createRequest("Action.Loot", JSON.stringify({ ItemId: itemId }));
+			this.connection.invoke("SendAsync", request);
 		},
 		attack(targetId) {
-			let sessionId = sessionStorage.getItem("sessionId");
-			let o = {
-				RequestName: "Action.Attack",
-				SessionId: sessionId,
-				Payload: JSON.stringify({
-					OwnerId: 1,
-					Name: "Action.Attack",
-					TargetId: targetId
-				})
-			};
-			this.connection.invoke("SendAsync", JSON.stringify(o));
+			let request = createRequest("Action.Attack", JSON.stringify({ TargetId: targetId }));
+			this.connection.invoke("SendAsync", request);
 		},
 		newGame(templateName) {
-			let sessionId = sessionStorage.getItem("sessionId");
-			let o = {
-				RequestName: "lobby.newgame",
-				SessionId: sessionId,
-				Payload: templateName
-			};
-			this.connection.invoke("SendAsync", JSON.stringify(o));
+			let request = createRequest("lobby.newgame", templateName);
+			this.connection.invoke("SendAsync", request);
 		}
 	}
 };
