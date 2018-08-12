@@ -1,8 +1,6 @@
 <template>
     <div id="display">
 			<div id="container">{{ renderMap }}</div>
-			<CharStatus />
-			<GameLog />
 		</div>
 </template>
 
@@ -11,8 +9,6 @@
 /*eslint vue/no-side-effects-in-computed-properties: [off] */
 // ^-- Turn off temporary until I find a better way than rendering using Computed.
 
-import CharStatus from "./CharStatus";
-import GameLog from "./gamelog/GameLog";
 import ROT from "rot-js";
 
 function Create2DArray(rows) {
@@ -27,10 +23,6 @@ function Create2DArray(rows) {
 
 export default {
 	name: "display",
-	components: {
-		CharStatus,
-		GameLog
-	},
 	data() {
 		return {
 			display: null,
@@ -206,15 +198,5 @@ export default {
 	overflow: hidden;
 	border: 1px solid;
 	float: left;
-}
-#status {
-	height: 600px;
-	margin-left: 600px;
-	border: 1px solid;
-	padding: 0px 20px;
-	font-family: Luminary, Fantasy;
-}
-#status ul {
-	list-style-type: none;
 }
 </style>
