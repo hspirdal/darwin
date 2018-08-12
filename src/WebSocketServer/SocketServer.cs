@@ -22,7 +22,8 @@ namespace WebSocketServer
 
 	public interface ISocketServer
 	{
-		Task SendAsync(string connectionId, ServerResponse response);
+		Task SendAsync(string userid, ServerResponse response);
+		Task SendAsync(string userid, string channel, ServerResponse response);
 		List<Connection> ActiveConnections { get; }
 	}
 
@@ -41,25 +42,9 @@ namespace WebSocketServer
 
 		public List<Connection> ActiveConnections => _connectionStore.ActiveConnections;
 
-		public Task SendAsync(string connectionId, ServerResponse response)
+		public Task SendAsync(string userId, ServerResponse serverResponse)
 		{
-			try
-			{
-				var connection = _connectionStore.GetById(connectionId);
-				if (connection != null)
-				{
-					var json = JsonConvert.SerializeObject(response);
-					return connection.Client.SendAsync("direct", json);
-				}
-				// NOTE: Race condition when connection dropped while server is sending out status messages.
-				_logger.Warn($"Connection-id '{connectionId}' was not found.");
-
-			}
-			catch (Exception e)
-			{
-				_logger.Error(e);
-			}
-			return Task.CompletedTask;
+			return SendAsync(userId, "direct", serverResponse);
 		}
 
 		public async Task SendAsync(string userId, string channel, ServerResponse serverResponse)

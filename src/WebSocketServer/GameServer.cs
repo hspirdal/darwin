@@ -74,16 +74,13 @@ namespace WebSocketServer
 
 					await _actionResolver.ResolveAsync().ConfigureAwait(false);
 
-					// TODO: Add user as part of the Connection class or the other way around..
 					var activeUsers = await _userRepository.GetActiveAsync().ConfigureAwait(false);
-					var connectionMap = _socketServer.ActiveConnections.ToDictionary(i => i.Id);
 
 					foreach (var activeUser in activeUsers)
 					{
-						var connection = connectionMap[activeUser.Id];
 						var player = _creatureRegistry.GetById(activeUser.Id) as Player;
-						var response = TempCreateStatusResponse(connection, player);
-						await _socketServer.SendAsync(connection.ConnectionId, response).ConfigureAwait(false);
+						var response = TempCreateStatusResponse(player);
+						await _socketServer.SendAsync(activeUser.Id, response).ConfigureAwait(false);
 					}
 				}
 			}
@@ -97,7 +94,7 @@ namespace WebSocketServer
 			}
 		}
 
-		private ServerResponse TempCreateStatusResponse(Connection connection, Player player)
+		private ServerResponse TempCreateStatusResponse(Player player)
 		{
 			var pos = player.Position;
 			var map = _playArea.GameMap;
