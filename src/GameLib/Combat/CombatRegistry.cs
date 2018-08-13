@@ -63,7 +63,7 @@ namespace GameLib.Combat
 				_combatMap[attackerId] = new CombatEntry { AttackerId = attackerId, TargetId = targetId };
 			}
 
-			_messageDispatcher.Dispatch(new GameMessage(string.Empty, attackerId, MessageTopic.Attacking));
+			_messageDispatcher.Dispatch(new GameMessage(targetId, attackerId, MessageTopic.Attacking));
 			_messageDispatcher.Dispatch(new GameMessage(attackerId, targetId, MessageTopic.AttackedBy));
 		}
 

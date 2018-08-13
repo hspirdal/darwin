@@ -14,12 +14,12 @@ export default {
 		return `${name}: Fail to attack ${attackResult.DefenderName} ${toHit}`;
 	},
 
-	formatAttacking() {
-		return "Attacking target creature";
+	formatAttacking(name) {
+		return `Attacking ${name}`;
 	},
 
-	formatAttackedBy() {
-		return "Attacked by target creature";
+	formatAttackedBy(name) {
+		return `Attacked by ${name}`;
 	},
 
 	formatKilledBy(player, attackResult) {

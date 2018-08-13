@@ -50,9 +50,11 @@ export default {
 			} else if (message.Topic === MessageTopic.FailedHitBy) {
 				formattedMessage = GameLogFormatter.formatFailedHit(this.player, message.Payload);
 			} else if (message.Topic === MessageTopic.Attacking) {
-				formattedMessage = GameLogFormatter.formatAttacking();
+				let targetCreature = this.$store.getters["gamestatus/entities/knownCreatureById"](message.FromEntityId);
+				formattedMessage = GameLogFormatter.formatAttacking(targetCreature.Name);
 			} else if (message.Topic === MessageTopic.AttackedBy) {
-				formattedMessage = GameLogFormatter.formatAttackedBy();
+				let attacker = this.$store.getters["gamestatus/entities/knownCreatureById"](message.FromEntityId);
+				formattedMessage = GameLogFormatter.formatAttackedBy(attacker.Name);
 			} else if (message.Topic === MessageTopic.CombatantDies) {
 				formattedMessage = GameLogFormatter.formatKilledOther(message.Payload);
 			} else if (message.Topic === MessageTopic.KilledBy) {
