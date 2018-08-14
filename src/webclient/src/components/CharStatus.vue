@@ -8,14 +8,6 @@
 		<p>Str: {{ strength }}, Dex: {{ dexterity }}, Con: {{ constitution }}, Int: {{ intelligence }}, Wis: {{ wisdom }}, Cha: {{ charisma }}<br/>
 		Hit points: {{ characterHitPoints }} / {{ characterHitPoints }}<br/>
 		Armor Class: {{ characterArmorClass }}</p>
-		<div id="inventory" v-if="gameStarted">
-		<h1>Inventory</h1>
-		<ul v-if="inventoryItems.length > 0">
-			<li v-for="(item, index) in inventoryItems" v-bind:key="index">
-				{{ item }}
-				</li>
-		</ul>
-		</div>
 		<div id="gamestate">
 		Game state: <span id="gamestateCombat" v-if="isInCombat">COMBAT</span><span id="gamestateExplore" v-else>Exploring</span>
 		</div>
@@ -60,9 +52,6 @@ export default {
 		},
 		gameStarted: function() {
 			return this.$store.getters["gamestatus/gamestarted"];
-		},
-		inventoryItems: function() {
-			return this.$store.getters["gamestatus/player"].Inventory.Items;
 		},
 		activeCellItems: function() {
 			return this.$store.getters["gamestatus/activecellitems"];
@@ -165,13 +154,6 @@ export default {
 };
 </script>
 <style scoped>
-#status {
-	height: 600px;
-	margin-left: 600px;
-	border: 1px solid;
-	padding: 0px 20px;
-	font-family: Luminary, Fantasy;
-}
 #status ul {
 	list-style-type: none;
 }
@@ -180,10 +162,6 @@ export default {
 }
 #status h1 {
 	font-size: 24px;
-}
-#inventory ul {
-	height: 80px;
-	overflow: auto;
 }
 #actionUnavailable {
 	color: red;

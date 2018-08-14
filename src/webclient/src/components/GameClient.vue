@@ -3,7 +3,7 @@
         <Network ref="network"/>
         <Input v-on:key-pressed="onKeyPressed" v-if="gameStarted"/>
         <Display v-if="gameStarted"/>
-				<CharStatus v-if="gameStarted"/>
+				<TabPanel v-if="gameStarted"/>
 				<GameLog v-if="gameStarted"/>
 				<NewGame ref="newgame" v-on:characterSelected="onCharacterSelected" v-if="!gameStarted"/>
     </div>
@@ -13,7 +13,7 @@
 import Network from "./Network";
 import Input from "./Input";
 import Display from "./Display";
-import CharStatus from "./CharStatus";
+import TabPanel from "./TabPanel";
 import GameLog from "./gamelog/GameLog";
 import NewGame from "./NewGame";
 
@@ -23,7 +23,7 @@ export default {
 		Network,
 		Input,
 		Display,
-		CharStatus,
+		TabPanel,
 		GameLog,
 		NewGame
 	},
