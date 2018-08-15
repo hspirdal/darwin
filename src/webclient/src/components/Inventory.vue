@@ -1,5 +1,13 @@
 <template>
 	<div id="inventory" v-if="gameStarted">
+		<h1>Equipment</h1>
+		<ul>
+			<li>Head: Empty</li>
+			<li>Chest: Leather Armor</li>
+			<li>Left Arm: Empty</li>
+			<li>Right Arm: Rusty Shortsword</li>
+			<li>Feet: Leather Boots</li>
+		</ul>
 		<h1>Inventory</h1>
 		<ul v-if="inventoryItems.length > 0">
 			<li v-for="(item, index) in inventoryItems" v-bind:key="index">
@@ -38,7 +46,7 @@ export default {
 	font-size: 24px;
 }
 #inventory ul {
-	height: 200px;
+	height: 160px;
 	overflow: auto;
 }
 </style>
