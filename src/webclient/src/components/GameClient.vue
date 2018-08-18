@@ -26,8 +26,15 @@ export default {
 	created() {
 		this.$bus.$on("NewGame.CharacterSelected", $event => {
 			this.$store.commit("gamestate/setCurrent", "GamePlay");
-			this.$refs.network.newGame($event.selectedTemplate);
+			if (this.$refs.network) {
+				this.$refs.network.newGame($event.selectedTemplate);
+			}
 			this.gameStarted = true;
+		});
+
+		this.$bus.$on("GameOver.GoToMenu", $event => {
+			this.gameStarted = false;
+			this.$store.dispatch("clearAll");
 		});
 	},
 	methods: {

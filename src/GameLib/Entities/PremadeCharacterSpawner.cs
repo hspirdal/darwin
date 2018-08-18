@@ -47,7 +47,7 @@ namespace GameLib.Entities
 			{
 				AbilityScores = new AbilityScores(16, 14, 16, 9, 9, 8),
 				AttackScores = new AttackScores(shortSword, 1),
-				DefenseScores = new DefenseScores(14, 11002)
+				DefenseScores = new DefenseScores(14, 11)
 			};
 
 			var jools = new Player(id: userId, "Jools", "Human", "Fighter", level: 1, fighterStats)

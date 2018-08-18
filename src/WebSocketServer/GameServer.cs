@@ -81,6 +81,14 @@ namespace WebSocketServer
 						var player = _creatureRegistry.GetById(activeUser.Id) as Player;
 						var response = TempCreateStatusResponse(player);
 						await _socketServer.SendAsync(activeUser.Id, response).ConfigureAwait(false);
+
+						// temp until refactor
+						if (!player.IsAlive)
+						{
+							activeUser.GameState = GameState.lobby;
+							await _userRepository.AddOrUpdateAsync(activeUser).ConfigureAwait(false);
+							_creatureRegistry.Remove(player.Id);
+						}
 					}
 				}
 			}

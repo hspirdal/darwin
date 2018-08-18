@@ -59,6 +59,7 @@ export default {
 				formattedMessage = GameLogFormatter.formatKilledOther(message.Payload);
 			} else if (message.Topic === MessageTopic.KilledBy) {
 				formattedMessage = GameLogFormatter.formatKilledBy(this.player, message.Payload);
+				this.$store.commit("gamestate/setCurrent", "GameOver");
 			} else if (message.Topic === MessageTopic.ExperienceGain) {
 				formattedMessage = GameLogFormatter.formatExperienceGain(200);
 			} else if (message.Topic === MessageTopic.MovementFailed) {
@@ -88,7 +89,9 @@ export default {
 	methods: {
 		scrollToEnd: function() {
 			let container = document.getElementById("gamelog");
-			container.scrollTop = container.scrollHeight;
+			if (container) {
+				container.scrollTop = container.scrollHeight;
+			}
 		},
 		ensureSortingOrder(lastAddedMessage) {
 			let currentLength = this.formattedMessagesHistory.length;
