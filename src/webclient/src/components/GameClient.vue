@@ -2,35 +2,33 @@
     <div id="game" v-if="this.$parent.authenticated">
         <Network ref="network"/>
         <Input v-on:key-pressed="onKeyPressed" v-if="gameStarted"/>
-        <Display v-if="gameStarted"/>
-				<TabPanel v-if="gameStarted"/>
-				<GameLog v-if="gameStarted"/>
-				<NewGame ref="newgame" v-on:characterSelected="onCharacterSelected" v-if="!gameStarted"/>
+				<ScreenSelector/>
     </div>
 </template>
 
 <script>
 import Network from "./Network";
 import Input from "./Input";
-import Display from "./Display";
-import TabPanel from "./TabPanel";
-import GameLog from "./gamelog/GameLog";
-import NewGame from "./NewGame";
+import ScreenSelector from "./Screens/ScreenSelector";
 
 export default {
 	name: "Game",
 	components: {
 		Network,
 		Input,
-		Display,
-		TabPanel,
-		GameLog,
-		NewGame
+		ScreenSelector
 	},
 	data() {
 		return {
 			gameStarted: false
 		};
+	},
+	created() {
+		this.$bus.$on("NewGame.CharacterSelected", $event => {
+			this.$store.commit("gamestate/setCurrent", "GamePlay");
+			this.$refs.network.newGame($event.selectedTemplate);
+			this.gameStarted = true;
+		});
 	},
 	methods: {
 		onKeyPressed: function(key) {
@@ -64,10 +62,6 @@ export default {
 				return;
 			}
 			this.$refs.network.move(movementDirection);
-		},
-		onCharacterSelected(templateName) {
-			this.gameStarted = true;
-			this.$refs.network.newGame(templateName);
 		}
 	}
 };

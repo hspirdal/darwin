@@ -24,8 +24,7 @@ export default {
 	},
 	methods: {
 		startGame() {
-			console.log(`Starting game with ${this.selectedTemplate} `);
-			this.$emit("characterSelected", this.selectedTemplate);
+			this.$bus.$emit("NewGame.CharacterSelected", { selectedTemplate: this.selectedTemplate });
 		},
 		selectTemplate: function(templateName) {
 			console.log(`Selecting ${templateName}..`);

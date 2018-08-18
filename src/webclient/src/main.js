@@ -16,6 +16,15 @@ Vue.use(BootstrapVue);
 
 axios.defaults.baseURL = "http://localhost:5001";
 
+const EventBus = new Vue();
+Object.defineProperties(Vue.prototype, {
+	$bus: {
+		get: function() {
+			return EventBus;
+		}
+	}
+});
+
 new Vue({
 	router,
 	store,
