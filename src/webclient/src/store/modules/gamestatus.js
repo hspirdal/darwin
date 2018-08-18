@@ -3,18 +3,22 @@
 import Moment from "moment";
 import entities from "./entities";
 
-const state = {
-	map: null,
-	player: { Name: "", Inventory: { Items: [] } },
-	gameStarted: false,
-	activeCellCreatures: [{}],
-	activeCellItems: [{}],
-	nextActionAvailableUtc: Moment.utc(Moment.now()),
-	isCooldown: false,
-	isInCombat: false,
-	x: 0,
-	y: 0
-};
+const state = initialState();
+
+function initialState() {
+	return {
+		map: null,
+		player: { Name: "", Inventory: { Items: [] } },
+		gameStarted: false,
+		activeCellCreatures: [{}],
+		activeCellItems: [{}],
+		nextActionAvailableUtc: Moment.utc(Moment.now()),
+		isCooldown: false,
+		isInCombat: false,
+		x: 0,
+		y: 0
+	};
+}
 
 const getters = {
 	map(state) {
@@ -50,6 +54,12 @@ const getters = {
 };
 
 const mutations = {
+	reset(state) {
+		const s = initialState()
+		Object.keys(s).forEach(key => {
+			state[key] = s[key]
+		});
+	},
 	setStatus(state, status) {
 		state.map = status.Map;
 		state.player = status.Player;

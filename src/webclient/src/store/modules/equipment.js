@@ -1,11 +1,15 @@
 /*eslint no-console: [off] */
-const state = {
-	head: null,
-	chest: { Name: "Leather Armor", Id: 9 },
-	leftArm: null,
-	rightArm: { Name: "Rusty Shortsword", Id: 4 },
-	feet: { Name: "Leather Boots", Id: 13 }
-};
+const state = initialState();
+
+function initialState() {
+	return {
+		head: null,
+		chest: { Name: "Leather Armor", Id: 9 },
+		leftArm: null,
+		rightArm: { Name: "Rusty Shortsword", Id: 4 },
+		feet: { Name: "Leather Boots", Id: 13 }
+	};
+}
 
 const getters = {
 	headSlot(state) {
@@ -25,7 +29,14 @@ const getters = {
 	}
 };
 
-const mutations = {};
+const mutations = {
+	reset(state) {
+		const s = initialState()
+		Object.keys(s).forEach(key => {
+			state[key] = s[key]
+		});
+	}
+};
 
 export default {
 	namespaced: true,

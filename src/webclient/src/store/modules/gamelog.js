@@ -1,8 +1,12 @@
 /*eslint no-console: [off] */
-const state = {
-	gameMessages: [],
-	lastMessageAdded: []
-};
+const state = initialState();
+
+function initialState() {
+	return {
+		gameMessages: [],
+		lastMessageAdded: []
+	};
+}
 
 const getters = {
 	gameMessages(state) {
@@ -14,6 +18,12 @@ const getters = {
 };
 
 const mutations = {
+	reset(state) {
+		const s = initialState()
+		Object.keys(s).forEach(key => {
+			state[key] = s[key]
+		});
+	},
 	appendMessage(state, message) {
 		state.gameMessages.push(message);
 		state.lastMessageAdded = message;

@@ -15,5 +15,14 @@ export default new Vuex.Store({
 		selection,
 		gamelog,
 		equipment
+	},
+	actions: {
+		clearAll({ commit }) {
+			commit("gamestatus/reset");
+			commit("gamestate/reset");
+			commit("selection/reset");
+			commit("gamelog/reset");
+			commit("equipment/reset");
+		}
 	}
 });

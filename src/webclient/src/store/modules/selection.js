@@ -1,8 +1,12 @@
 /*eslint no-console: [off] */
-const state = {
-	selectedCreatureId: null,
-	selectedItemId: null
-};
+const state = initialState();
+
+function initialState() {
+	return {
+		selectedCreatureId: null,
+		selectedItemId: null
+	};
+}
 
 const getters = {
 	selectedCreatureId(state) {
@@ -20,6 +24,12 @@ const getters = {
 };
 
 const mutations = {
+	reset(state) {
+		const s = initialState()
+		Object.keys(s).forEach(key => {
+			state[key] = s[key]
+		});
+	},
 	setSelectedCreatureId(state, selectedCreatureId) {
 		state.selectedCreatureId = selectedCreatureId;
 		state.selectedItemId = "";

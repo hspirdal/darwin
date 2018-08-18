@@ -1,6 +1,8 @@
-const state = {
-	knownCreatures: new Map()
-};
+const state = initialState();
+
+function initialState() {
+	return { knownCreatures: new Map() };
+}
 
 const getters = {
 	knownCreatureById: state => id => {
@@ -9,6 +11,12 @@ const getters = {
 };
 
 const mutations = {
+	reset(state) {
+		const s = initialState()
+		Object.keys(s).forEach(key => {
+			state[key] = s[key]
+		});
+	},
 	addOrUpdateKnownCreature(state, creature) {
 		state.knownCreatures.set(creature.Id, creature);
 	}

@@ -1,7 +1,11 @@
 /*eslint no-console: [off] */
-const state = {
-	gameState: "newgame"
-};
+const state = initialState();
+
+function initialState() {
+	return {
+		gameState: "newgame"
+	};
+}
 
 const getters = {
 	current(state) {
@@ -10,6 +14,13 @@ const getters = {
 };
 
 const mutations = {
+	reset(state) {
+		console.log("reset gamestate");
+		const s = initialState()
+		Object.keys(s).forEach(key => {
+			state[key] = s[key]
+		});
+	},
 	setCurrent(state, gameState) {
 		state.gameState = gameState;
 	}
