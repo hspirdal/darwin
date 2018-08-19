@@ -25,9 +25,9 @@ const getters = {
 
 const mutations = {
 	reset(state) {
-		const s = initialState()
+		const s = initialState();
 		Object.keys(s).forEach(key => {
-			state[key] = s[key]
+			state[key] = s[key];
 		});
 	},
 	setSelectedCreatureId(state, selectedCreatureId) {

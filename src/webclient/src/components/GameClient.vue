@@ -32,7 +32,7 @@ export default {
 			this.gameStarted = true;
 		});
 
-		this.$bus.$on("GameOver.GoToMenu", $event => {
+		this.$bus.$on("GameOver.GoToMenu", () => {
 			this.gameStarted = false;
 			this.$store.dispatch("clearAll");
 		});

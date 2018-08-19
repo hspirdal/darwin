@@ -16,9 +16,9 @@ const getters = {
 const mutations = {
 	reset(state) {
 		console.log("reset gamestate");
-		const s = initialState()
+		const s = initialState();
 		Object.keys(s).forEach(key => {
-			state[key] = s[key]
+			state[key] = s[key];
 		});
 	},
 	setCurrent(state, gameState) {
