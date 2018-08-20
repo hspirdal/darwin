@@ -34,6 +34,10 @@ namespace GameLib.Entities
 			{
 				SpawnFirstLevelWizard(userId);
 			}
+			else if (templateName == "Death Bunny")
+			{
+				SpawnDeathBunny(userId);
+			}
 			else
 			{
 				throw new ArgumentException($"Template name '{templateName}'was not found.");
@@ -88,6 +92,31 @@ namespace GameLib.Entities
 			};
 			SpawnInRandomOpenCell(jops);
 			_creatureRegistry.Register(jops);
+		}
+
+		private void SpawnDeathBunny(string userId)
+		{
+			var shortSword = _weaponFactory.Create("Short Sword");
+			var fighterStats = new Statistics()
+			{
+				AbilityScores = new AbilityScores(18, 18, 18, 18, 18, 18),
+				AttackScores = new AttackScores(shortSword, 5),
+				DefenseScores = new DefenseScores(14, 9999)
+			};
+
+			var player = new Player(id: userId, "Death Bunny", "Human", "Fighter", level: 1, fighterStats)
+			{
+				Inventory = new Inventory
+				{
+					Items = new List<Item>
+					{
+						shortSword,
+						new Item { Name = "Studded Leather", Id = Guid.NewGuid().ToString() }
+					}
+				}
+			};
+			SpawnInRandomOpenCell(player);
+			_creatureRegistry.Register(player);
 		}
 
 		private void SpawnInRandomOpenCell(Player player)
