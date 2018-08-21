@@ -1,5 +1,10 @@
 # darwin
 
+| Build server | Platform     | Build status                                                                                                      |
+| ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Travis       | Linux / OS X | [![Build Status](https://travis-ci.com/hspirdal/darwin.svg?branch=master)](https://travis-ci.com/hspirdal/darwin) |
+
+
 Prototype project for a bot-friendly multiplayer game to learn some l33t w3bskyllz.
 
 ## How to run
