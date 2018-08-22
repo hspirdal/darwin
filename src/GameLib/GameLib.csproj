@@ -4,13 +4,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="newtonsoft.json" Version="11.0.2"/>
-    <PackageReference Include="roguesharp" Version="4.0.0-pre"/>
+    <PackageReference Include="roguesharp" Version="4.1.0"/>
     <PackageReference Include="stackexchange.redis" Version="1.2.6"/>
     <PackageReference Include="Stateless" Version="4.2.1"/>
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.2</LangVersion>
-    <NoWarn>NU1701</NoWarn>
   </PropertyGroup>
 </Project>
