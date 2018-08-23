@@ -3,7 +3,6 @@ configuration:
 - Release
 platform: Any CPU
 before_build:
-- dotnet --info
 - appveyor-retry dotnet restore -v Minimal
 build_script:
 - dotnet build --no-dependencies -c %CONFIGURATION%
@@ -14,4 +13,4 @@ test_script:
 - dotnet test "tests\WebSocketServer.Tests" -c %CONFIGURATION% -r artifacts
 - dotnet test "tests\GameLib.Tests" -c %CONFIGURATION% -r artifacts
 artifacts:
-- path: Darwin\artifacts\**\*.*
+- path: artifacts\**\*.*
