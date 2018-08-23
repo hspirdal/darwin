@@ -1,0 +1,16 @@
+version: '1.0.{build}'
+configuration:
+- Release
+platform: Any CPU
+before_build:
+- appveyor-retry dotnet restore -v Minimal
+build_script:
+- dotnet build -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+after_build:
+- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
+- dotnet publish -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\Darwin
+test_script:
+- dotnet test "tests\GameLib.Tests" -c %CONFIGURATION% -r artifacts
+- dotnet test "tests\WebSocketServer.Tests" -c %CONFIGURATION% -r artifacts
+artifacts:
+- path: Darwin\artifacts\**\*.*
