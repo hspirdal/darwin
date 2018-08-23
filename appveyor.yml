@@ -6,4 +6,4 @@ before_build:
 - dotnet --info
 - appveyor-retry dotnet restore -v Minimal
 build_script:
-- dotnet build src\WebSocketServer\WebSocketServer.csproj -c %CONFIGURATION% --no-dependencies
+- dotnet build src\WebSocketServer\WebSocketServer.csproj -c %CONFIGURATION%
