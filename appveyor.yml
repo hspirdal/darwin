@@ -6,5 +6,4 @@ before_build:
 - dotnet --info
 - appveyor-retry dotnet restore -v Minimal
 build_script:
-- dotnet build src\WebSocketServer\WebSocketServer.csproj -c %CONFIGURATION%
-- dotnet build src\Services\Darwin.Api\Darwin.Api.csproj -c %CONFIGURATION%
+- dotnet build -c %CONFIGURATION%
