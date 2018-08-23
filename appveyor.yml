@@ -9,6 +9,7 @@ build_script:
 after_build:
 - dotnet pack -c %CONFIGURATION% --no-build -o artifacts
 - dotnet publish -c %CONFIGURATION% -o artifacts\Darwin
+- dir artifacts
 test_script:
 - dotnet test "tests\WebSocketServer.Tests" -c %CONFIGURATION% -r artifacts
 - dotnet test "tests\GameLib.Tests" -c %CONFIGURATION% -r artifacts
