@@ -9,8 +9,8 @@ build_script:
 - dotnet build src\WebSocketServer\WebSocketServer.csproj -c %CONFIGURATION%
 - dotnet build src\Services\Darwin.Api\Darwin.Api.csproj -c %CONFIGURATION%
 after_build:
-- dotnet publish "src\WebSocketServer\WebSocketServer.csproj" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\WebSocketServer
-- dotnet publish "src\Services\Darwin.Api\Darwin.Api.csproj" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\Darwin.Api
+- dotnet publish "src\WebSocketServer\WebSocketServer.csproj" -c %CONFIGURATION% --no-build -o artifacts\WebSocketServer
+- dotnet publish "src\Services\Darwin.Api\Darwin.Api.csproj" -c %CONFIGURATION% --no-build -o artifacts\Darwin.Api
 test_script:
 - dotnet test "tests\WebSocketServer.Tests" -c %CONFIGURATION% -r artifacts\WebSocketServer
 - dotnet test "tests\GameLib.Tests" -c %CONFIGURATION% -r artifacts\WebSocketServer
