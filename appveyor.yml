@@ -3,6 +3,7 @@ configuration:
 - Release
 platform: Any CPU
 before_build:
+- dotnet --info
 - appveyor-retry dotnet restore -v Minimal
 build_script:
-- dotnet build -c %CONFIGURATION%
+- dotnet build src\WebSocketServer\WebSocketServer.csproj -c %CONFIGURATION% --no-dependencies
