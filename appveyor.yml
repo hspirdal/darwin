@@ -7,12 +7,12 @@ before_build:
 build_script:
 - dotnet build --no-dependencies -c %CONFIGURATION%
 after_build:
-- dotnet pack -c %CONFIGURATION% --no-build -o artifacts
-- dotnet publish -c %CONFIGURATION% -o artifacts\Darwin
+- dotnet pack -c %CONFIGURATION% --no-build -o APPVEYOR_BUILD_FOLDER\artifacts
+- dotnet publish -c %CONFIGURATION% -o APPVEYOR_BUILD_FOLDER\artifacts\Darwin
 - dir
 test_script:
-- dotnet test "tests\WebSocketServer.Tests" -c %CONFIGURATION% -r artifacts
-- dotnet test "tests\GameLib.Tests" -c %CONFIGURATION% -r artifacts
+- dotnet test "tests\WebSocketServer.Tests" -c %CONFIGURATION% -r APPVEYOR_BUILD_FOLDER\artifacts
+- dotnet test "tests\GameLib.Tests" -c %CONFIGURATION% -r APPVEYOR_BUILD_FOLDER\artifacts
 artifacts:
 - path: artifacts\**\*.*
 cache:
