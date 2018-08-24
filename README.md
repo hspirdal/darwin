@@ -1,8 +1,9 @@
 # darwin
 
-| Build server | Platform     | Build status                                                                                                      |
-| ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| Travis       | Linux / OS X | [![Build Status](https://travis-ci.com/hspirdal/darwin.svg?branch=master)](https://travis-ci.com/hspirdal/darwin) |
+| Build server | Platform     | Build status                                                                                                                              |
+| ------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Travis       | Linux / OS X | [![Build Status](https://travis-ci.com/hspirdal/darwin.svg?branch=master)](https://travis-ci.com/hspirdal/darwin)                         |
+| AppVeyor     | Windows      | [![Build status](https://ci.appveyor.com/api/projects/status/887ya7rhbo9cwpqb?svg=true)](https://ci.appveyor.com/project/hspirdal/darwin) |
 
 
 Prototype project for a bot-friendly multiplayer game to learn some l33t w3bskyllz.
