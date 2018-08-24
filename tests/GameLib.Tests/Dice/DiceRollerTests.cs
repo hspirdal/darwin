@@ -20,6 +20,12 @@ namespace GameLib.Tests.Dice
 		}
 
 		[TestMethod]
+		public void FailingTest()
+		{
+			Assert.IsFalse(true);
+		}
+
+		[TestMethod]
 		public void WhenRollingMultipleD12_ThenResultReflectsCorrectTypeAndCorrectResult()
 		{
 			var fakeDiceResult = 12;
