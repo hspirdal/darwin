@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLib.Tests", "tests\Game
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketServer", "src\WebSocketServer\WebSocketServer.csproj", "{D63E39D1-C644-4E20-8C94-EDC2544110FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsocketServer.Tests", "tests\WebsocketServer.Tests\WebsocketServer.Tests.csproj", "{80D7C398-011B-49DA-8B05-573A15B51F73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketServer.Tests", "tests\WebSocketServer.Tests\WebSocketServer.Tests.csproj", "{80D7C398-011B-49DA-8B05-573A15B51F73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLib", "src\GameLib\GameLib.csproj", "{8D317C88-BC8C-43B5-A399-054A7CBF974C}"
 EndProject
