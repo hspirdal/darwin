@@ -7,5 +7,5 @@ install:
 
 script:
  - dotnet build
- - dotnet test "tests\WebSocketServer.Tests"
  - dotnet test "tests\GameLib.Tests"
+ - dotnet test "tests\WebSocketServer.Tests"
