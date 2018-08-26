@@ -13,6 +13,7 @@ using Darwin.Api.Identity;
 using StackExchange.Redis;
 using GameLib.Identities;
 using Microsoft.AspNetCore.Mvc;
+using GameLib.Users;
 
 namespace Darwin.Api
 {
@@ -52,6 +53,7 @@ namespace Darwin.Api
 			RegisterRedis(services);
 
 			services.AddSingleton<IIdentityRepository, IdentityRepository>();
+			services.AddSingleton<IUserRepository, UserRepository>();
 		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
