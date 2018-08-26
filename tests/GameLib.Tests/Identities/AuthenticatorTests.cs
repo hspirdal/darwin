@@ -4,55 +4,67 @@ using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GameLib.Identities;
+using GameLib.Users;
+using Moq;
 
 namespace GameLib.Tests.Identities
 {
-  [TestClass]
-  public class AuthenticatorTests
-  {
-    private Authenticator _authenticator;
+	[TestClass]
+	public class AuthenticatorTests
+	{
+		private Authenticator _authenticator;
+		private string _validUserId;
+		private Guid _validSessionId;
 
-    [TestInitialize]
-    public void GivenIdentityRepositoryWithOneIdentity()
-    {
-      var container = AutoMock.GetLoose();
+		[TestInitialize]
+		public void GivenIdentityRepositoryWithOneIdentity()
+		{
+			var container = AutoMock.GetLoose();
+			var userRepository = container.Mock<IUserRepository>();
+			_validUserId = "someId";
+			_validSessionId = Guid.NewGuid();
 
-      var identityRepository = container.Mock<IIdentityRepository>();
-      identityRepository.Setup(i => i.GetAllAsync()).Returns(Task.FromResult(new List<Identity>()
-            {
-                new Identity
-                {
-                    Id = "1",
-                    UserName = "jools",
-                    Password = "1234"
-                }
-            }));
+			var validUser = new User { Id = _validUserId, SessionId = _validSessionId };
+			userRepository.Setup(i => i.GetByIdOrDefaultAsync(It.Is<string>(id => id == _validUserId))).ReturnsAsync(validUser);
+			userRepository.Setup(i => i.GetByIdOrDefaultAsync(It.Is<string>(id => id != _validUserId))).ReturnsAsync(default(User));
 
-      _authenticator = container.Create<Authenticator>();
-    }
+			_authenticator = container.Create<Authenticator>();
+		}
 
-    [TestMethod]
-    public async Task WhenAuthenticatingWithParametersThatMatch_ThenAuthentificationReturnsValidIdentity()
-    {
-      var request = new AuthentificationRequest
-      {
-        UserName = "jools",
-        Password = "1234",
-        ConnectionId = Guid.NewGuid().ToString()
-      };
+		[TestMethod]
+		public async Task WhenUserIdAndSessionIdMatch_ThenAuthenticationReturnsTrue()
+		{
+			var isAuthenticated = await _authenticator.AuthenticateAsync(_validUserId, _validSessionId);
 
-      var identity = await _authenticator.AuthenticateAsync(request);
+			Assert.IsTrue(isAuthenticated);
+		}
 
-      Assert.IsNotNull(identity);
-    }
+		[TestMethod]
+		public async Task WhenUserIdIsInvalid_ThenAuthenticationReturnsFalse()
+		{
+			var invalidUserId = "invalidId";
+			var isAuthenticated = await _authenticator.AuthenticateAsync(invalidUserId, _validSessionId);
 
-    [TestMethod]
-    public async Task WhenAuthenticatingWithParametersThatDoesNotMatch_ThenAuthentificationReturnsNull()
-    {
-      var request = new AuthentificationRequest();
-      var identity = await _authenticator.AuthenticateAsync(request);
+			Assert.IsFalse(isAuthenticated);
+		}
 
-      Assert.IsNull(identity);
-    }
-  }
+		[TestMethod]
+		public async Task WhenSessionIdIsInvalid_ThenAuthenticationReturnsFalse()
+		{
+			var invalidSessionId = Guid.NewGuid();
+			var isAuthenticated = await _authenticator.AuthenticateAsync(_validUserId, invalidSessionId);
+
+			Assert.IsFalse(isAuthenticated);
+		}
+
+		[TestMethod]
+		public async Task WhenUserIdAndSessionIdIsInvalid_ThenAuthenticationReturnsFalse()
+		{
+			var invalidUserId = "invalidId";
+			var invalidSessionId = Guid.NewGuid();
+			var isAuthenticated = await _authenticator.AuthenticateAsync(invalidUserId, invalidSessionId);
+
+			Assert.IsFalse(isAuthenticated);
+		}
+	}
 }

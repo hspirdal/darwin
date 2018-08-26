@@ -8,7 +8,7 @@ namespace GameLib
 {
 	public abstract class AbstractRedisRepository<T> where T : IIdentifiable
 	{
-		private readonly string _partitionKey;
+		protected readonly string _partitionKey;
 		private readonly IDatabase _database;
 
 		public AbstractRedisRepository(IConnectionMultiplexer connectionMultiplexer, string partitionKey)
@@ -28,6 +28,17 @@ namespace GameLib
 			}
 
 			throw new ArgumentException($"Could not find result with id {id}.");
+		}
+
+		public async Task<T> GetByIdOrDefaultAsync(string id)
+		{
+			var result = await _database.HashGetAsync(_partitionKey, id).ConfigureAwait(false);
+			if (result.HasValue)
+			{
+				return JsonConvert.DeserializeObject<T>(result);
+			}
+
+			return default(T);
 		}
 
 		public async Task<List<T>> GetAllAsync()

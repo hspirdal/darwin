@@ -15,32 +15,28 @@ namespace WebSocketServer
 {
 	public interface IClientRegistry
 	{
-		Task<bool> CheckValidConnectionAsync(string connectionId, Guid sessionId, IClientProxy clientProxy);
-		void Remove(string connectionId);
-		Task HandleClientMessageAsync(string connectionId, ClientRequest clientRequest);
+		void Disconnect(string userId);
+		Task HandleClientMessageAsync(ClientRequest clientRequest, IClientProxy clientProxy);
 	}
 
 	public interface ISocketServer
 	{
 		Task SendAsync(string userid, ServerResponse response);
 		Task SendAsync(string userid, string channel, ServerResponse response);
-		List<Connection> ActiveConnections { get; }
 	}
 
 	public class SocketServer : ISocketServer, IClientRegistry, IClientSender
 	{
 		private readonly ILogger _logger;
 		private readonly IStateRequestRouter _stateRequestRouter;
-		private readonly IConnectionStore _connectionStore;
+		private readonly IConnectionRegistry _connectionRegistry;
 
-		public SocketServer(ILogger logger, IStateRequestRouter stateRequestRouter, IConnectionStore connectionStore)
+		public SocketServer(ILogger logger, IStateRequestRouter stateRequestRouter, IConnectionRegistry connectionRegistry)
 		{
 			_logger = logger;
 			_stateRequestRouter = stateRequestRouter;
-			_connectionStore = connectionStore;
+			_connectionRegistry = connectionRegistry;
 		}
-
-		public List<Connection> ActiveConnections => _connectionStore.ActiveConnections;
 
 		public Task SendAsync(string userId, ServerResponse serverResponse)
 		{
@@ -51,15 +47,12 @@ namespace WebSocketServer
 		{
 			try
 			{
-				var connection = _connectionStore.ActiveConnections.SingleOrDefault(i => i.Id == userId);
-				if (connection != null)
+				var proxy = _connectionRegistry.GetProxyById(userId);
+				if (proxy != null)
 				{
 					var json = JsonConvert.SerializeObject(serverResponse);
-					await connection.Client.SendAsync(channel, json).ConfigureAwait(false);
-					return;
+					await proxy.SendAsync(channel, json).ConfigureAwait(false);
 				}
-
-				_logger.Warn($"user id '{userId}' was not found in active connections");
 			}
 			catch (Exception e)
 			{
@@ -67,39 +60,12 @@ namespace WebSocketServer
 			}
 		}
 
-		public async Task<bool> CheckValidConnectionAsync(string connectionId, Guid sessionId, IClientProxy clientProxy)
+		public async Task HandleClientMessageAsync(ClientRequest clientRequest, IClientProxy clientProxy)
 		{
 			try
 			{
-				var success = await _connectionStore.ValidateConnectionAsync(connectionId, sessionId, clientProxy).ConfigureAwait(false);
-				return success;
-			}
-			catch (Exception e)
-			{
-				_logger.Debug(e.Message);
-				_logger.Error(e);
-			}
-
-
-			_logger.Debug("Not valid connection");
-			return false;
-		}
-
-		public async Task HandleClientMessageAsync(string connectionId, ClientRequest clientRequest)
-		{
-			try
-			{
-				var connection = _connectionStore.GetById(clientRequest.SessionId);
-				if (connection != null)
-				{
-					// TODO: pass on id from client request once validation step ensures that user id matches session id when improving ConnectionStore.
-					var clientId = connection.Id;
-					await _stateRequestRouter.RouteAsync(clientId, clientRequest).ConfigureAwait(false);
-				}
-				else
-				{
-					_logger.Warn($"{nameof(HandleClientMessageAsync)}: connecton was null");
-				}
+				_connectionRegistry.AddOrUpdateProxy(clientRequest.UserId, clientProxy);
+				await _stateRequestRouter.RouteAsync(clientRequest.UserId, clientRequest).ConfigureAwait(false);
 			}
 			catch (Exception e)
 			{
@@ -107,9 +73,9 @@ namespace WebSocketServer
 			}
 		}
 
-		public void Remove(string connectionId)
+		public void Disconnect(string userId)
 		{
-			_connectionStore.Remove(connectionId);
+			_connectionRegistry.AddOrUpdateProxy(userId, null);
 		}
 	}
 }

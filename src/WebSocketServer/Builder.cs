@@ -38,12 +38,12 @@ namespace WebSocketServer
 			RegisterPlayArea(builder);
 			RegisterGameConfigurations(builder);
 
+			builder.RegisterType<ConnectionRegistry>().As<IConnectionRegistry>().SingleInstance();
 			builder.RegisterType<SocketServer>().As<ISocketServer>().As<IClientRegistry>().As<IClientSender>().SingleInstance();
 			builder.RegisterType<Logger>().As<ILogger>();
 			builder.RegisterType<Clock>().As<IClock>();
 			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
 			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
-			builder.RegisterType<ConnectionStore>().As<IConnectionStore>().SingleInstance();
 			builder.RegisterType<Authenticator>().As<IAuthenticator>();
 			builder.RegisterType<MapGenerator>().As<IMapGenerator>();
 			builder.RegisterType<StartupTaskRunner>().As<IStartupTaskRunner>();
@@ -63,8 +63,7 @@ namespace WebSocketServer
 			builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 			builder.RegisterType<AutonomousFactory>().As<IAutonomousFactory>();
 			builder.RegisterType<PremadeCharacterSpawner>().As<IPremadeCharacterSpawner>();
-
-			builder.Register<UserRepository>(c => new UserRepository(c.Resolve<IConnectionMultiplexer>(), "_users")).As<IUserRepository>().SingleInstance();
+			builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
 
 			return builder.Build();
 		}

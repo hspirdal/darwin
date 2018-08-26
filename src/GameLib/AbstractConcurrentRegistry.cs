@@ -3,39 +3,36 @@ using System.Collections.Concurrent;
 
 namespace GameLib
 {
-	public abstract class AbstractConcurrentRegistry<T>
+	public abstract class AbstractConcurrentRegistry<K, V>
 	{
-		private readonly ConcurrentDictionary<string, T> _map;
+		private readonly ConcurrentDictionary<K, V> _map;
 
 		public AbstractConcurrentRegistry()
 		{
-			_map = new ConcurrentDictionary<string, T>();
+			_map = new ConcurrentDictionary<K, V>();
 		}
 
-		public bool Contains(string id)
+		public bool Contains(K id)
 		{
 			return _map.ContainsKey(id);
 		}
 
-		public T Get(string id)
+		public V Get(K id)
 		{
 			if (_map.TryGetValue(id, out var value))
 			{
 				return value;
 			}
 
-			return default(T);
+			return default(V);
 		}
 
-		public void Register(string id, T obj)
+		public void RegisterOrUpdate(K id, V obj)
 		{
-			_map.AddOrUpdate(id, obj, (string key, T o) =>
-			{
-				return o;
-			});
+			_map.AddOrUpdate(id, obj, (K key, V o) => obj);
 		}
 
-		public void Remove(string id)
+		public void Remove(K id)
 		{
 			if (_map.TryRemove(id, out var value))
 			{

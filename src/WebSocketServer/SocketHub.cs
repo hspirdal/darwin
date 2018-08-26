@@ -5,6 +5,7 @@ using GameLib.Identities;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Client.Contracts;
+using GameLib;
 
 namespace WebSocketServer
 {
@@ -12,10 +13,14 @@ namespace WebSocketServer
 	{
 		private readonly IClientRegistry _clientRegistry;
 		private readonly JsonSerializerSettings _jsonSerializerSettings;
+		private readonly IAuthenticator _authenticator;
+		private readonly ConcurrentRegistry<string, string> _connectionUserRegistry;
 
-		public SocketHub(IClientRegistry clientRegistry)
+		public SocketHub(IClientRegistry clientRegistry, IAuthenticator authenticator, ConcurrentRegistry<string, string> connectionUserRegistry)
 		{
 			_clientRegistry = clientRegistry;
+			_authenticator = authenticator;
+			_connectionUserRegistry = connectionUserRegistry;
 
 			_jsonSerializerSettings = new JsonSerializerSettings
 			{
@@ -27,6 +32,7 @@ namespace WebSocketServer
 		public override Task OnConnectedAsync()
 		{
 			var connectionId = Context.ConnectionId;
+			_connectionUserRegistry.RegisterOrUpdate(connectionId, string.Empty);
 			Console.WriteLine($"{connectionId} connected.");
 
 			return base.OnConnectedAsync();
@@ -35,7 +41,12 @@ namespace WebSocketServer
 		public override Task OnDisconnectedAsync(System.Exception exception)
 		{
 			var connectionId = Context.ConnectionId;
-			_clientRegistry.Remove(connectionId);
+			var userId = _connectionUserRegistry.Get(connectionId);
+			if (!string.IsNullOrEmpty(userId))
+			{
+				_clientRegistry.Disconnect(userId);
+			}
+			_connectionUserRegistry.Remove(connectionId);
 			Console.WriteLine($"{connectionId} disconnected.");
 
 			return base.OnDisconnectedAsync(exception);
@@ -43,7 +54,6 @@ namespace WebSocketServer
 
 		public async Task SendAsync(string message)
 		{
-			var connectionId = Context.ConnectionId;
 			var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(message, _jsonSerializerSettings);
 			if (clientRequest == null || clientRequest.SessionId == Guid.Empty)
 			{
@@ -53,11 +63,14 @@ namespace WebSocketServer
 
 			Console.WriteLine($"Incoming request: Name: '{clientRequest.RequestName}'. SessionId: '{clientRequest.SessionId}' Payload: '{clientRequest.Payload}'");
 
-			var proxyClient = Clients.Client(Context.ConnectionId);
-			var success = await _clientRegistry.CheckValidConnectionAsync(connectionId, clientRequest.SessionId, proxyClient).ConfigureAwait(false);
+			var connectionId = Context.ConnectionId;
+			var proxyClient = Clients.Client(connectionId);
+			var success = await _authenticator.AuthenticateAsync(clientRequest.UserId, clientRequest.SessionId).ConfigureAwait(false);
 			if (success)
 			{
-				await _clientRegistry.HandleClientMessageAsync(connectionId, clientRequest).ConfigureAwait(false);
+				_connectionUserRegistry.RegisterOrUpdate(connectionId, clientRequest.UserId);
+
+				await _clientRegistry.HandleClientMessageAsync(clientRequest, proxyClient).ConfigureAwait(false);
 				await RespondRequestAcceptedAsync().ConfigureAwait(false);
 			}
 			else

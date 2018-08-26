@@ -29,7 +29,9 @@ namespace GameLib.Actions
 			{
 				Console.WriteLine("Spawning player..");
 				_premadeCharacterSpawner.Spawn(userId, clientRequest.Payload);
-				await _userRepository.AddOrUpdateAsync(new User { Id = userId, GameState = GameState.InGame }).ConfigureAwait(false);
+				var user = await _userRepository.GetByIdAsync(userId).ConfigureAwait(false);
+				user.GameState = GameState.InGame;
+				await _userRepository.AddOrUpdateAsync(user).ConfigureAwait(false);
 			}
 		}
 	}
