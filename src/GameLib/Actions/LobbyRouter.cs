@@ -4,7 +4,6 @@ using GameLib.Area;
 using GameLib.Entities;
 using GameLib.Properties;
 using Client.Contracts;
-using GameLib.Identities;
 using GameLib.Users;
 
 namespace GameLib.Actions

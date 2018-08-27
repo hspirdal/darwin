@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GameLib.Identities;
 using GameLib.Users;
 using Moq;
 

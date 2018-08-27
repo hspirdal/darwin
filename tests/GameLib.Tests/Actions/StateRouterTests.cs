@@ -6,7 +6,6 @@ using Client.Contracts;
 using System.Threading.Tasks;
 using GameLib.Entities;
 using GameLib.Properties;
-using GameLib.Identities;
 using GameLib.Users;
 
 namespace GameLib.Tests.Actions

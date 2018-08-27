@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace GameLib.Identities
+namespace Darwin.Api.Identities
 {
 	public interface IIdentityRepository
 	{

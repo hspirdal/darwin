@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Darwin.Api.Identity
+namespace Darwin.Api.Identities
 {
-  public class IdentityModel
-  {
-    [Required]
-    public string UserName { get; set; }
-    [Required]
-    public string Password { get; set; }
-  }
+	public class IdentityModel
+	{
+		[Required]
+		public string UserName { get; set; }
+		[Required]
+		public string Password { get; set; }
+	}
 }

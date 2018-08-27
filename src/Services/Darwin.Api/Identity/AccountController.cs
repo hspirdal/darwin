@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using GameLib.Identities;
 using GameLib.Properties;
 using GameLib.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Darwin.Api.Identity
+namespace Darwin.Api.Identities
 {
 	[Produces("application/json")]
 	[Route("api/[controller]")]

@@ -1,7 +1,7 @@
 using System;
 using GameLib.Properties;
 
-namespace GameLib.Identities
+namespace Darwin.Api.Identities
 {
 	public class Identity
 	{

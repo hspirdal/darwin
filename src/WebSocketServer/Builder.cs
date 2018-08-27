@@ -8,7 +8,6 @@ using GameLib.Actions.Movement;
 using GameLib.Entities;
 using GameLib.Properties;
 using GameLib.Logging;
-using GameLib.Identities;
 using GameLib.Area;
 using GameLib.Actions.Loot;
 using GameLib.Properties.Stats;
@@ -42,7 +41,6 @@ namespace WebSocketServer
 			builder.RegisterType<SocketServer>().As<ISocketServer>().As<IClientRegistry>().As<IClientSender>().SingleInstance();
 			builder.RegisterType<Logger>().As<ILogger>();
 			builder.RegisterType<Clock>().As<IClock>();
-			builder.RegisterType<IdentityRepository>().As<IIdentityRepository>().SingleInstance();
 			builder.RegisterType<ActionRepository>().As<IActionRepository>().SingleInstance();
 			builder.RegisterType<Authenticator>().As<IAuthenticator>();
 			builder.RegisterType<MapGenerator>().As<IMapGenerator>();

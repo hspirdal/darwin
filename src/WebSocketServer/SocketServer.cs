@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GameLib.Actions;
-using GameLib.Identities;
 using GameLib.Logging;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;

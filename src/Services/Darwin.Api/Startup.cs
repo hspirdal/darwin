@@ -9,9 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
-using Darwin.Api.Identity;
+using Darwin.Api.Identities;
 using StackExchange.Redis;
-using GameLib.Identities;
 using Microsoft.AspNetCore.Mvc;
 using GameLib.Users;
 
@@ -56,7 +55,7 @@ namespace Darwin.Api
 			services.AddSingleton<IUserRepository, UserRepository>();
 		}
 
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, IIdentityRepository identityRepository)
 		{
 			if (env.IsDevelopment())
 			{
@@ -73,6 +72,10 @@ namespace Darwin.Api
 			app.UseCors("CorsPolicy");
 
 			app.UseMvc();
+
+			// Temp placement until a better home appears..
+			identityRepository.AddOrUpdateAsync(new Identity { Id = "1", UserName = "arch", Password = "1234" }).Wait();
+			identityRepository.AddOrUpdateAsync(new Identity { Id = "2", UserName = "clip", Password = "1234" }).Wait();
 		}
 
 		private void RegisterRedis(IServiceCollection services)

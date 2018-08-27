@@ -1,6 +1,6 @@
 using System;
 
-namespace Darwin.Api.Identity
+namespace Darwin.Api.Identities
 {
 	public class LoginResponse
 	{

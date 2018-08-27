@@ -3,7 +3,6 @@ using GameLib.Properties;
 using System;
 using System.Threading.Tasks;
 using Client.Contracts;
-using GameLib.Identities;
 using GameLib.Users;
 
 namespace GameLib.Actions

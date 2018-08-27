@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GameLib.Logging;
 using GameLib.Users;
 
-namespace GameLib.Identities
+namespace GameLib.Users
 {
 	public interface IAuthenticator
 	{

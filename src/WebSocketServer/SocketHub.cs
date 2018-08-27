@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GameLib.Identities;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Client.Contracts;
 using GameLib;
+using GameLib.Users;
 
 namespace WebSocketServer
 {
