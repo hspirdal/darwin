@@ -5,7 +5,7 @@
 				<b-form-select v-model="selectedTemplate" class="mb-3" v-on:change="selectTemplate">
 					<option v-for="(template, index) in characterTemplates" v-bind:value="template.value" v-bind:key="index">{{ template.text }}</option>
 				</b-form-select>
-        <button type="button" v-on:click="startGame()">Start</button>
+        <button type="button" v-on:click="startGame()" v-focus>Start</button>
     </div>
 </template>
 

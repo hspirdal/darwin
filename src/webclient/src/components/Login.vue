@@ -3,7 +3,7 @@
         <h1>Login</h1>
         <input type="text" name="username" v-model="input.username" placeholder="Username" />
         <input type="password" name="password" v-model="input.password" placeholder="Password" />
-        <button type="button" v-on:click="login()">Login</button>
+        <button type="button" v-on:click="login()" v-focus>Login</button>
 				<p v-if="loginFailed">Username or password is incorrect.</p>
     </div>
 </template>

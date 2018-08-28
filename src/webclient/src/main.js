@@ -25,6 +25,12 @@ Object.defineProperties(Vue.prototype, {
 	}
 });
 
+Vue.directive("focus", {
+	inserted: function(el) {
+		el.focus();
+	}
+});
+
 new Vue({
 	router,
 	store,
