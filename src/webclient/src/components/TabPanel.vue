@@ -21,6 +21,7 @@
 
 import CharStatus from "./CharStatus";
 import Inventory from "./Inventory";
+import MouseTrap from "mousetrap";
 
 export default {
 	name: "tabpanel",
@@ -33,6 +34,21 @@ export default {
 			currentTab: "Status",
 			tabs: ["Status", "Inventory"]
 		};
+	},
+	created: function() {
+		MouseTrap.bind(
+			"i",
+			function() {
+				this.currentTab = "Inventory";
+			}.bind(this)
+		);
+
+		MouseTrap.bind(
+			"c",
+			function() {
+				this.currentTab = "Status";
+			}.bind(this)
+		);
 	},
 	computed: {
 		currentTabComponent: function() {
