@@ -12,6 +12,7 @@ function initialState() {
 		gameStarted: false,
 		activeCellCreatures: [{}],
 		activeCellItems: [{}],
+		activeEntityIds: [],
 		nextActionAvailableUtc: Moment.utc(Moment.now()),
 		isCooldown: false,
 		isInCombat: false,
@@ -38,6 +39,9 @@ const getters = {
 	},
 	activecellitems(state) {
 		return state.activeCellItems;
+	},
+	activeEntityIds(state) {
+		return state.activeEntityIds;
 	},
 	gamestarted(state) {
 		return state.gameStarted;
@@ -97,6 +101,13 @@ const mutations = {
 			console.log("Refresh entity state");
 			state.activeCellCreatures = creatures;
 			state.activeCellItems = items;
+			state.activeEntityIds = new Array();
+			creatures.forEach(c => {
+				state.activeEntityIds.push(c.Id);
+			});
+			items.forEach(i => {
+				state.activeEntityIds.push(i.Id);
+			});
 		}
 	}
 };

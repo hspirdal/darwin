@@ -33,6 +33,7 @@
 /*eslint no-console: [off] */
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import MouseTrap from "mousetrap";
 
 export default {
 	name: "charstatus",
@@ -42,6 +43,20 @@ export default {
 			creaturesInCell: [],
 			itemsInCell: []
 		};
+	},
+	created: function() {
+		MouseTrap.bind(
+			"down",
+			function() {
+				this.cycleSelected(1);
+			}.bind(this)
+		);
+		MouseTrap.bind(
+			"up",
+			function() {
+				this.cycleSelected(-1);
+			}.bind(this)
+		);
 	},
 	computed: {
 		isCooldown: function() {
@@ -142,7 +157,18 @@ export default {
 				this.selectEntity(entityId);
 			}
 		},
+		cycleSelected: function(relativeIndex) {
+			let entityIds = this.$store.getters["gamestatus/activeEntityIds"];
+			let index = entityIds.findIndex(id => id == this.selectedItem);
+			let newIndex = index + relativeIndex;
+			if (newIndex < 0) {
+				newIndex = entityIds.length - 1;
+			} else if (newIndex >= entityIds.length) {
+				newIndex = 0;
+			}
 
+			this.preSelect(entityIds[newIndex]);
+		},
 		inspectHealth: function(creatureId) {
 			let creature = this.$store.getters["gamestatus/entities/knownCreatureById"](creatureId);
 			if (creature != null) {
