@@ -40,7 +40,7 @@ export default {
 	},
 	computed: {
 		gameStarted: function() {
-			return this.$store.getters["gamestatus/gamestarted"];
+			return this.$store.getters["gamestatus/gameStarted"];
 		},
 		formattedMessages: function() {
 			let message = this.$store.getters["gamelog/lastMessageAdded"];

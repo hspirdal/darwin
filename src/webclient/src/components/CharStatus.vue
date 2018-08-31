@@ -66,13 +66,13 @@ export default {
 			return this.$store.getters["gamestatus/isInCombat"];
 		},
 		gameStarted: function() {
-			return this.$store.getters["gamestatus/gamestarted"];
+			return this.$store.getters["gamestatus/gameStarted"];
 		},
 		activeCellItems: function() {
-			return this.$store.getters["gamestatus/activecellitems"];
+			return this.$store.getters["gamestatus/activeCellItems"];
 		},
 		activeCellCreatures: function() {
-			return this.$store.getters["gamestatus/activecellcreatures"];
+			return this.$store.getters["gamestatus/activeCellCreatures"];
 		},
 		activeCellRowCount: function() {
 			let totalCount = 0;
@@ -144,7 +144,7 @@ export default {
 	},
 	methods: {
 		selectEntity: function(id) {
-			let creature = this.$store.getters["gamestatus/activecellcreatures"].find(x => x.Id == id);
+			let creature = this.$store.getters["gamestatus/activeCellCreatures"].find(x => x.Id == id);
 			if (creature != null) {
 				this.$store.commit("selection/setSelectedCreatureId", id);
 			} else {

@@ -34,16 +34,16 @@ const getters = {
 	y(state) {
 		return state.y;
 	},
-	activecellcreatures(state) {
+	activeCellCreatures(state) {
 		return state.activeCellCreatures;
 	},
-	activecellitems(state) {
+	activeCellItems(state) {
 		return state.activeCellItems;
 	},
 	activeEntityIds(state) {
 		return state.activeEntityIds;
 	},
-	gamestarted(state) {
+	gameStarted(state) {
 		return state.gameStarted;
 	},
 	nextActionAvailableUtc(state) {

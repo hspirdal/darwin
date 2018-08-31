@@ -30,7 +30,7 @@ export default {
 			return this.$store.getters["gamestatus/player"].Inventory.Items;
 		},
 		gameStarted: function() {
-			return this.$store.getters["gamestatus/gamestarted"];
+			return this.$store.getters["gamestatus/gameStarted"];
 		},
 		headSlot: function() {
 			let headSlot = this.$store.getters["equipment/headSlot"];
