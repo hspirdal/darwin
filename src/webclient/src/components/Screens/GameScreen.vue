@@ -3,6 +3,7 @@
 		<Display/>
 		<TabPanel/>
 		<GameLog/>
+		<StateMachine/>
 	</div>
 </template>
 
@@ -10,13 +11,15 @@
 import Display from "../Display";
 import TabPanel from "../TabPanel";
 import GameLog from "../gamelog/GameLog";
+import StateMachine from "../SimpleStateMachine";
 
 export default {
 	name: "gamescreen",
 	components: {
 		Display,
 		TabPanel,
-		GameLog
+		GameLog,
+		StateMachine
 	},
 	data() {
 		return {};

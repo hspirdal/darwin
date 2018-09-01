@@ -36,6 +36,12 @@ export default {
 			this.gameStarted = false;
 			this.$store.dispatch("clearAll");
 		});
+
+		this.$bus.$on("Action.Attack", $event => {
+			if (this.$refs.network) {
+				this.$refs.network.attack($event.targetId);
+			}
+		});
 	},
 	methods: {
 		onKeyPressed: function(key) {
