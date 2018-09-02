@@ -57,23 +57,23 @@ export default {
 	methods: {
 		move(movementDirection) {
 			let request = createRequest("Action.Movement", JSON.stringify({ MovementDirection: movementDirection }));
-			this.connection.invoke("SendAsync", request);
+			this.connection.invoke("RequestAction", request);
 		},
 		lootAll() {
 			let request = createRequest("Action.LootAll", "");
-			this.connection.invoke("SendAsync", request);
+			this.connection.invoke("RequestAction", request);
 		},
 		loot(itemId) {
 			let request = createRequest("Action.Loot", JSON.stringify({ ItemId: itemId }));
-			this.connection.invoke("SendAsync", request);
+			this.connection.invoke("RequestAction", request);
 		},
 		attack(targetId) {
 			let request = createRequest("Action.Attack", JSON.stringify({ TargetId: targetId }));
-			this.connection.invoke("SendAsync", request);
+			this.connection.invoke("RequestAction", request);
 		},
 		newGame(templateName) {
 			let request = createRequest("lobby.newgame", templateName);
-			this.connection.invoke("SendAsync", request);
+			this.connection.invoke("RequestAction", request);
 		}
 	}
 };

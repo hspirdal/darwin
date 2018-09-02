@@ -15,7 +15,8 @@ namespace WebSocketServer
 	public interface IClientRegistry
 	{
 		void Disconnect(string userId);
-		Task HandleClientMessageAsync(ClientRequest clientRequest, IClientProxy clientProxy);
+		Task ExecuteActionRequestAsync(ClientRequest clientRequest, IClientProxy clientProxy);
+		Task ExecuteQueryRequestAsync(ClientRequest clientRequest, IClientProxy clientProxy);
 	}
 
 	public interface ISocketServer
@@ -59,12 +60,27 @@ namespace WebSocketServer
 			}
 		}
 
-		public async Task HandleClientMessageAsync(ClientRequest clientRequest, IClientProxy clientProxy)
+		public async Task ExecuteActionRequestAsync(ClientRequest clientRequest, IClientProxy clientProxy)
 		{
 			try
 			{
 				_connectionRegistry.AddOrUpdateProxy(clientRequest.UserId, clientProxy);
 				await _stateRequestRouter.RouteAsync(clientRequest.UserId, clientRequest).ConfigureAwait(false);
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e);
+			}
+		}
+
+		public async Task ExecuteQueryRequestAsync(ClientRequest clientRequest, IClientProxy clientProxy)
+		{
+			try
+			{
+				_connectionRegistry.AddOrUpdateProxy(clientRequest.UserId, clientProxy);
+				// TODO: Pass on query request and get a response back.
+				ServerResponse response = new ServerResponse { Message = "Unknown query command." };
+				await SendAsync(clientRequest.UserId, "query", response).ConfigureAwait(false);
 			}
 			catch (Exception e)
 			{

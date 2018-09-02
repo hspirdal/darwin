@@ -52,9 +52,19 @@ namespace WebSocketServer
 			return base.OnDisconnectedAsync(exception);
 		}
 
-		public async Task SendAsync(string message)
+		public Task RequestAction(string request)
 		{
-			var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(message, _jsonSerializerSettings);
+			return ExecuteClientRequestAsync(request, _clientRegistry.ExecuteActionRequestAsync);
+		}
+
+		public Task RequestQuery(string request)
+		{
+			return ExecuteClientRequestAsync(request, _clientRegistry.ExecuteQueryRequestAsync);
+		}
+
+		private async Task ExecuteClientRequestAsync(string jsonRequest, Func<ClientRequest, IClientProxy, Task> func)
+		{
+			var clientRequest = JsonConvert.DeserializeObject<ClientRequest>(jsonRequest, _jsonSerializerSettings);
 			if (clientRequest == null || clientRequest.SessionId == Guid.Empty)
 			{
 				await RespondMalformedRequestAsync().ConfigureAwait(false);
@@ -70,7 +80,7 @@ namespace WebSocketServer
 			{
 				_connectionUserRegistry.RegisterOrUpdate(connectionId, clientRequest.UserId);
 
-				await _clientRegistry.HandleClientMessageAsync(clientRequest, proxyClient).ConfigureAwait(false);
+				await func.Invoke(clientRequest, proxyClient).ConfigureAwait(false);
 				await RespondRequestAcceptedAsync().ConfigureAwait(false);
 			}
 			else
