@@ -62,6 +62,7 @@ namespace WebSocketServer
 			builder.RegisterType<AutonomousFactory>().As<IAutonomousFactory>();
 			builder.RegisterType<PremadeCharacterSpawner>().As<IPremadeCharacterSpawner>();
 			builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
+			builder.RegisterType<QueryResolver>().As<IQueryResolver>();
 
 			return builder.Build();
 		}

@@ -30,9 +30,11 @@ namespace WebSocketServer
 		private readonly ILogger _logger;
 		private readonly IStateRequestRouter _stateRequestRouter;
 		private readonly IConnectionRegistry _connectionRegistry;
+		private readonly IQueryResolver _queryResolver;
 
-		public SocketServer(ILogger logger, IStateRequestRouter stateRequestRouter, IConnectionRegistry connectionRegistry)
+		public SocketServer(ILogger logger, IStateRequestRouter stateRequestRouter, IConnectionRegistry connectionRegistry, IQueryResolver queryResolver)
 		{
+			_queryResolver = queryResolver;
 			_logger = logger;
 			_stateRequestRouter = stateRequestRouter;
 			_connectionRegistry = connectionRegistry;
@@ -78,8 +80,7 @@ namespace WebSocketServer
 			try
 			{
 				_connectionRegistry.AddOrUpdateProxy(clientRequest.UserId, clientProxy);
-				// TODO: Pass on query request and get a response back.
-				ServerResponse response = new ServerResponse { Message = "Unknown query command." };
+				var response = await _queryResolver.ResolveAsync(clientRequest).ConfigureAwait(false);
 				await SendAsync(clientRequest.UserId, "query", response).ConfigureAwait(false);
 			}
 			catch (Exception e)
