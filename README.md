@@ -5,6 +5,8 @@
 | Travis       | Linux / OS X | [![Build Status](https://travis-ci.com/hspirdal/darwin.svg?branch=master)](https://travis-ci.com/hspirdal/darwin)                         |
 | AppVeyor     | Windows      | [![Build status](https://ci.appveyor.com/api/projects/status/887ya7rhbo9cwpqb?svg=true)](https://ci.appveyor.com/project/hspirdal/darwin) |
 
+[![Known Vulnerabilities](https://snyk.io/test/github/hspirdal/darwin/badge.svg?targetFile=src%2Fwebclient%2Fpackage.json)](https://snyk.io/test/github/hspirdal/darwin?targetFile=src%2Fwebclient%2Fpackage.json)
+
 
 Prototype project for a bot-friendly multiplayer game to learn some l33t w3bskyllz.
 
