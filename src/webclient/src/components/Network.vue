@@ -52,7 +52,16 @@ export default {
 			this.$store.commit("gamelog/appendMessage", gameMessage);
 		});
 
-		this.connection.start();
+		this.connection.on("query", data => {
+			let response = JSON.parse(data);
+			let gameState = JSON.parse(response.Payload);
+			this.$store.commit("gamestate/setGameState", gameState);
+		});
+
+		this.connection.start().then(() => {
+			let request = createRequest("Query.GetUserState", "");
+			this.connection.invoke("RequestQuery", request);
+		});
 	},
 	methods: {
 		move(movementDirection) {

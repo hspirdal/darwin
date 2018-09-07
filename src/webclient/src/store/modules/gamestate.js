@@ -3,7 +3,7 @@ const state = initialState();
 
 function initialState() {
 	return {
-		gameState: "newgame"
+		gameState: "loading"
 	};
 }
 
@@ -23,6 +23,14 @@ const mutations = {
 	},
 	setCurrent(state, gameState) {
 		state.gameState = gameState;
+	},
+	setGameState(state, gameState) {
+		if (gameState === "lobby") {
+			state.gameState = "newgame";
+		} else if (gameState === "InGame") {
+			state.gameState = "gameplay";
+		}
+		console.log("state: " + gameState);
 	}
 };
 

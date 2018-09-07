@@ -11,18 +11,20 @@
 import GameOverScreen from "./GameOverScreen";
 import NewGameScreen from "./NewGameScreen";
 import GameScreen from "./GameScreen";
+import LoadingScreen from "./LoadingScreen";
 
 export default {
 	name: "screenselector",
 	components: {
 		"screen-newgame": NewGameScreen,
 		"screen-gameplay": GameScreen,
-		"screen-gameover": GameOverScreen
+		"screen-gameover": GameOverScreen,
+		"screen-loading": LoadingScreen
 	},
 	data() {
 		return {
-			currentScreen: "NewGame",
-			screens: ["NewGame", "GamePlay", "GameOver"]
+			currentScreen: "Loading",
+			screens: ["Loading", "NewGame", "GamePlay", "GameOver"]
 		};
 	},
 	computed: {
