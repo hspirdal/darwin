@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Client.Contracts;
+using GameLib.Properties;
 using GameLib.Users;
-using Newtonsoft.Json;
 
 namespace WebSocketServer
 {
@@ -14,6 +14,8 @@ namespace WebSocketServer
 	{
 		private readonly IUserRepository _userRepository;
 		private const string QueryGetUserState = "Query.GetUserState";
+		private const string QueryForfeitGame = "Query.ForfeitGame";
+
 		public QueryResolver(IUserRepository userRepository)
 		{
 			_userRepository = userRepository;
@@ -25,17 +27,35 @@ namespace WebSocketServer
 			if (clientRequest.RequestName == QueryGetUserState)
 			{
 				var user = await _userRepository.GetByIdOrDefaultAsync(clientRequest.UserId).ConfigureAwait(false);
-				if (user != null)
+				EnsureValidUser(clientRequest.UserId, user);
+
+				return new ServerResponse(ResponseType.GameState, user.GameState.ToString());
+			}
+			else if (clientRequest.RequestName == QueryForfeitGame)
+			{
+				// TODO: Handle this better in the future, currently restrict to only move state from game-over to lobby
+				var user = await _userRepository.GetByIdOrDefaultAsync(clientRequest.UserId).ConfigureAwait(false);
+				EnsureValidUser(clientRequest.UserId, user);
+
+				if (user.GameState == GameState.PlayerDeath)
 				{
-					var json = JsonConvert.SerializeObject(user.GameState.ToString());
-					var response = new ServerResponse { Type = "QueryResponse", Message = QueryGetUserState, Payload = json };
-					return response;
+					user.GameState = GameState.GameLobby;
+					await _userRepository.AddOrUpdateAsync(user).ConfigureAwait(false);
+					return new ServerResponse(ResponseType.GameState, user.GameState.ToString());
 				}
 
-				throw new ArgumentException($"User with id '{clientRequest.UserId}' was not found");
+				return new ServerResponse(ResponseType.RequestDeclined, "Only able to forfeit game when player is dead.");
 			}
 
 			throw new ArgumentException($"Query with name '{clientRequest.RequestName}' is not a valid query command");
+		}
+
+		private void EnsureValidUser(string userId, User user)
+		{
+			if (user == null)
+			{
+				throw new ArgumentException($"User with id '{userId}' was not found");
+			}
 		}
 	}
 }

@@ -27,6 +27,16 @@ export default {
 			screens: ["Loading", "NewGame", "GamePlay", "GameOver"]
 		};
 	},
+	created: function() {
+		this.$store.watch(
+			state => {
+				return this.$store.getters["gamestate/current"];
+			},
+			(previousState, newState) => {
+				this.currentScreen = `screen-${newState.toLowerCase()}`;
+			}
+		);
+	},
 	computed: {
 		currentScreenComponent: function() {
 			var gameState = this.$store.getters["gamestate/current"];

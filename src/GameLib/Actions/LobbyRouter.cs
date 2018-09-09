@@ -21,7 +21,7 @@ namespace GameLib.Actions
 			_premadeCharacterSpawner = premadeCharacterSpawner;
 		}
 
-		public async Task RouteAsync(string userId, ClientRequest clientRequest)
+		public async Task<ServerResponse> RouteAsync(string userId, ClientRequest clientRequest)
 		{
 			// Temp until there are more actions here.
 			if (clientRequest.RequestName == "lobby.newgame")
@@ -31,7 +31,11 @@ namespace GameLib.Actions
 				var user = await _userRepository.GetByIdAsync(userId).ConfigureAwait(false);
 				user.GameState = GameState.InGame;
 				await _userRepository.AddOrUpdateAsync(user).ConfigureAwait(false);
+
+				return new ServerResponse(ResponseType.GameState, user.GameState.ToString());
 			}
+
+			throw new ArgumentException($"Request with name '{clientRequest.RequestName}' is not supported");
 		}
 	}
 }

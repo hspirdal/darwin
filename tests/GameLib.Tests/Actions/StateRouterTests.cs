@@ -33,7 +33,7 @@ namespace GameLib.Tests.Actions
 		{
 			var request = new ClientRequest { RequestName = "arbitrary_command" };
 			var userId = "arbitrary_id";
-			_userRepository.Setup(i => i.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new User { Id = userId, GameState = GameState.lobby });
+			_userRepository.Setup(i => i.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(new User { Id = userId, GameState = GameState.GameLobby });
 
 			await _stateRouter.RouteAsync(userId, request);
 

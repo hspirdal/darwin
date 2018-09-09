@@ -25,7 +25,6 @@ export default {
 	},
 	created() {
 		this.$bus.$on("NewGame.CharacterSelected", $event => {
-			this.$store.commit("gamestate/setCurrent", "GamePlay");
 			if (this.$refs.network) {
 				this.$refs.network.newGame($event.selectedTemplate);
 			}
@@ -35,6 +34,7 @@ export default {
 		this.$bus.$on("GameOver.GoToMenu", () => {
 			this.gameStarted = false;
 			this.$store.dispatch("clearAll");
+			this.$refs.network.queryForfeitGame();
 		});
 
 		this.$bus.$on("Action.Attack", $event => {

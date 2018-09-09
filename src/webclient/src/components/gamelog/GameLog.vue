@@ -59,7 +59,6 @@ export default {
 				formattedMessage = GameLogFormatter.formatKilledOther(message.Payload);
 			} else if (message.Topic === MessageTopic.KilledBy) {
 				formattedMessage = GameLogFormatter.formatKilledBy(this.player, message.Payload);
-				this.$store.commit("gamestate/setCurrent", "GameOver");
 			} else if (message.Topic === MessageTopic.ExperienceGain) {
 				formattedMessage = GameLogFormatter.formatExperienceGain(200);
 			} else if (message.Topic === MessageTopic.MovementFailed) {

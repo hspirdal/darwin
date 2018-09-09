@@ -31,11 +31,15 @@ export default {
 	mounted: function() {
 		this.connection.on("direct", data => {
 			let response = JSON.parse(data);
-			if (response.Type === "gamestatus") {
+			if (response.Type === "GameStatus") {
 				let status = JSON.parse(response.Payload);
 				if (status) {
 					this.$store.commit("gamestatus/setStatus", status);
 				}
+			} else if (response.Type === "GameState") {
+				let response = JSON.parse(data);
+				let gameState = response.Message;
+				this.$store.commit("gamestate/setGameState", gameState);
 			} else if (response.Type === "NotAuthenticated") {
 				// Server might have restarted and purged active session list.
 				console.log(`${response.Message}\nPayload: ${response.Payload}`);
@@ -52,18 +56,19 @@ export default {
 			this.$store.commit("gamelog/appendMessage", gameMessage);
 		});
 
-		this.connection.on("query", data => {
-			let response = JSON.parse(data);
-			let gameState = JSON.parse(response.Payload);
-			this.$store.commit("gamestate/setGameState", gameState);
-		});
-
 		this.connection.start().then(() => {
-			let request = createRequest("Query.GetUserState", "");
-			this.connection.invoke("RequestQuery", request);
+			this.queryGameState();
 		});
 	},
 	methods: {
+		queryGameState() {
+			let request = createRequest("Query.GetUserState", "");
+			this.connection.invoke("RequestQuery", request);
+		},
+		queryForfeitGame() {
+			let request = createRequest("Query.ForfeitGame", "");
+			this.connection.invoke("RequestQuery", request);
+		},
 		move(movementDirection) {
 			let request = createRequest("Action.Movement", JSON.stringify({ MovementDirection: movementDirection }));
 			this.connection.invoke("RequestAction", request);

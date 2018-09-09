@@ -28,7 +28,7 @@ namespace GameLib.Messaging
 			var clientMessage = new ClientMessage(message, sequenceNumber);
 			var response = new ServerResponse
 			{
-				Type = nameof(GameMessage),
+				Type = ResponseType.GameMessage,
 				Message = clientMessage.Topic.ToString(),
 				Payload = JsonConvert.SerializeObject(clientMessage)
 			};

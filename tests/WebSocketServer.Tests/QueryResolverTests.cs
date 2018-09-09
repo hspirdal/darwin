@@ -35,7 +35,7 @@ namespace WebSocketServer.Tests
 			var request = new ClientRequest { UserId = _validUserId, RequestName = _validQuery };
 
 			var response = await _resolver.ResolveAsync(request);
-			var gameState = JsonConvert.DeserializeObject<string>(response.Payload);
+			var gameState = response.Message;
 
 			Assert.AreEqual(GameState.InGame.ToString(), gameState);
 		}

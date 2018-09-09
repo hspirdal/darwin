@@ -67,7 +67,8 @@ namespace WebSocketServer
 			try
 			{
 				_connectionRegistry.AddOrUpdateProxy(clientRequest.UserId, clientProxy);
-				await _stateRequestRouter.RouteAsync(clientRequest.UserId, clientRequest).ConfigureAwait(false);
+				var response = await _stateRequestRouter.RouteAsync(clientRequest.UserId, clientRequest).ConfigureAwait(false);
+				await SendAsync(clientRequest.UserId, response).ConfigureAwait(false);
 			}
 			catch (Exception e)
 			{
@@ -81,7 +82,7 @@ namespace WebSocketServer
 			{
 				_connectionRegistry.AddOrUpdateProxy(clientRequest.UserId, clientProxy);
 				var response = await _queryResolver.ResolveAsync(clientRequest).ConfigureAwait(false);
-				await SendAsync(clientRequest.UserId, "query", response).ConfigureAwait(false);
+				await SendAsync(clientRequest.UserId, "direct", response).ConfigureAwait(false);
 			}
 			catch (Exception e)
 			{

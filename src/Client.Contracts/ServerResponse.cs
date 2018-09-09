@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Client.Contracts
 {
@@ -6,18 +7,26 @@ namespace Client.Contracts
 	{
 		public ServerResponse()
 		{
-			Type = string.Empty;
+			Type = ResponseType.InvalidType;
 			Message = string.Empty;
 			Payload = string.Empty;
 		}
-		public ServerResponse(string message)
+		public ServerResponse(ResponseType type, string message)
 		{
-			Type = string.Empty;
+			Type = type;
 			Message = message;
 			Payload = string.Empty;
 		}
 
-		public string Type { get; set; }
+		public ServerResponse(ResponseType type, string message, string payload)
+		{
+			Type = type;
+			Message = message;
+			Payload = payload;
+		}
+
+		[JsonConverter(typeof(StringEnumConverter))]
+		public ResponseType Type { get; set; }
 		public string Message { get; set; }
 		public string Payload { get; set; }
 	}

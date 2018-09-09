@@ -22,23 +22,23 @@ namespace GameLib.Actions
 			_userRepository = userRepository;
 		}
 
-		public async Task RouteAsync(string userId, ClientRequest clientRequest)
+		public async Task<ServerResponse> RouteAsync(string userId, ClientRequest clientRequest)
 		{
 			// TODO: Create user object at successful login instead..
 			var userCreated = await _userRepository.ContainsAsync(userId).ConfigureAwait(false);
 			if (!userCreated)
 			{
-				await _userRepository.AddOrUpdateAsync(new User { Id = userId, GameState = GameState.lobby }).ConfigureAwait(false);
+				await _userRepository.AddOrUpdateAsync(new User { Id = userId, GameState = GameState.GameLobby }).ConfigureAwait(false);
 			}
 
 			var user = await _userRepository.GetByIdAsync(userId).ConfigureAwait(false);
-			if (user.GameState == GameState.lobby)
+			if (user.GameState == GameState.GameLobby)
 			{
-				await _lobbyRouter.RouteAsync(userId, clientRequest);
+				return await _lobbyRouter.RouteAsync(userId, clientRequest);
 			}
 			else
 			{
-				await _gameRouter.RouteAsync(userId, clientRequest);
+				return await _gameRouter.RouteAsync(userId, clientRequest);
 			}
 		}
 	}

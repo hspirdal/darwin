@@ -1,6 +1,10 @@
 /*eslint no-console: [off] */
 const state = initialState();
 
+const NewGameMenuState = "newgame";
+const InGameState = "gameplay";
+const GameOverState = "gameover";
+
 function initialState() {
 	return {
 		gameState: "loading"
@@ -15,24 +19,27 @@ const getters = {
 
 const mutations = {
 	reset(state) {
-		console.log("reset gamestate");
 		const s = initialState();
 		Object.keys(s).forEach(key => {
 			state[key] = s[key];
 		});
 	},
-	setCurrent(state, gameState) {
-		state.gameState = gameState;
-	},
 	setGameState(state, gameState) {
-		if (gameState === "lobby") {
-			state.gameState = "newgame";
+		if (gameState === "GameLobby") {
+			changeGameState(state, state.gameState, NewGameMenuState);
 		} else if (gameState === "InGame") {
-			state.gameState = "gameplay";
+			changeGameState(state, state.gameState, InGameState);
+		} else if (gameState === "PlayerDeath") {
+			changeGameState(state, state.gameState, GameOverState);
 		}
-		console.log("state: " + gameState);
 	}
 };
+
+function changeGameState(state, oldState, newState) {
+	if (oldState !== newState) {
+		state.gameState = newState;
+	}
+}
 
 export default {
 	namespaced: true,

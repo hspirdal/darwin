@@ -65,7 +65,7 @@ namespace Darwin.Api.Identities
 				return await _userRepository.GetByIdAsync(id).ConfigureAwait(false);
 			}
 
-			return new User { Id = id, GameState = GameState.lobby };
+			return new User { Id = id, GameState = GameState.GameLobby };
 		}
 	}
 }

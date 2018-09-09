@@ -1,4 +1,4 @@
 namespace GameLib.Properties
 {
-	public enum GameState { lobby, InGame }
+	public enum GameState { GameLobby, InGame, PlayerDeath }
 }

@@ -91,17 +91,17 @@ namespace WebSocketServer
 
 		private Task RespondMalformedRequestAsync()
 		{
-			return SendClientResponseAsync("direct", new ServerResponse("Request malformed"));
+			return SendClientResponseAsync("direct", new ServerResponse(ResponseType.RequestMalformed, "Request malformed"));
 		}
 
 		private Task RespondNotAuthenticatedAsync()
 		{
-			return SendClientResponseAsync("direct", new ServerResponse("Not authenticated") { Type = "NotAuthenticated" });
+			return SendClientResponseAsync("direct", new ServerResponse(ResponseType.NotAuthenticated, "Not authenticated"));
 		}
 
 		private Task RespondRequestAcceptedAsync()
 		{
-			return SendClientResponseAsync("direct", new ServerResponse("Request accepted"));
+			return SendClientResponseAsync("direct", new ServerResponse(ResponseType.RequestAccepted, "Request accepted"));
 		}
 
 		private Task SendClientResponseAsync(string channel, ServerResponse response)

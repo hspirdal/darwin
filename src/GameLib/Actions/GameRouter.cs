@@ -6,44 +6,43 @@ using System;
 
 namespace GameLib.Actions
 {
-  public interface IGameRouter : IRouter { }
+	public interface IGameRouter : IRouter { }
 
-  public class GameRouter : IGameRouter
-  {
-    private readonly ILogger _logger;
-    private readonly IActionInserter _actionInserter;
+	public class GameRouter : IGameRouter
+	{
+		private readonly ILogger _logger;
+		private readonly IActionInserter _actionInserter;
 
-    public GameRouter(ILogger logger, IActionInserter actionInserter)
-    {
-      _logger = logger;
-      _actionInserter = actionInserter;
-    }
+		public GameRouter(ILogger logger, IActionInserter actionInserter)
+		{
+			_logger = logger;
+			_actionInserter = actionInserter;
+		}
 
-    public Task RouteAsync(string clientId, ClientRequest clientRequest)
-    {
-      if (string.IsNullOrEmpty(clientRequest?.RequestName))
-      {
-        _logger.Warn($"Route was empty. ClientId {clientId}");
-        return Task.CompletedTask;
-      }
+		public Task<ServerResponse> RouteAsync(string clientId, ClientRequest clientRequest)
+		{
+			if (string.IsNullOrEmpty(clientRequest?.RequestName))
+			{
+				throw new ArgumentException($"Route was empty. ClientId {clientId}");
+			}
 
-      if (!clientRequest.RequestName.Contains("Action."))
-      {
-        _logger.Warn($"Request name '{clientRequest.RequestName}' does not follow correct naming and will be ignored");
-        return Task.CompletedTask;
-      }
+			if (!clientRequest.RequestName.Contains("Action."))
+			{
+				_logger.Warn($"Request name '{clientRequest.RequestName}' does not follow correct naming and will be ignored");
+				return Task.FromResult(new ServerResponse(ResponseType.RequestMalformed, "Request expected to prefix '.Action'"));
+			}
 
-      try
-      {
-        // TODO: handle response.
-        var response = _actionInserter.Insert(clientId, clientRequest.RequestName, clientRequest.Payload);
-      }
-      catch (Exception e)
-      {
-        _logger.Error(e);
-      }
+			try
+			{
+				var response = _actionInserter.Insert(clientId, clientRequest.RequestName, clientRequest.Payload);
+				return Task.FromResult(new ServerResponse(ResponseType.RequestAccepted, clientRequest.RequestName));
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e);
+			}
 
-      return Task.CompletedTask;
-    }
-  }
+			return Task.FromResult(new ServerResponse(ResponseType.RequestDeclined, "Action not processed"));
+		}
+	}
 }

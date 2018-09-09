@@ -85,9 +85,11 @@ namespace WebSocketServer
 						// temp until refactor
 						if (!player.IsAlive)
 						{
-							activeUser.GameState = GameState.lobby;
+							activeUser.GameState = GameState.PlayerDeath;
 							await _userRepository.AddOrUpdateAsync(activeUser).ConfigureAwait(false);
 							_creatureRegistry.Remove(player.Id);
+							var gameOverResponse = new ServerResponse(ResponseType.GameState, activeUser.GameState.ToString());
+							await _socketServer.SendAsync(activeUser.Id, gameOverResponse).ConfigureAwait(false);
 						}
 					}
 				}
@@ -130,7 +132,7 @@ namespace WebSocketServer
 
 			var response = new ServerResponse
 			{
-				Type = nameof(GameStatus).ToLower(),
+				Type = ResponseType.GameStatus,
 				Payload = JsonConvert.SerializeObject(status)
 			};
 
