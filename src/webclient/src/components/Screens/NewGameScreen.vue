@@ -18,11 +18,11 @@ export default {
 	name: "newgame",
 	data() {
 		return {
-			selectedTemplate: "Jools",
+			selectedTemplate: "Death Bunny",
 			characterTemplates: [
+				{ value: "Death Bunny", text: "Death Bunny - Level 1 Human Fighter" },
 				{ value: "Jools", text: "Jools - Level 1 Human Fighter" },
-				{ value: "Jops", text: "Jops - Level 1 Human Wizard" },
-				{ value: "Death Bunny", text: "Death Bunny - Level 1 Human Fighter" }
+				{ value: "Jops", text: "Jops - Level 1 Human Wizard" }
 			]
 		};
 	},
