@@ -12,7 +12,7 @@ export default {
 	},
 	created: function() {
 		this.$store.watch(
-			state => {
+			() => {
 				return this.$store.getters["gamestatus/isCooldown"];
 			},
 			(isCooldown, wasCooldown) => {
@@ -24,10 +24,10 @@ export default {
 		);
 
 		this.$store.watch(
-			state => {
+			() => {
 				return this.$store.getters["gamestatus/isInCombat"];
 			},
-			(isInCombat, wasInCombat) => {
+			isInCombat => {
 				if (isInCombat) {
 					this.currentState = "combat";
 				} else {

@@ -29,7 +29,7 @@ export default {
 	},
 	created: function() {
 		this.$store.watch(
-			state => {
+			() => {
 				return this.$store.getters["gamestate/current"];
 			},
 			(previousState, newState) => {
