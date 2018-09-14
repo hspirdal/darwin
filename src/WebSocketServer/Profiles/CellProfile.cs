@@ -9,7 +9,7 @@ namespace WebSocketServer.Profiles
 		{
 			CreateMap<GameLib.Area.Cell, Client.Contracts.Area.Cell>()
 			.ForMember(i => i.Creatures, opt => opt.MapFrom(x => x.Content.Entities.Where(i => i.Type == "Player" || i.Type == "Creature").Cast<GameLib.Entities.Creature>()))
-			.ForMember(i => i.Items, opt => opt.MapFrom(x => x.Content.Entities.Where(i => i.Type == "Item" || i.Type == "Container" || i.Type == "Potion")));
+			.ForMember(i => i.Items, opt => opt.MapFrom(x => x.Content.Entities.Where(i => i.Type == "Item")));
 		}
 	}
 }

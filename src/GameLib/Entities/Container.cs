@@ -3,17 +3,17 @@ using GameLib.Utility;
 
 namespace GameLib.Entities
 {
-	public class Container : Entity, IDeepCopy<Container>
+	public class Container : Item, IDeepCopy<Container>
 	{
 		public List<Item> Contents { get; set; }
 
 		public Container()
-			: base(id: string.Empty, name: string.Empty, type: nameof(Container))
+			: base(id: string.Empty, name: string.Empty, subType: SubType.Container)
 		{
 		}
 
 		public Container(string id, string name, string type)
-			: base(id, name, type)
+			: base(id, name, SubType.Container)
 		{
 		}
 

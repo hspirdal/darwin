@@ -14,14 +14,14 @@ namespace GameLib.Entities
 		public int CriticalModifier { get; set; }
 
 		public Weapon()
-			: base(id: string.Empty, name: string.Empty, type: nameof(Weapon))
+			: base(id: string.Empty, name: string.Empty, SubType.Weapon)
 		{
 			TimesApplied = 1;
 			CriticalRange = 20;
 			CriticalModifier = 2;
 		}
 		public Weapon(string id, string name, DamageType damageType, DiceType diceType, int timesApplied, int criticalRange, int criticalModifier)
-			: base(id, name, type: nameof(Weapon))
+			: base(id, name, SubType.Weapon)
 		{
 			DamageType = damageType;
 			DiceType = diceType;

@@ -3,19 +3,19 @@ using GameLib.Utility;
 
 namespace GameLib.Entities
 {
-	public class Potion : Entity, IDeepCopy<Potion>
+	public class Potion : Item, IDeepCopy<Potion>
 	{
 		public EffectType EffectType { get; set; }
 		public EffectTarget EffectTarget { get; set; }
 		public int Amount { get; set; }
 
 		public Potion()
-			: base(id: string.Empty, name: string.Empty, type: nameof(Potion))
+			: base(id: string.Empty, name: string.Empty, subType: SubType.Potion)
 		{
 		}
 
 		public Potion(string id, string name, EffectType effectType, EffectTarget effectTarget, int amount)
-			: base(id, name, nameof(Potion))
+			: base(id, name, SubType.Potion)
 		{
 			EffectType = effectType;
 			EffectTarget = effectTarget;
