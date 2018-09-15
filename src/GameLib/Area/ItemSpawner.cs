@@ -12,10 +12,12 @@ namespace GameLib.Area
 	public class ItemSpawner : IItemSpawner
 	{
 		private readonly IPlayArea _playArea;
+		private readonly IPotionFactory _potionFactory;
 
-		public ItemSpawner(IPlayArea playArea)
+		public ItemSpawner(IPlayArea playArea, IPotionFactory potionFactory)
 		{
 			_playArea = playArea;
+			_potionFactory = potionFactory;
 		}
 
 		public void AddRandomly(int totalItemsToAdd)
@@ -25,7 +27,7 @@ namespace GameLib.Area
 				var torch = new Item { Name = "Torch", Id = Guid.NewGuid().ToString() };
 				var shovel = new Item { Name = "Shovel", Id = Guid.NewGuid().ToString() };
 				var barrel = new Container { Name = "Barrel", Id = Guid.NewGuid().ToString() };
-				var healingPotion = new Potion(Guid.NewGuid().ToString(), "Small Healing Potion", EffectType.Replenish, EffectTarget.HitPoints, 8);
+				var healingPotion = _potionFactory.CreateByName("Small Healing Potion");
 				var cell = _playArea.GameMap.GetRandomOpenCell();
 				_playArea.GameMap.Add(cell.X, cell.Y, torch);
 				_playArea.GameMap.Add(cell.X, cell.Y, shovel);

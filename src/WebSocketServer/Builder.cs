@@ -63,6 +63,7 @@ namespace WebSocketServer
 			builder.RegisterType<PremadeCharacterSpawner>().As<IPremadeCharacterSpawner>();
 			builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
 			builder.RegisterType<QueryResolver>().As<IQueryResolver>();
+			builder.RegisterType<PotionFactory>().As<IPotionFactory>();
 
 			return builder.Build();
 		}
@@ -128,7 +129,7 @@ namespace WebSocketServer
 				var mapGenerator = c.Resolve<IMapGenerator>();
 				var playArea = new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
 				// Temp until there exists a better map initialization place.
-				var itemSpawner = new ItemSpawner(playArea);
+				var itemSpawner = new ItemSpawner(playArea, c.Resolve<IPotionFactory>());
 				var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
 				itemSpawner.AddRandomly(totalItemsToAdd);
 
