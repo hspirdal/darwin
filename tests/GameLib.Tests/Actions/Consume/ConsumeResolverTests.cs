@@ -64,6 +64,22 @@ namespace GameLib.Tests.Actions.Consume
 		}
 
 		[TestMethod]
+		public async Task WhenConsumingAPotion_ThenThatPotionIsRemovedFromInventory()
+		{
+			var healingPotion = _potionFactory.CreateByName("Small Healing Potion");
+			_player.Inventory.Items.Add(healingPotion);
+			var consumeAction = new ConsumeAction(_player.Id, healingPotion.Id);
+
+			_registry.Setup(i => i.GetById(It.IsAny<string>())).Returns(_player);
+
+			var inventoryCountBeforeConsumption = _player.Inventory.Items.Count;
+			await _resolver.ResolveAsync(consumeAction);
+			var inventoryCountAfterConsumption = _player.Inventory.Items.Count;
+
+			Assert.AreEqual(inventoryCountBeforeConsumption - 1, inventoryCountAfterConsumption);
+		}
+
+		[TestMethod]
 		public async Task WhenPlayerTriesToConsumeNonExistingPotion_ThenArgumentExceptionIsThrown()
 		{
 			var nonExistingPotionId = "nonExistingId";

@@ -43,6 +43,7 @@ namespace GameLib.Actions.Consume
 			}
 
 			var hitPoints = player.Statistics.DefenseScores.HitPoints;
+			player.Inventory.Items.Remove(potion);
 			hitPoints.Current = Math.Min(hitPoints.Max, hitPoints.Current + potion.Amount);
 		}
 
