@@ -11,7 +11,7 @@
 		<h1>Inventory</h1>
 		<ul v-if="inventoryItems.length > 0">
 			<li v-for="(item, index) in inventoryItems" v-bind:key="index">
-				{{ item }}
+				{{ item.Name }}
 				</li>
 		</ul>
 	</div>

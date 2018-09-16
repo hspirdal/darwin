@@ -62,6 +62,15 @@ export default {
 				}
 			}
 
+			// Temp until inventory cycling / quickslots are implemented..
+			if (key === "h") {
+				var inventoryItems = this.$store.getters["gamestatus/player"].Inventory.Items;
+				let healingPotion = inventoryItems.find(i => i.Name === "Small Healing Potion");
+				if (healingPotion) {
+					this.$refs.network.consume(healingPotion.Id);
+				}
+			}
+
 			let movementDirection = 0;
 			if (key === "w") {
 				movementDirection = 2;

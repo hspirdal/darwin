@@ -19,6 +19,7 @@ using GameLib.Messaging;
 using GameLib;
 using GameLib.Dice;
 using GameLib.Users;
+using GameLib.Actions.Consume;
 
 namespace WebSocketServer
 {
@@ -88,6 +89,7 @@ namespace WebSocketServer
 				var lootActionFactory = new LootActionFactory();
 				var lootAllActionFactory = new LootAllActionFactory();
 				var attackActionFactory = new AttackActionFactory();
+				var consumeActionFactory = new ConsumeActionFactory();
 
 				var actionFactoryMap = new Dictionary<string, ActionFactory>
 				{
@@ -95,6 +97,7 @@ namespace WebSocketServer
 					{lootActionFactory.ActionName, lootActionFactory},
 					{lootAllActionFactory.ActionName, lootAllActionFactory},
 					{attackActionFactory.ActionName, attackActionFactory},
+					{consumeActionFactory.ActionName, consumeActionFactory},
 				};
 				return new ActionFactoryRegistry(actionFactoryMap);
 			}).As<IActionFactoryRegistry>().SingleInstance();
@@ -108,12 +111,14 @@ namespace WebSocketServer
 				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
 				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
 				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatSimulator>());
+				var consumeResolver = new ConsumeResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },
 						{ lootAllResolver.ActionName, lootAllResolver },
 						{ lootResolver.ActionName, lootResolver },
-						{ attackResolver.ActionName, attackResolver }
+						{ attackResolver.ActionName, attackResolver },
+						{ consumeResolver.ActionName, consumeResolver}
 					};
 
 				return new ActionResolver(c.Resolve<IActionRepository>(), resolverMap);

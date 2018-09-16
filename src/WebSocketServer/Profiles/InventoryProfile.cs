@@ -1,5 +1,6 @@
 using System.Linq;
 using AutoMapper;
+using Client.Contracts.Entities;
 
 namespace WebSocketServer.Profiles
 {
@@ -8,7 +9,7 @@ namespace WebSocketServer.Profiles
 		public InventoryProfile()
 		{
 			CreateMap<GameLib.Properties.Inventory, Client.Contracts.Properties.Inventory>()
-			.ForMember(a => a.Items, m => m.MapFrom(s => s.Items.Select(i => i.Name)));
+			.ForMember(a => a.Items, m => m.MapFrom(s => s.Items.Select(i => new Entity { Id = i.Id, Name = i.Name, Type = i.Type })));
 		}
 	}
 }

@@ -85,6 +85,10 @@ export default {
 			let request = createRequest("Action.Attack", JSON.stringify({ TargetId: targetId }));
 			this.connection.invoke("RequestAction", request);
 		},
+		consume(itemId) {
+			let request = createRequest("Action.Consume", JSON.stringify({ ItemId: itemId }));
+			this.connection.invoke("RequestAction", request);
+		},
 		newGame(templateName) {
 			let request = createRequest("lobby.newgame", templateName);
 			this.connection.invoke("RequestAction", request);
