@@ -8,7 +8,7 @@
 		>{{ tab }}</button>
 
 		<keep-alive>
-			<component
+			<component :isActive = false
 				v-bind:is="currentTabComponent"
 				class="tab"
 			></component>
