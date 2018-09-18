@@ -29,11 +29,7 @@ namespace GameLib.Actions.Consume
 
 		private void Resolve(string creatureId, string itemId)
 		{
-			var creature = _creatureRegistry.GetById(creatureId);
-			EnsureValidCreature(creatureId, creature);
-			// Until creature base type gets it's own inventory slots, restrict to player only.
-			var player = creature as Player;
-			EnsureValidPlayer(player);
+			var player = GetPlayer(creatureId);
 			var potion = player.Inventory.Items.SingleOrDefault(i => i.Id == itemId) as Potion;
 			EnsureValidItem(creatureId, itemId, potion);
 
@@ -45,6 +41,16 @@ namespace GameLib.Actions.Consume
 			var hitPoints = player.Statistics.DefenseScores.HitPoints;
 			player.Inventory.Items.Remove(potion);
 			hitPoints.Current = Math.Min(hitPoints.Max, hitPoints.Current + potion.Amount);
+		}
+
+		private Player GetPlayer(string creatureId)
+		{
+			var creature = _creatureRegistry.GetById(creatureId);
+			EnsureValidCreature(creatureId, creature);
+			// Until creature base type gets it's own inventory slots, restrict to player only.
+			var player = creature as Player;
+			EnsureValidPlayer(player);
+			return player;
 		}
 
 		private static void EnsureValidCreature(string creatureId, Creature creature)
