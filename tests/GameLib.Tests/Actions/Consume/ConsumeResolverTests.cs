@@ -47,7 +47,7 @@ namespace GameLib.Tests.Actions.Consume
 		}
 
 		[TestMethod]
-		public async Task WhenConsumingHealingPotionExtendsMaxHitPoints_ThenHitPointsAreSetToMax()
+		public async Task WhenConsumingHealingPotionEffectExtendsMaxHitPoints_ThenHitPointsAreLimitedToMax()
 		{
 			var healingPotion = _potionFactory.CreateByName("Small Healing Potion");
 			var currentHitpoints = _player.Statistics.DefenseScores.HitPoints.Max - healingPotion.Amount + 2;
@@ -64,7 +64,7 @@ namespace GameLib.Tests.Actions.Consume
 		}
 
 		[TestMethod]
-		public async Task WhenConsumingAPotion_ThenThatPotionIsRemovedFromInventory()
+		public async Task WhenSuccessfullyConsumingAPotion_ThenThatPotionIsRemovedFromInventory()
 		{
 			var healingPotion = _potionFactory.CreateByName("Small Healing Potion");
 			_player.Inventory.Items.Add(healingPotion);
@@ -80,7 +80,7 @@ namespace GameLib.Tests.Actions.Consume
 		}
 
 		[TestMethod]
-		public async Task WhenPlayerTriesToConsumeNonExistingPotion_ThenArgumentExceptionIsThrown()
+		public async Task WhenPlayerTriesToConsumePotionThatDoesNotExist_ThenArgumentExceptionIsThrown()
 		{
 			var nonExistingPotionId = "nonExistingId";
 
