@@ -5,7 +5,25 @@ using GameLib.Entities;
 
 namespace GameLib.Area
 {
-	public class Map
+	public interface IMap
+	{
+		int Width { get; }
+		int Height { get; }
+		bool IsWalkable(int x, int y);
+		bool IsInFov(int x, int y);
+		Cell GetCell(int x, int y);
+		List<Cell> GetVisibleCells();
+		List<Cell> GetAllWalkableCells();
+		Cell GetRandomOpenCell();
+		void Add(int x, int y, Entity entity);
+		void Remove(int x, int y, Entity entity);
+		void ComputeFov(int x, int y, int radius);
+		IMap Clone();
+
+	}
+
+
+	public class Map : IMap
 	{
 		private readonly RogueSharp.IMap _map;
 		private readonly CellContent[][] _cellContent;
@@ -92,7 +110,7 @@ namespace GameLib.Area
 			_map.ComputeFov(x, y, radius, true);
 		}
 
-		public Map Clone()
+		public IMap Clone()
 		{
 			return new Map(_map.Clone());
 		}
