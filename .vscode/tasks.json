@@ -2,6 +2,20 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "publish",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceRoot}/Darwin.sln",
+				"-c",
+				"Debug",
+				"-o",
+				"bin/pub"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
 			"label": "build",
 			"command": "dotnet",
 			"type": "process",
