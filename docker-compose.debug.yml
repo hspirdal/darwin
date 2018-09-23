@@ -4,10 +4,12 @@ services:
   api:
     image: hspirdal/darwin.api
     build:
-      context:  ./src
-      dockerfile: ./Services/Darwin.Api/Dockerfile
+      context:  ./src/Services/Darwin.Api
+      dockerfile: Dockerfile.debug
     ports:
       - 5001:80
+    volumes: 
+      - ./src/Services/Darwin.Api/bin/pub/:/app
     container_name: darwin.api
     environment:
       - RedisHost=redis.cache:6379
@@ -17,10 +19,12 @@ services:
   websocketserver:
     image: hspirdal/darwin.websocketserver
     build:
-      context: ./src
-      dockerfile: ./WebSocketServer/Dockerfile
+      context: ./src/WebSocketServer
+      dockerfile: Dockerfile.debug
     ports:
       - 5000:80
+    volumes: 
+      - ./src/WebSocketServer/bin/pub/:/app
     container_name: websocketserver
     environment:
       - WebSocketServerHost=websocketserver
