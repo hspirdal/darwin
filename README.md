@@ -21,3 +21,5 @@ http://ondras.github.io/rot.js/hp/ (Used for some basic tile rendering)
 https://bitbucket.org/FaronBracy/roguesharp (Used for random map generation)
 
 https://www.thepolyglotdeveloper.com/2018/04/simple-user-login-vuejs-web-application/
+
+https://fullstackmark.com/post/12/get-started-building-microservices-with-asp.net-core-and-docker-in-visual-studio-code (Awesome Docker stuff!)
