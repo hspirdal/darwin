@@ -1,31 +1,31 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/src/WebSocketServer/WebSocketServer.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "test",
-            "command": "py",
-            "type": "shell",
-            "group": "test",
-            "args": [
-                "${cwd}/run_tests.py",
-                "-f",
-                "${cwd}/tests/WebSocketServer.Tests/WebSocketServer.Tests.csproj",
-                "${cwd}/tests/GameLib.Tests/GameLib.Tests.csproj"
-            ],
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": "$msCompile"
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/Darwin.sln"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "test",
+			"command": "py",
+			"type": "shell",
+			"group": "test",
+			"args": [
+				"${cwd}/run_tests.py",
+				"-f",
+				"${cwd}/tests/WebSocketServer.Tests/WebSocketServer.Tests.csproj",
+				"${cwd}/tests/GameLib.Tests/GameLib.Tests.csproj"
+			],
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": "$msCompile"
+		}
+	]
 }
