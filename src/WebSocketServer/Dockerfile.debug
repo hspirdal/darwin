@@ -11,4 +11,3 @@ WORKDIR app
 
 #Keep the debugger container on
 ENTRYPOINT ["tail", "-f", "/dev/null"]
-#ENTRYPOINT ["dotnet", "WebSocketServer.dll"]

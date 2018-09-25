@@ -1,0 +1,7 @@
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
+RUN mkdir app
+
+EXPOSE 5000
+WORKDIR app
+
+ENTRYPOINT ["dotnet", "WebSocketServer.dll"]

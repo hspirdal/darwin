@@ -1,0 +1,9 @@
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
+RUN mkdir app
+
+ENV ASPNETCORE_URLS http://+:80
+ENV ASPNETCORE_ENVIRONMENT "Development"
+EXPOSE 5000
+WORKDIR app
+
+ENTRYPOINT ["dotnet", "Darwin.Api.dll"]
