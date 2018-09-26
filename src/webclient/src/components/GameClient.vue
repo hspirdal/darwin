@@ -1,7 +1,7 @@
 <template>
     <div id="game" v-if="this.$parent.authenticated">
         <Network ref="network"/>
-        <Input v-on:key-pressed="onKeyPressed" v-if="gameStarted"/>
+        <Input v-on:key-pressed="onKeyPressed"/>
 				<ScreenSelector/>
     </div>
 </template>
