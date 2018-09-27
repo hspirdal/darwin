@@ -19,33 +19,11 @@
 
 <script>
 /*eslint no-console: [off] */
-import MouseTrap from "mousetrap";
 
 export default {
 	name: "inventory",
 	data() {
 		return {};
-	},
-	props: {
-		isActive: Boolean
-	},
-	created: function() {
-		MouseTrap.bind(
-			"down",
-			function() {
-				if (this.isActive) {
-					console.log("inv active");
-				}
-			}.bind(this)
-		);
-		MouseTrap.bind(
-			"up",
-			function() {
-				if (this.isActive) {
-					console.log("inv active");
-				}
-			}.bind(this)
-		);
 	},
 	computed: {
 		inventoryItems: function() {

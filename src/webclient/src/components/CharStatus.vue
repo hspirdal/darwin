@@ -44,9 +44,6 @@ export default {
 			itemsInCell: []
 		};
 	},
-	props: {
-		isActive: Boolean
-	},
 	created: function() {
 		MouseTrap.bind(
 			"down",
