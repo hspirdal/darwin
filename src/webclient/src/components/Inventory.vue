@@ -19,11 +19,36 @@
 
 <script>
 /*eslint no-console: [off] */
+import MouseTrap from "mousetrap";
 
 export default {
-	name: "inventory",
 	data() {
-		return {};
+		return {
+			name: "Inventory"
+		};
+	},
+	created: function() {
+		this.$store.watch(
+			() => {
+				return this.$store.getters["activeTabPanel/activeTabPanelName"];
+			},
+			(newTabName, oldTabName) => {
+				if (this.name === newTabName) {
+					MouseTrap.bind(
+						"down",
+						function() {
+							this.cycleSelected(1);
+						}.bind(this)
+					);
+					MouseTrap.bind(
+						"up",
+						function() {
+							this.cycleSelected(-1);
+						}.bind(this)
+					);
+				}
+			}
+		);
 	},
 	computed: {
 		inventoryItems: function() {
@@ -51,6 +76,11 @@ export default {
 		feetSlot: function() {
 			let feetSlot = this.$store.getters["equipment/feetSlot"];
 			return feetSlot ? feetSlot.Name : "Empty";
+		}
+	},
+	methods: {
+		cycleSelected: function(relativeIndex) {
+			console.log("inv cycle " + relativeIndex);
 		}
 	}
 };

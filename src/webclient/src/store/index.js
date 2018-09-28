@@ -5,6 +5,7 @@ import gamestate from "./modules/gamestate";
 import selection from "./modules/selection";
 import gamelog from "./modules/gamelog";
 import equipment from "./modules/equipment";
+import activeTabPanel from "./modules/activeTabPanel";
 
 Vue.use(Vuex);
 
@@ -14,7 +15,8 @@ export default new Vuex.Store({
 		gamestate,
 		selection,
 		gamelog,
-		equipment
+		equipment,
+		activeTabPanel
 	},
 	actions: {
 		clearAll({ commit }) {
@@ -23,6 +25,7 @@ export default new Vuex.Store({
 			commit("selection/reset");
 			commit("gamelog/reset");
 			commit("equipment/reset");
+			commit("activeTabPanel/reset");
 		}
 	}
 });

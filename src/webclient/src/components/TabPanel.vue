@@ -3,8 +3,8 @@
 		<button
 			v-for="tab in tabs"
 			v-bind:key="tab"
-			v-bind:class="['tab-button', { active: currentTab === tab }]"
-			v-on:click="currentTab = tab"
+			v-bind:class="['tab-button']"
+			v-on:click="changeTab(tab)"
 		>{{ tab }}</button>
 
 		<keep-alive>
@@ -31,7 +31,7 @@ export default {
 	},
 	data() {
 		return {
-			currentTab: "Status",
+			currentTab: "",
 			tabs: ["Status", "Inventory"]
 		};
 	},
@@ -39,20 +39,30 @@ export default {
 		MouseTrap.bind(
 			"i",
 			function() {
-				this.currentTab = "Inventory";
+				this.changeTab("Inventory");
 			}.bind(this)
 		);
 
 		MouseTrap.bind(
 			"c",
 			function() {
-				this.currentTab = "Status";
+				this.changeTab("Status");
 			}.bind(this)
 		);
+
+		this.changeTab("Status");
 	},
 	computed: {
 		currentTabComponent: function() {
 			return `tab-${this.currentTab.toLowerCase()}`;
+		}
+	},
+	methods: {
+		changeTab(tab) {
+			this.currentTab = tab;
+			this.$nextTick(function() {
+				this.$store.commit("activeTabPanel/setActiveTab", tab);
+			});
 		}
 	}
 };

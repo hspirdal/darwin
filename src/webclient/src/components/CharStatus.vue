@@ -36,26 +36,35 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import MouseTrap from "mousetrap";
 
 export default {
-	name: "charstatus",
 	data() {
 		return {
+			name: "Status",
 			selectedItem: null,
 			creaturesInCell: [],
 			itemsInCell: []
 		};
 	},
 	created: function() {
-		MouseTrap.bind(
-			"down",
-			function() {
-				this.cycleSelected(1);
-			}.bind(this)
-		);
-		MouseTrap.bind(
-			"up",
-			function() {
-				this.cycleSelected(-1);
-			}.bind(this)
+		this.$store.watch(
+			() => {
+				return this.$store.getters["activeTabPanel/activeTabPanelName"];
+			},
+			(newTabName, oldTabName) => {
+				if (this.name === newTabName) {
+					MouseTrap.bind(
+						"down",
+						function() {
+							this.cycleSelected(1);
+						}.bind(this)
+					);
+					MouseTrap.bind(
+						"up",
+						function() {
+							this.cycleSelected(-1);
+						}.bind(this)
+					);
+				}
+			}
 		);
 	},
 	computed: {
