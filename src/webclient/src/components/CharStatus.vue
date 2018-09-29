@@ -49,7 +49,7 @@ export default {
 			() => {
 				return this.$store.getters["activeTabPanel/activeTabPanelName"];
 			},
-			(newTabName, oldTabName) => {
+			newTabName => {
 				if (this.name === newTabName) {
 					MouseTrap.bind(
 						"down",
