@@ -1,3 +1,5 @@
+import Common from "./common.js";
+
 const state = initialState();
 
 function initialState() {
@@ -14,10 +16,7 @@ const getters = {
 
 const mutations = {
 	reset(state) {
-		const s = initialState();
-		Object.keys(s).forEach(key => {
-			state[key] = s[key];
-		});
+		Common.reset(state, initialState());
 	},
 	setActiveTab(state, tabPanelName) {
 		state.activeTabPanelName = tabPanelName;

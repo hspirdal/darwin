@@ -1,4 +1,6 @@
 /*eslint no-console: [off] */
+import Common from "./common.js";
+
 const state = initialState();
 
 function initialState() {
@@ -19,10 +21,7 @@ const getters = {
 
 const mutations = {
 	reset(state) {
-		const s = initialState();
-		Object.keys(s).forEach(key => {
-			state[key] = s[key];
-		});
+		Common.reset(state, initialState());
 	},
 	appendMessage(state, message) {
 		state.gameMessages.push(message);

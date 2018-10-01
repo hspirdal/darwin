@@ -1,7 +1,7 @@
 /*eslint no-console: [off] */
-
 import Moment from "moment";
 import entities from "./entities";
+import Common from "./common.js";
 
 const state = initialState();
 
@@ -59,10 +59,7 @@ const getters = {
 
 const mutations = {
 	reset(state) {
-		const s = initialState();
-		Object.keys(s).forEach(key => {
-			state[key] = s[key];
-		});
+		Common.reset(state, initialState());
 	},
 	setStatus(state, status) {
 		state.map = status.Map;
