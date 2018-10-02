@@ -7,6 +7,7 @@ namespace GameLib.Area
 	public interface IItemSpawner
 	{
 		void AddRandomly(int totalItemsToAdd);
+		void Add(Item item, int x, int y);
 	}
 
 	public class ItemSpawner : IItemSpawner
@@ -40,6 +41,11 @@ namespace GameLib.Area
 					_playArea.GameMap.Add(cell.X, cell.Y, healingPotion);
 				}
 			}
+		}
+
+		public void Add(Item item, int x, int y)
+		{
+			_playArea.GameMap.Add(x, y, item);
 		}
 	}
 }

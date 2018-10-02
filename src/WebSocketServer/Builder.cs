@@ -65,8 +65,15 @@ namespace WebSocketServer
 			builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
 			builder.RegisterType<QueryResolver>().As<IQueryResolver>();
 			builder.RegisterType<PotionFactory>().As<IPotionFactory>();
+			builder.RegisterType<ItemSpawner>().As<IItemSpawner>();
+			builder.RegisterType<CreatureSpawner>().As<ICreatureSpawner>();
 
-			return builder.Build();
+			var container = builder.Build();
+
+			SpawnAreaContents(container);
+
+			return container;
+
 		}
 
 		private static void RegisterRedis(ContainerBuilder builder)
@@ -133,17 +140,21 @@ namespace WebSocketServer
 				var mapHeight = int.Parse(Environment.GetEnvironmentVariable("MapHeight"));
 				var mapGenerator = c.Resolve<IMapGenerator>();
 				var playArea = new PlayArea() { GameMap = mapGenerator.Generate(mapWidth, mapHeight) };
-				// Temp until there exists a better map initialization place.
-				var itemSpawner = new ItemSpawner(playArea, c.Resolve<IPotionFactory>());
-				var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
-				itemSpawner.AddRandomly(totalItemsToAdd);
-
-				var creatureSpawner = new CreatureSpawner(playArea, c.Resolve<ICreatureFactory>(), c.Resolve<ICreatureRegistry>(),
-					c.Resolve<IAutonomousFactory>(), c.Resolve<IAutonomousRegistry>(), c.Resolve<IRecipientRegistry>());
-				var totalCreaturesToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
-				creatureSpawner.SpawnRandomly(totalCreaturesToAdd);
 				return playArea;
 			}).As<IPlayArea>().SingleInstance();
+		}
+
+		private static void SpawnAreaContents(IContainer container)
+		{
+			// Temp until there exists a better map initialization place.
+			var playArea = container.Resolve<IPlayArea>();
+			var itemSpawner = container.Resolve<IItemSpawner>();
+			var creatureSpawner = container.Resolve<ICreatureSpawner>();
+			var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
+			itemSpawner.AddRandomly(totalItemsToAdd);
+
+			var totalCreaturesToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
+			creatureSpawner.SpawnRandomly(totalCreaturesToAdd);
 		}
 
 		private static void RegisterCreatureFactory(ContainerBuilder builder)

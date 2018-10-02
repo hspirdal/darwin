@@ -20,9 +20,10 @@ namespace GameLib.Combat
 		private readonly IDiceRoller _diceRoller;
 		private readonly IPlayArea _playArea;
 		private readonly IMessageDispatcher _messageDispatcher;
+		private readonly IItemSpawner _itemSpawner;
 
 		public CombatSimulator(ILogger logger, ICombatRegistry combatRegistry,
-		ICreatureRegistry creatureRegistry, IDiceRoller diceRoller, IPlayArea playArea, IMessageDispatcher messageDispatcher)
+		ICreatureRegistry creatureRegistry, IDiceRoller diceRoller, IPlayArea playArea, IMessageDispatcher messageDispatcher, IItemSpawner itemSpawner)
 		{
 			_logger = logger;
 			_combatRegistry = combatRegistry;
@@ -30,6 +31,7 @@ namespace GameLib.Combat
 			_diceRoller = diceRoller;
 			_playArea = playArea;
 			_messageDispatcher = messageDispatcher;
+			_itemSpawner = itemSpawner;
 		}
 		public void PerformAttack(Creature attacker, Creature defender)
 		{
@@ -78,12 +80,20 @@ namespace GameLib.Combat
 				_messageDispatcher.Dispatch(new GameMessage(attacker.Id, defender.Id, MessageTopic.KilledBy, attackResult));
 				_messageDispatcher.Dispatch(new GameMessage(defender.Id, attacker.Id, MessageTopic.CombatantDies, attackResult));
 
+				SpawnRemains(defender.Position.X, defender.Position.Y);
+
 				// Temp for mockup reasons..
 				if (attacker.Type == "Player")
 				{
 					_messageDispatcher.Dispatch(new GameMessage(string.Empty, attacker.Id, MessageTopic.ExperienceGain));
 				}
 			}
+		}
+
+		private void SpawnRemains(int x, int y)
+		{
+			var remains = new Container(Guid.NewGuid().ToString(), "Remains");
+			_itemSpawner.Add(remains, x, y);
 		}
 	}
 }
