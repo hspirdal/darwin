@@ -150,10 +150,12 @@ namespace WebSocketServer
 			var playArea = container.Resolve<IPlayArea>();
 			var itemSpawner = container.Resolve<IItemSpawner>();
 			var creatureSpawner = container.Resolve<ICreatureSpawner>();
-			var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
+			var itemsPerCellPercent = double.Parse(Environment.GetEnvironmentVariable("ItemsPerCellPercent"));
+			var totalItemsToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * itemsPerCellPercent);
 			itemSpawner.AddRandomly(totalItemsToAdd);
 
-			var totalCreaturesToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * 0.01);
+			var creaturesPerCellPercent = double.Parse(Environment.GetEnvironmentVariable("CreaturesPerCellPercent"));
+			var totalCreaturesToAdd = (int)((playArea.GameMap.Width * playArea.GameMap.Height) * creaturesPerCellPercent);
 			creatureSpawner.SpawnRandomly(totalCreaturesToAdd);
 		}
 
