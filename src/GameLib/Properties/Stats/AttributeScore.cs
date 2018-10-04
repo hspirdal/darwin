@@ -17,6 +17,8 @@ namespace GameLib.Properties.Stats
 			Base = baseScore;
 		}
 
+		public int Modifier => (Total - 10) / 2;
+
 		public override string ToString()
 		{
 			return Total.ToString();
