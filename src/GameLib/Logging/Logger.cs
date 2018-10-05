@@ -8,7 +8,7 @@ namespace GameLib.Logging
 		void Info(string message);
 		void Warn(string message);
 		void Error(Exception exception);
-		void Error(string Message);
+		void Error(string errorMessage);
 	}
 
 	public class Logger : ILogger

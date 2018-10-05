@@ -5,7 +5,7 @@ namespace GameLib.Dice
 	public interface IDiceRoller
 	{
 
-		CombinedDiceResult Roll(DiceType dice, int numberOfDices);
+		CombinedDiceResult Roll(DiceType diceType, int numberOfDices);
 		DiceResult D4();
 		DiceResult D6();
 		DiceResult D8();

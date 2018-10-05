@@ -2,7 +2,7 @@ namespace GameLib.Area
 {
 	public interface IMapGenerator
 	{
-		IMap Generate(int height, int width);
+		IMap Generate(int width, int height);
 	}
 
 	public class MapGenerator : IMapGenerator

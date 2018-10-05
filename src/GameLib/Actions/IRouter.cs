@@ -5,6 +5,6 @@ namespace GameLib.Actions
 {
 	public interface IRouter
 	{
-		Task<ServerResponse> RouteAsync(string clientId, ClientRequest clientRequest);
+		Task<ServerResponse> RouteAsync(string userId, ClientRequest clientRequest);
 	}
 }

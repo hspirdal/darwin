@@ -21,8 +21,8 @@ namespace WebSocketServer
 
 	public interface ISocketServer
 	{
-		Task SendAsync(string userid, ServerResponse response);
-		Task SendAsync(string userid, string channel, ServerResponse response);
+		Task SendAsync(string userId, ServerResponse serverResponse);
+		Task SendAsync(string userId, string channel, ServerResponse serverResponse);
 	}
 
 	public class SocketServer : ISocketServer, IClientRegistry, IClientSender
