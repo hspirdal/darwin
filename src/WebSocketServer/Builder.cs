@@ -23,7 +23,7 @@ using GameLib.Actions.Consume;
 
 namespace WebSocketServer
 {
-	public class Builder
+	public static class Builder
 	{
 		public static IContainer CreateContainer()
 		{

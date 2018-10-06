@@ -8,7 +8,7 @@ namespace GameLib
 	{
 		private readonly Dictionary<string, T> _map;
 
-		public AbstractRegistry()
+		protected AbstractRegistry()
 		{
 			_map = new Dictionary<string, T>();
 		}

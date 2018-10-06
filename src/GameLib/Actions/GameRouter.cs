@@ -19,11 +19,11 @@ namespace GameLib.Actions
 			_actionInserter = actionInserter;
 		}
 
-		public Task<ServerResponse> RouteAsync(string clientId, ClientRequest clientRequest)
+		public Task<ServerResponse> RouteAsync(string userId, ClientRequest clientRequest)
 		{
 			if (string.IsNullOrEmpty(clientRequest?.RequestName))
 			{
-				throw new ArgumentException($"Route was empty. ClientId {clientId}");
+				throw new ArgumentException($"Route was empty. ClientId {userId}");
 			}
 
 			if (!clientRequest.RequestName.Contains("Action."))
@@ -34,7 +34,7 @@ namespace GameLib.Actions
 
 			try
 			{
-				var response = _actionInserter.Insert(clientId, clientRequest.RequestName, clientRequest.Payload);
+				var response = _actionInserter.Insert(userId, clientRequest.RequestName, clientRequest.Payload);
 				return Task.FromResult(new ServerResponse(ResponseType.RequestAccepted, clientRequest.RequestName));
 			}
 			catch (Exception e)

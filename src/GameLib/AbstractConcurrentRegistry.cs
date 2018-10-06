@@ -7,7 +7,7 @@ namespace GameLib
 	{
 		private readonly ConcurrentDictionary<K, V> _map;
 
-		public AbstractConcurrentRegistry()
+		protected AbstractConcurrentRegistry()
 		{
 			_map = new ConcurrentDictionary<K, V>();
 		}
