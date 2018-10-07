@@ -11,7 +11,7 @@ namespace GameLib
 		protected readonly string _partitionKey;
 		private readonly IDatabase _database;
 
-		public AbstractRedisRepository(IConnectionMultiplexer connectionMultiplexer, string partitionKey)
+		protected AbstractRedisRepository(IConnectionMultiplexer connectionMultiplexer, string partitionKey)
 		{
 			_partitionKey = partitionKey;
 			_database = connectionMultiplexer.GetDatabase();
