@@ -8,14 +8,12 @@ namespace GameLib.Actions.Consume
 {
 	public class ConsumeResolver : IResolver
 	{
-		private readonly ILogger _logger;
 		private readonly ICreatureRegistry _creatureRegistry;
 
 		public string ActionName => ConsumeAction.CanonicalName;
 
-		public ConsumeResolver(ILogger logger, ICreatureRegistry creatureRegistry)
+		public ConsumeResolver(ICreatureRegistry creatureRegistry)
 		{
-			_logger = logger;
 			_creatureRegistry = creatureRegistry;
 		}
 

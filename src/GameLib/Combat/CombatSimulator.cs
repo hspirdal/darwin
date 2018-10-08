@@ -14,20 +14,16 @@ namespace GameLib.Combat
 	}
 	public class CombatSimulator : ICombatSimulator
 	{
-		private readonly ILogger _logger;
 		private readonly ICombatRegistry _combatRegistry;
-		private readonly ICreatureRegistry _creatureRegistry;
 		private readonly IDiceRoller _diceRoller;
 		private readonly IPlayArea _playArea;
 		private readonly IMessageDispatcher _messageDispatcher;
 		private readonly IItemSpawner _itemSpawner;
 
-		public CombatSimulator(ILogger logger, ICombatRegistry combatRegistry,
-		ICreatureRegistry creatureRegistry, IDiceRoller diceRoller, IPlayArea playArea, IMessageDispatcher messageDispatcher, IItemSpawner itemSpawner)
+		public CombatSimulator(ICombatRegistry combatRegistry, IDiceRoller diceRoller, IPlayArea playArea,
+			IMessageDispatcher messageDispatcher, IItemSpawner itemSpawner)
 		{
-			_logger = logger;
 			_combatRegistry = combatRegistry;
-			_creatureRegistry = creatureRegistry;
 			_diceRoller = diceRoller;
 			_playArea = playArea;
 			_messageDispatcher = messageDispatcher;

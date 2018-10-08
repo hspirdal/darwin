@@ -118,7 +118,7 @@ namespace WebSocketServer
 				var lootAllResolver = new LootAllResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
 				var lootResolver = new LootResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>());
 				var attackResolver = new AttackResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>(), c.Resolve<IPlayArea>(), c.Resolve<ICombatSimulator>());
-				var consumeResolver = new ConsumeResolver(c.Resolve<ILogger>(), c.Resolve<ICreatureRegistry>());
+				var consumeResolver = new ConsumeResolver(c.Resolve<ICreatureRegistry>());
 				var resolverMap = new Dictionary<string, IResolver>
 					{
 						{ movementResolver.ActionName, movementResolver },
@@ -189,7 +189,7 @@ namespace WebSocketServer
 					}),
 				};
 
-				return new CreatureFactory((List<Creature>)templates, (IRandomNumberGenerator)c.Resolve<GameLib.Utility.IRandomNumberGenerator>());
+				return new CreatureFactory(templates, c.Resolve<GameLib.Utility.IRandomNumberGenerator>());
 			})).As<ICreatureFactory>().SingleInstance();
 		}
 

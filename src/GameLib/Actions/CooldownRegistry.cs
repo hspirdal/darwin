@@ -36,10 +36,11 @@ namespace GameLib.Actions
 				return false;
 			}
 
-			var connectionMapUpdated = _cooldownMap.AddOrUpdate(cooldown.UserId, cooldown, (string key, Cooldown c) =>
-				{
-					return cooldown;
-				});
+			_cooldownMap.AddOrUpdate(cooldown.UserId, cooldown, (string key, Cooldown c) =>
+			{
+				return cooldown;
+			});
+
 			return true;
 		}
 

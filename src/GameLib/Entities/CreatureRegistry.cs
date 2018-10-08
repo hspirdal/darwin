@@ -16,11 +16,9 @@ namespace GameLib.Entities
 	public class CreatureRegistry : ICreatureRegistry
 	{
 		private readonly Dictionary<string, Creature> _creatureMap;
-		private readonly ILogger _logger;
 
-		public CreatureRegistry(ILogger logger)
+		public CreatureRegistry()
 		{
-			_logger = logger;
 
 			_creatureMap = new Dictionary<string, Creature>();
 		}

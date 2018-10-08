@@ -34,7 +34,7 @@ namespace GameLib.Actions
 
 			try
 			{
-				var response = _actionInserter.Insert(userId, clientRequest.RequestName, clientRequest.Payload);
+				_actionInserter.Insert(userId, clientRequest.RequestName, clientRequest.Payload);
 				return Task.FromResult(new ServerResponse(ResponseType.RequestAccepted, clientRequest.RequestName));
 			}
 			catch (Exception e)
