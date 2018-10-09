@@ -26,9 +26,7 @@ namespace WebSocketServer
 
 	public class GameServer : IGameServer
 	{
-		private readonly ILogger _logger;
 		private readonly ISocketServer _socketServer;
-		private readonly IActionRepository _actionRepository;
 		private readonly IActionResolver _actionResolver;
 		private readonly IPlayArea _playArea;
 		private readonly ICreatureRegistry _creatureRegistry;
@@ -39,14 +37,12 @@ namespace WebSocketServer
 		private readonly IAutonomousRegistry _autonomousRegistry;
 		private readonly IUserRepository _userRepository;
 
-		public GameServer(ILogger logger, ISocketServer socketServer, IActionRepository actionRepository, IActionResolver actionResolver,
+		public GameServer(ILogger logger, ISocketServer socketServer, IActionResolver actionResolver,
 				IPlayArea playArea, ICreatureRegistry creatureRegistry,
 				GameConfiguration gameConfiguration, IMapper mapper, ICooldownRegistry cooldownRegistry, ICombatRegistry combatRegistry,
 				IAutonomousRegistry autonomousRegistry, IUserRepository userRepository)
 		{
-			_logger = logger;
 			_socketServer = socketServer;
-			_actionRepository = actionRepository;
 			_actionResolver = actionResolver;
 			_playArea = playArea;
 			_creatureRegistry = creatureRegistry;
