@@ -2,7 +2,7 @@ using RogueSharp;
 
 namespace GameLib.Area
 {
-	public class Cell : RogueSharp.ICell
+	public sealed class Cell : RogueSharp.ICell
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
