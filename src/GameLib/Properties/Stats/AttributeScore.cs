@@ -1,10 +1,11 @@
+using System;
 using GameLib.Utility;
 
 namespace GameLib.Properties.Stats
 {
 	public class AttributeScore : IDeepCopy<AttributeScore>
 	{
-		public int Base { get; set; }
+		private int _base;
 		public int Total => Base;
 
 		public AttributeScore()
@@ -18,6 +19,20 @@ namespace GameLib.Properties.Stats
 		}
 
 		public int Modifier => (Total - 10) / 2;
+
+		public int Base
+		{
+			get => _base;
+			set
+			{
+				if (value < 1 || value > 30)
+				{
+					throw new ArgumentException("Must be within range of 1 and 30.");
+				}
+
+				_base = value;
+			}
+		}
 
 		public override string ToString()
 		{
