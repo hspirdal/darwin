@@ -25,9 +25,9 @@ namespace GameLib.Properties.Stats
 			get => _base;
 			set
 			{
-				if (value < 1 || value > 30)
+				if (value < 0 || value > 30)
 				{
-					throw new ArgumentException("Must be within range of 1 and 30.");
+					throw new ArgumentException("Must be within range of 0 and 30.");
 				}
 
 				_base = value;
