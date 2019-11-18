@@ -32,7 +32,7 @@ services:
       - MapWidth=80
       - MapHeight=80
       - ItemsPerCellPercent=0.01
-      - creaturesPerCellPercent=0.01
+      - CreaturesPerCellPercent=0.01
       - GameTickMiliseconds=100
     depends_on:
       - redis.cache
