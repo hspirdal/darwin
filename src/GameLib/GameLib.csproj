@@ -3,7 +3,7 @@
     <ProjectReference Include="..\Client.Contracts\Client.Contracts.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="newtonsoft.json" Version="11.0.2"/>
+    <PackageReference Include="newtonsoft.json" Version="13.0.1"/>
     <PackageReference Include="roguesharp" Version="4.1.0"/>
     <PackageReference Include="stackexchange.redis" Version="1.2.6"/>
     <PackageReference Include="Stateless" Version="4.2.1"/>
