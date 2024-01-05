@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@aspnet/signalr": "^1.0.0",
-		"axios": "^0.18.0",
+		"axios": "^1.6.4",
 		"bootstrap-vue": "^2.0.0-rc.11",
 		"epic-spinners": "^1.0.3",
 		"moment": "^2.22.2",
