@@ -12,11 +12,11 @@
 		"@aspnet/signalr": "^1.0.0",
 		"axios": "^0.18.0",
 		"bootstrap-vue": "^2.0.0-rc.11",
-		"epic-spinners": "^1.0.3",
+		"epic-spinners": "^1.0.4",
 		"moment": "^2.22.2",
 		"mousetrap": "^1.6.2",
 		"rot-js": "^0.6.5",
-		"vue": "^2.5.16",
+		"vue": "^3.0.0",
 		"vue-axios": "^2.1.2",
 		"vue-router": "^3.0.1",
 		"vuex": "^3.0.1"
